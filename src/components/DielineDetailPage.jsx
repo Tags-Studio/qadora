@@ -161,7 +161,6 @@ export default function DielineDetailPage({ dieline, onBack }) {
     ctx.translate(-g.tW / 2, -g.tH / 2);
 
     const lw = 1.2 / sc, dlw = 0.7 / sc;
-
     ctx.strokeStyle = '#222'; ctx.lineWidth = lw; ctx.fillStyle = '#fcfcf9';
 
     if (boxType === 'bag') {
