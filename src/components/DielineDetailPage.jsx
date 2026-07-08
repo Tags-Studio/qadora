@@ -17,7 +17,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
   const threeContainerRef = useRef(null);
   const dielineSectionRef = useRef(null);
 
-  // Dynamic values
+  // Dragging State
   const panRef = useRef({ x: 0, y: 0 });
   const draggingRef = useRef(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
@@ -42,21 +42,13 @@ export default function DielineDetailPage({ dieline, onBack }) {
     initialized: false,
   });
 
-  // Load Tailwind CDN dynamically for this component's classes
+  // Load Font Awesome dynamically
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.tailwindcss.com';
-    script.async = true;
-    document.head.appendChild(script);
-
-    // Font Awesome for icons
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css';
     document.head.appendChild(link);
-
     return () => {
-      document.head.removeChild(script);
       document.head.removeChild(link);
     };
   }, []);
@@ -444,41 +436,41 @@ export default function DielineDetailPage({ dieline, onBack }) {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full bg-white overflow-hidden select-none">
+    <div className="dieline-detail-layout">
       {/* Header */}
-      <header className="h-[52px] bg-[#0a0a0a] flex items-center px-5 flex-shrink-0 z-50">
-        <button onClick={onBack} className="text-white font-bold text-[15px] tracking-tight mr-8 bg-transparent border-none outline-none cursor-pointer">
-          ← PACDORA / {dieline.category.toUpperCase()}
+      <header className="detail-header">
+        <button onClick={onBack} className="logo-btn">
+          PACDORA
         </button>
-        <nav className="hidden md:flex items-center gap-0.5">
-          <a href="#" className="px-3 py-1.5 text-[13px] text-gray-400 hover:text-white rounded-md hover:bg-white/5 transition">Dielines</a>
-          <a href="#" className="px-3 py-1.5 text-[13px] text-gray-400 hover:text-white rounded-md hover:bg-white/5 transition">3D Viewer</a>
-          <a href="#" className="px-3 py-1.5 text-[13px] text-gray-400 hover:text-white rounded-md hover:bg-white/5 transition">Resources</a>
-          <a href="#" className="px-3 py-1.5 text-[13px] text-gray-400 hover:text-white rounded-md hover:bg-white/5 transition">Pricing</a>
+        <nav className="header-nav">
+          <a href="#" className="nav-item">Dielines</a>
+          <a href="#" className="nav-item">3D Viewer</a>
+          <a href="#" className="nav-item">Resources</a>
+          <a href="#" className="nav-item">Pricing</a>
         </nav>
-        <div className="ml-auto flex items-center gap-2">
-          <a href="#" className="text-[13px] text-gray-400 hover:text-white transition mr-2">Sign In</a>
-          <a href="#" class="text-[13px] bg-white text-gray-900 px-4 py-1.5 rounded-md font-semibold hover:bg-gray-100 transition">Get Started</a>
+        <div className="header-actions">
+          <a href="#" className="action-link">Sign In</a>
+          <a href="#" className="action-btn">Get Started</a>
         </div>
       </header>
 
       {/* 3-Column Layout */}
-      <main className="flex flex-1 overflow-hidden" style={{ height: 'calc(100vh - 52px)' }}>
+      <main className="detail-main-content">
         
         {/* ===== LEFT PANEL: Settings ===== */}
-        <aside className="w-[272px] flex-shrink-0 border-r border-gray-100 overflow-y-auto sidebar-scroll bg-white fade-in">
-          <div className="p-5">
-            <div className="mb-5">
-              <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Flip Top Box / Mailer</p>
-              <h1 className="text-[15px] font-bold text-gray-900 leading-snug">{dieline.name}</h1>
+        <aside className="settings-sidebar sidebar-scroll">
+          <div className="settings-container">
+            <div className="title-block">
+              <p className="subtitle">Flip Top Box / Mailer</p>
+              <h1 className="main-title">{dieline.name}</h1>
             </div>
 
             {/* Custom Size Inputs */}
-            <div className="mb-5">
-              <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-3">Custom size</p>
-              <div className="space-y-2.5">
-                <div>
-                  <label className="text-[12px] text-gray-500 font-medium mb-1 block">Length</label>
+            <div className="settings-group">
+              <p className="group-title">Custom size</p>
+              <div className="inputs-stack">
+                <div className="input-field-row">
+                  <label className="input-lbl">Length</label>
                   <div className="dim-field">
                     <input
                       type="number"
@@ -491,8 +483,8 @@ export default function DielineDetailPage({ dieline, onBack }) {
                     <span className="unit">mm</span>
                   </div>
                 </div>
-                <div>
-                  <label className="text-[12px] text-gray-500 font-medium mb-1 block">Width</label>
+                <div className="input-field-row">
+                  <label className="input-lbl">Width</label>
                   <div className="dim-field">
                     <input
                       type="number"
@@ -505,8 +497,8 @@ export default function DielineDetailPage({ dieline, onBack }) {
                     <span className="unit">mm</span>
                   </div>
                 </div>
-                <div>
-                  <label className="text-[12px] text-gray-500 font-medium mb-1 block">Height</label>
+                <div className="input-field-row">
+                  <label className="input-lbl">Height</label>
                   <div className="dim-field">
                     <input
                       type="number"
@@ -523,9 +515,9 @@ export default function DielineDetailPage({ dieline, onBack }) {
             </div>
 
             {/* Choose Material flutes */}
-            <div className="mb-5">
-              <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-3">Choose material</p>
-              <div className="grid grid-cols-2 gap-1.5" id="materialGrid">
+            <div className="settings-group">
+              <p className="group-title">Choose material</p>
+              <div className="flute-grid">
                 {Object.keys(matThickness).map((flute) => (
                   <div
                     key={flute}
@@ -533,16 +525,16 @@ export default function DielineDetailPage({ dieline, onBack }) {
                     className={`mat-option ${selectedMaterial === flute ? 'active' : ''}`}
                   >
                     {flute} - flute<br />
-                    <span className="text-[10px] text-gray-400">{matThickness[flute]}</span>
+                    <span className="flute-thickness">{matThickness[flute]}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Size Mode */}
-            <div className="mb-5">
-              <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-3">Size mode</p>
-              <div className="space-y-1.5">
+            <div className="settings-group">
+              <p className="group-title">Size mode</p>
+              <div className="radio-group">
                 <div
                   className={`size-radio ${sizeMode === 'manufacture' ? 'active' : ''}`}
                   onClick={() => setSizeMode('manufacture')}
@@ -561,9 +553,9 @@ export default function DielineDetailPage({ dieline, onBack }) {
             </div>
 
             {/* Info Box */}
-            <div className="bg-gray-50 rounded-lg p-3.5 border border-gray-100">
-              <p className="text-[11px] text-gray-500 leading-relaxed">
-                <i className="fas fa-info-circle text-gray-400 mr-1"></i>
+            <div className="info-badge-box">
+              <p className="info-desc">
+                <i className="fas fa-info-circle info-icon"></i>
                 Dimensions shown are manufacture (die-cut) sizes. Inner dimensions may vary based on material thickness.
               </p>
             </div>
@@ -573,12 +565,11 @@ export default function DielineDetailPage({ dieline, onBack }) {
         {/* ===== CENTER: 2D Dieline ===== */}
         <section
           ref={dielineSectionRef}
-          className="flex-1 relative bg-white overflow-hidden fade-in"
-          style={{ animationDelay: '.1s' }}
+          className="canvas-viewport"
         >
           <canvas
             ref={canvasRef}
-            className="absolute inset-0"
+            className="canvas-2d-element"
             style={{ cursor: draggingRef.current ? 'grabbing' : 'grab' }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -588,28 +579,28 @@ export default function DielineDetailPage({ dieline, onBack }) {
           ></canvas>
 
           {/* Zoom Controls */}
-          <div className="absolute bottom-4 right-4 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm rounded-lg border border-gray-200 px-2 py-1.5 shadow-sm">
+          <div className="zoom-controls-overlay">
             <button
               onClick={() => setZoom((prev) => Math.max(0.15, prev / 1.25))}
-              className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-gray-700 rounded transition text-xs"
+              className="zoom-btn"
               aria-label="Zoom out"
             >
               <i className="fas fa-minus"></i>
             </button>
-            <span className="text-[11px] text-gray-500 font-medium w-10 text-center">
+            <span className="zoom-value-label">
               {Math.round(zoom * 100)}%
             </span>
             <button
               onClick={() => setZoom((prev) => Math.min(5, prev * 1.25))}
-              className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-gray-700 rounded transition text-xs"
+              className="zoom-btn"
               aria-label="Zoom in"
             >
               <i className="fas fa-plus"></i>
             </button>
-            <div className="w-px h-4 bg-gray-200 mx-0.5"></div>
+            <div className="zoom-divider"></div>
             <button
               onClick={() => { setZoom(1); panRef.current = { x: 0, y: 0 }; drawDieline(); }}
-              className="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-gray-700 rounded transition text-xs"
+              className="zoom-btn"
               aria-label="Reset"
             >
               <i className="fas fa-compress-arrows-alt"></i>
@@ -617,36 +608,36 @@ export default function DielineDetailPage({ dieline, onBack }) {
           </div>
 
           {/* Dimension Info */}
-          <div className="absolute bottom-4 left-4 text-[11px] text-gray-400 flex items-center gap-3">
+          <div className="dimensions-status-overlay">
             <span>
-              <i className="fas fa-ruler-combined mr-1"></i>
+              <i className="fas fa-ruler-combined"></i>
               <span>{dim.L} × {dim.W} × {dim.H} mm</span>
             </span>
             <span>
-              <i className="fas fa-layer-group mr-1"></i>
+              <i className="fas fa-layer-group"></i>
               {selectedMaterial} - flute ({matThickness[selectedMaterial]})
             </span>
           </div>
         </section>
 
         {/* ===== RIGHT PANEL: 3D + Downloads ===== */}
-        <aside className="w-[308px] flex-shrink-0 border-l border-gray-100 flex flex-col bg-white fade-in" style={{ animationDelay: '.2s' }}>
+        <aside className="preview-sidebar">
           {/* 3D Preview */}
-          <div className="flex-shrink-0" style={{ height: '46%' }}>
-            <div className="px-4 pt-3 pb-2 flex items-center justify-between">
-              <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider">3D Preview</p>
-              <p className="text-[10px] text-gray-300">Drag to rotate</p>
+          <div className="three-preview-panel">
+            <div className="three-panel-header">
+              <p className="three-title">3D Preview</p>
+              <p className="three-hint">Drag to rotate</p>
             </div>
-            <div ref={threeContainerRef} className="relative" style={{ height: 'calc(100% - 36px)' }}></div>
+            <div ref={threeContainerRef} className="three-canvas-holder"></div>
           </div>
 
-          <div className="border-t border-gray-100"></div>
+          <div className="sidebar-divider"></div>
 
           {/* File Formats */}
-          <div className="flex-1 overflow-y-auto sidebar-scroll">
-            <div className="p-4">
-              <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-2">File formats</p>
-              <div>
+          <div className="formats-panel-scroll sidebar-scroll">
+            <div className="formats-container">
+              <p className="formats-title">File formats</p>
+              <div className="formats-list">
                 {[
                   { id: 'AI', name: 'AI dieline', desc: 'Adobe Illustrator', icon: 'fa-pen-nib text-amber-500' },
                   { id: 'PDF', name: 'PDF dieline', desc: 'Portable Document', icon: 'fa-file-pdf text-red-500' },
@@ -655,11 +646,11 @@ export default function DielineDetailPage({ dieline, onBack }) {
                   { id: 'CDR', name: 'CDR dieline', desc: 'CorelDRAW', icon: 'fa-palette text-purple-500' }
                 ].map((fmt) => (
                   <div key={fmt.id} className="fmt-row">
-                    <div className="flex items-center gap-2.5">
-                      <i className={`fas ${fmt.icon} text-sm w-5 text-center`}></i>
+                    <div className="fmt-info-col">
+                      <i className={`fas ${fmt.icon} fmt-icon-type`}></i>
                       <div>
-                        <p className="text-[13px] font-medium text-gray-800">{fmt.name}</p>
-                        <p className="text-[10px] text-gray-400">{fmt.desc}</p>
+                        <p className="fmt-name">{fmt.name}</p>
+                        <p className="fmt-desc">{fmt.desc}</p>
                       </div>
                     </div>
                     <button
@@ -674,8 +665,8 @@ export default function DielineDetailPage({ dieline, onBack }) {
               </div>
 
               {/* Instructions */}
-              <div className="mt-4 pt-3 border-t border-gray-100">
-                <p className="text-[11px] text-gray-400 leading-relaxed">
+              <div className="instructions-box">
+                <p className="instructions-desc">
                   Click the download button next to your preferred format. The dieline file will be saved to your device, ready to use in your design software. All files include cut lines, fold lines, and bleed marks.
                 </p>
               </div>
@@ -686,7 +677,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
 
       {/* Toast Alert */}
       <div className={`toast ${showToast ? 'show' : ''}`}>
-        <i className="fas fa-check-circle text-emerald-400"></i>
+        <i className="fas fa-check-circle toast-check-icon"></i>
         <span>{toastMsg}</span>
       </div>
     </div>
