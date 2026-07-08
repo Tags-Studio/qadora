@@ -34,6 +34,8 @@ export default function DielineDetailPage({ dieline, onBack }) {
   const [lidOpen, setLidOpen] = useState(15); // slider 0 to 100
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [unit, setUnit] = useState('mm');
+  const [customThickness, setCustomThickness] = useState(1.5);
 
   // ========== Refs ==========
   const canvasRef = useRef(null);
@@ -816,7 +818,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
   };
 
   // ========== Calculated Values ==========
-  const t = thickValues[selectedMaterial];
+  const t = customThickness;
   const structureVal = `${dim.L} × ${dim.W} × ${dim.H} mm`;
   const innerVal = `${(dim.L - 2 * t).toFixed(1)} × ${(dim.W - 2 * t).toFixed(1)} × ${(dim.H - 2 * t).toFixed(1)} mm`;
   const outerVal = `${(dim.L + t).toFixed(1)} × ${(dim.W + 2 * t).toFixed(1)} × ${(dim.H + t).toFixed(1)} mm`;
@@ -968,127 +970,206 @@ export default function DielineDetailPage({ dieline, onBack }) {
         </section>
 
         {/* ===== RIGHT SIDEBAR: Settings ===== */}
-        <aside className="settings-sidebar sb fi">
-          <div className="settings-container">
-            <div className="title-block">
-              <div className="badge-row">
-                <span className="badge-green">{boxType.toUpperCase()}</span>
-                <span className="badge-grey">Mailer</span>
-              </div>
-              <h1 className="main-title">{safeDieline.name}</h1>
+        <aside className="settings-sidebar fi">
+          {/* Vertical Tab Bar */}
+          <div className="settings-tab-bar">
+            <div className="tab-item">
+              <i className="fas fa-cube"></i>
+              <span>Models</span>
             </div>
+            <div className="tab-item active">
+              <i className="fas fa-sliders-h"></i>
+              <span>Basic</span>
+            </div>
+            <div className="tab-item">
+              <i className="fas fa-cogs"></i>
+              <span>Advanced</span>
+            </div>
+            <div className="tab-item">
+              <i className="fas fa-ellipsis-h"></i>
+              <span>More</span>
+            </div>
+            <div className="tab-spacer"></div>
+            <div className="tab-item info-btn">
+              <i className="fas fa-info-circle"></i>
+            </div>
+          </div>
 
-            {/* Dimension Inputs */}
-            <div className="settings-group">
-              <p className="sec-title">Custom size</p>
-              <div className="space-y-2 inputs-stack">
-                <div>
-                  <label className="input-lbl">Length</label>
-                  <div className="dim-field">
-                    <input 
-                      type="number" 
-                      value={dim.L} 
-                      min="30" 
-                      max="800" 
-                      onChange={(e) => setDim(prev => ({ ...prev, L: Math.max(30, parseInt(e.target.value) || 0) }))}
-                    />
-                    <span className="unit">mm</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="input-lbl">Width</label>
-                  <div className="dim-field">
-                    <input 
-                      type="number" 
-                      value={dim.W} 
-                      min="20" 
-                      max="500" 
-                      onChange={(e) => setDim(prev => ({ ...prev, W: Math.max(20, parseInt(e.target.value) || 0) }))}
-                    />
-                    <span className="unit">mm</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="input-lbl">Height</label>
-                  <div className="dim-field">
-                    <input 
-                      type="number" 
-                      value={dim.H} 
-                      min="10" 
-                      max="400" 
-                      onChange={(e) => setDim(prev => ({ ...prev, H: Math.max(10, parseInt(e.target.value) || 0) }))}
-                    />
-                    <span className="unit">mm</span>
-                  </div>
-                </div>
+          {/* Settings Content Panel */}
+          <div className="settings-content-panel sb">
+            {/* Custom size header with tooltip & toggle */}
+            <div className="panel-section-header">
+              <div className="header-title-row">
+                <span className="section-main-title">Custom size</span>
+                <i className="fas fa-info-circle info-tooltip-icon"></i>
+              </div>
+              
+              {/* Unit Switcher */}
+              <div className="unit-toggle">
+                <button 
+                  className={`unit-toggle-btn ${unit === 'mm' ? 'active' : ''}`}
+                  onClick={() => setUnit('mm')}
+                >
+                  mm
+                </button>
+                <button 
+                  className={`unit-toggle-btn ${unit === 'in' ? 'active' : ''}`}
+                  onClick={() => setUnit('in')}
+                >
+                  in
+                </button>
               </div>
             </div>
 
-            {/* Material Selection */}
-            <div className="settings-group">
-              <p className="sec-title">Choose material</p>
-              <div className="flute-grid">
-                {Object.keys(thickValues).map(flute => (
-                  <div 
-                    key={flute}
-                    onClick={() => setSelectedMaterial(flute)}
-                    className={`mat-opt ${selectedMaterial === flute ? 'on' : ''}`}
+            {/* Length, Width, Height Input Fields */}
+            <div className="inputs-grid">
+              <div className="input-box-wrapper">
+                <label className="input-box-label">Length</label>
+                <div className="input-with-badge">
+                  <input 
+                    type="number" 
+                    value={unit === 'mm' ? dim.L : parseFloat((dim.L / 25.4).toFixed(2))}
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value) || 0;
+                      setDim(prev => ({ ...prev, L: Math.max(30, Math.round(unit === 'mm' ? val : val * 25.4)) }));
+                    }}
+                  />
+                  <span className="input-badge-text">{unit}</span>
+                </div>
+              </div>
+
+              <div className="input-box-wrapper">
+                <label className="input-box-label">Width</label>
+                <div className="input-with-badge">
+                  <input 
+                    type="number" 
+                    value={unit === 'mm' ? dim.W : parseFloat((dim.W / 25.4).toFixed(2))}
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value) || 0;
+                      setDim(prev => ({ ...prev, W: Math.max(20, Math.round(unit === 'mm' ? val : val * 25.4)) }));
+                    }}
+                  />
+                  <span className="input-badge-text">{unit}</span>
+                </div>
+              </div>
+
+              <div className="input-box-wrapper">
+                <label className="input-box-label">Height</label>
+                <div className="input-with-badge">
+                  <input 
+                    type="number" 
+                    value={unit === 'mm' ? dim.H : parseFloat((dim.H / 25.4).toFixed(2))}
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value) || 0;
+                      setDim(prev => ({ ...prev, H: Math.max(10, Math.round(unit === 'mm' ? val : val * 25.4)) }));
+                    }}
+                  />
+                  <span className="input-badge-text">{unit}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="panel-divider"></div>
+
+            {/* Choose material dropdown select */}
+            <div className="material-dropdown-section">
+              <div className="section-label-row">
+                <span className="section-main-title">Choose material</span>
+                <i className="fas fa-info-circle info-tooltip-icon"></i>
+              </div>
+              
+              <div className="custom-dropdown-container">
+                <select
+                  value={selectedMaterial}
+                  onChange={(e) => {
+                    const mat = e.target.value;
+                    setSelectedMaterial(mat);
+                    setCustomThickness(thickValues[mat]);
+                  }}
+                  className="material-native-select"
+                >
+                  {Object.keys(thickValues).map(flute => (
+                    <option key={flute} value={flute}>
+                      {flute}-flute ({matThickness[flute]})
+                    </option>
+                  ))}
+                </select>
+                <div className="dropdown-swatch-overlay">
+                  <div className={`swatch-circle swatch-${selectedMaterial.toLowerCase()}`}></div>
+                  <span className="swatch-text">{selectedMaterial}-flute</span>
+                  <i className="fas fa-chevron-down dropdown-arrow-icon"></i>
+                </div>
+              </div>
+            </div>
+
+            <div className="panel-divider"></div>
+
+            {/* Custom thickness stepper */}
+            <div className="thickness-stepper-section">
+              <div className="stepper-label-row">
+                <span className="section-main-title">Custom thickness</span>
+                <span className="stepper-sub-label">(1.1~2mm)</span>
+              </div>
+              
+              <div className="stepper-control-box">
+                <button 
+                  onClick={() => setCustomThickness(prev => Math.max(0.5, parseFloat((prev - 0.1).toFixed(1))))}
+                  className="stepper-btn-action"
+                >
+                  <i className="fas fa-minus"></i>
+                </button>
+                <span className="stepper-current-val">{customThickness}</span>
+                <button 
+                  onClick={() => setCustomThickness(prev => Math.min(8.0, parseFloat((prev + 0.1).toFixed(1))))}
+                  className="stepper-btn-action"
+                >
+                  <i className="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+
+            <div className="panel-divider"></div>
+
+            {/* Size Mode 3-button select */}
+            <div className="size-mode-section">
+              <div className="section-label-row">
+                <span className="section-main-title">Size mode</span>
+                <i className="fas fa-info-circle info-tooltip-icon"></i>
+              </div>
+
+              <div className="size-modes-button-stack">
+                {[
+                  { id: 'manufacture', label: 'Manufacture dimensions' },
+                  { id: 'inner', label: 'Inner dimensions' },
+                  { id: 'outer', label: 'Outer dimensions' }
+                ].map(mode => (
+                  <button
+                    key={mode.id}
+                    className={`size-mode-option-btn ${sizeMode === mode.id ? 'active' : ''}`}
+                    onClick={() => setSizeMode(mode.id)}
                   >
-                    {flute} - flute<br />
-                    <span className="text-[9px] opacity-50">{matThickness[flute]}</span>
-                  </div>
+                    {mode.label}
+                  </button>
                 ))}
               </div>
             </div>
 
-            {/* Size Mode */}
-            <div className="settings-group">
-              <p className="sec-title">Size mode</p>
-              <div className="space-y-1.5 radio-group">
-                <div 
-                  className={`sz-rad ${sizeMode === 'manufacture' ? 'on' : ''}`}
-                  onClick={() => setSizeMode('manufacture')}
-                >
-                  <div className="dot"></div>
-                  <span>Manufacture dimensions</span>
-                </div>
-                <div 
-                  className={`sz-rad ${sizeMode === 'inner' ? 'on' : ''}`}
-                  onClick={() => setSizeMode('inner')}
-                >
-                  <div className="dot"></div>
-                  <span>Inner dimensions</span>
-                </div>
+            <div className="panel-divider"></div>
+
+            {/* Calculated Dimensions breakdown */}
+            <div className="calculated-dimensions-preview">
+              <div className="calc-row">
+                <span className="calc-lbl">Structure:</span>
+                <span className="calc-val">{structureVal}</span>
               </div>
-            </div>
-
-            <div className="divider"></div>
-
-            {/* Calculated Dimensions */}
-            <div className="settings-group">
-              <p className="sec-title">Dimensions</p>
-              <div className="space-y-2 dimensions-info-box">
-                <div className="dimension-row">
-                  <span className="lbl">Structure</span>
-                  <span className="val">{structureVal}</span>
-                </div>
-                <div className="dimension-row">
-                  <span className="lbl">Inner</span>
-                  <span className="val">{innerVal}</span>
-                </div>
-                <div className="dimension-row">
-                  <span className="lbl">Outer</span>
-                  <span className="val">{outerVal}</span>
-                </div>
+              <div className="calc-row">
+                <span className="calc-lbl">Inner:</span>
+                <span className="calc-val">{innerVal}</span>
               </div>
-            </div>
-
-            {/* Info Badge Card */}
-            <div className="info-badge-box">
-              <p className="info-desc">
-                <i className="fas fa-info-circle info-icon"></i>
-                Dimensions shown are manufacture (die-cut) sizes.
-              </p>
+              <div className="calc-row">
+                <span className="calc-lbl">Outer:</span>
+                <span className="calc-val">{outerVal}</span>
+              </div>
             </div>
           </div>
         </aside>
