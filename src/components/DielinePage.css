@@ -252,23 +252,24 @@
   overflow: hidden;
 }
 
-.thumbnail-3d-side img {
+.thumbnail-2d-side.detailed-vector-bg img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 4px;
-  transition: transform 0.3s ease;
-}
-
-.mini-dieline-vector {
-  width: 90%;
-  height: 90%;
+  object-fit: contain;
   opacity: 0.9;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+.thumbnail-3d-side img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  transition: transform 0.3s ease;
+}
+
 /* Hover micro-animations */
-.dieline-card:hover .mini-dieline-vector {
+.dieline-card:hover .thumbnail-2d-side.detailed-vector-bg img {
   transform: scale(1.05);
   opacity: 1;
 }
@@ -348,3 +349,31 @@
   padding: 60px 0;
   color: #999;
 }
+
+/* Load More Styles */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0 20px 0;
+}
+
+.load-more-btn {
+  background: #fff;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  padding: 12px 32px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.08);
+}
+
+.load-more-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+  transform: translateY(-2px);
+}
+
