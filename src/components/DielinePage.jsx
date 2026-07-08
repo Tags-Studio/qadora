@@ -1,228 +1,401 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import pacdoraDielines from '../data/pacdora_dielines.json';
 import './DielinePage.css';
 
 export default function DielinePage({ onBack, onSelectDieline }) {
+  // Filter States
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [visibleCount, setVisibleCount] = useState(24);
+  const [sortBy, setSortBy] = useState('popular');
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   
-  // Accordion states for the sidebar categories
-  const [modelsOpen, setModelsOpen] = useState(true);
-  const [usesOpen, setUsesOpen] = useState(false);
+  // Checkbox Filter States (Box Style & Closure Type)
+  const [selectedStyles, setSelectedStyles] = useState([]);
+  const [selectedClosures, setSelectedClosures] = useState([]);
 
-  // Categories mapping matching the screenshot exactly
-  const CATEGORIES_MAPPING = useMemo(() => [
-    { id: 'all', name: 'All' },
-    { id: 'fefco', name: 'FEFCO Boxes' },
-    { id: 'folding', name: 'Folding Boxes' },
-    { id: 'tray', name: 'Tray Boxes' },
-    { id: 'display', name: 'Display Boxes' },
-    { id: 'tuckend', name: 'Tuck End Boxes' },
-    { id: 'insert', name: 'Box Inserts' },
-    { id: 'bags', name: 'Paper Bags' },
-    { id: 'rigid', name: 'Rigid Boxes' },
-    { id: 'window', name: 'Window Boxes' },
-    { id: 'lid', name: 'Boxes with Lid' },
-    { id: 'storage', name: 'Storage Boxes' },
-    { id: 'tuckend_var', name: 'Tuck End Box Variations' }
+  // Mobile Drawer State
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Search input ref for shortcut key
+  const searchInputRef = useRef(null);
+
+  // Keydown handler for ⌘K or Ctrl+K shortcut
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Category Configuration
+  const CATEGORIES = useMemo(() => [
+    { id: 'all', name: 'All Templates', icon: 'fa-border-all' },
+    { id: 'tuckend', name: 'Tuck End Boxes', icon: 'fa-box' },
+    { id: 'mailer', name: 'Mailer Boxes', icon: 'fa-envelope-open' },
+    { id: 'gable', name: 'Gable & Handle', icon: 'fa-shopping-bag' },
+    { id: 'pillow', name: 'Pillow Boxes', icon: 'fa-cloud' },
+    { id: 'sleeve', name: 'Sleeve Boxes', icon: 'fa-box-open' },
+    { id: 'twopiece', name: 'Two-Piece Boxes', icon: 'fa-boxes' },
+    { id: 'window', name: 'Window Cut', icon: 'fa-square' },
+    { id: 'autolock', name: 'Auto Lock Bottom', icon: 'fa-lock' },
+    { id: 'tray', name: 'Tray & Display', icon: 'fa-layer-group' },
+    { id: 'hanger', name: 'Hanger Boxes', icon: 'fa-tag' },
+    { id: 'hexagonal', name: 'Hexagonal Tubes', icon: 'fa-circle-notch' }
   ], []);
 
-  // Compute category counts dynamically based on the 7,396 items
-  const categoriesList = useMemo(() => {
-    const counts = {
-      all: pacdoraDielines.length,
-      fefco: 0,
-      folding: 0,
-      tray: 0,
-      display: 0,
-      tuckend: 0,
-      insert: 0,
-      bags: 0,
-      rigid: 0,
-      window: 0,
-      lid: 0,
-      storage: 0,
-      tuckend_var: 0
-    };
-
+  // Dynamic Count calculations based on database
+  const categoryCounts = useMemo(() => {
+    const counts = { all: pacdoraDielines.length };
+    CATEGORIES.forEach(cat => {
+      if (cat.id !== 'all') counts[cat.id] = 0;
+    });
+    
     pacdoraDielines.forEach(item => {
       if (counts[item.category] !== undefined) {
         counts[item.category]++;
       }
     });
 
-    return CATEGORIES_MAPPING.map(cat => ({
-      ...cat,
-      count: counts[cat.id] || 0
-    }));
-  }, [CATEGORIES_MAPPING]);
+    return counts;
+  }, [CATEGORIES]);
 
-  // Filter templates based on selected category and search query
+  // Handle Box Style Toggle
+  const handleStyleToggle = (style) => {
+    setSelectedStyles(prev => 
+      prev.includes(style) ? prev.filter(s => s !== style) : [...prev, style]
+    );
+  };
+
+  // Handle Closure Type Toggle
+  const handleClosureToggle = (closure) => {
+    setSelectedClosures(prev => 
+      prev.includes(closure) ? prev.filter(c => c !== closure) : [...prev, closure]
+    );
+  };
+
+  // Filter templates based on all active criteria
   const filteredDielines = useMemo(() => {
-    return pacdoraDielines.filter(dieline => {
+    let result = pacdoraDielines.filter(dieline => {
+      // 1. Category Filter
       const matchCategory = selectedCategory === 'all' || dieline.category === selectedCategory;
-      const matchSearch = dieline.name.toLowerCase().includes(searchTerm.toLowerCase());
-      return matchCategory && matchSearch;
-    });
-  }, [selectedCategory, searchTerm]);
 
-  // Reset pagination visible count on search or category filter change
+      // 2. Search Keyword Filter
+      const matchSearch = dieline.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+      // 3. Box Style Checkbox Filter
+      const matchStyle = selectedStyles.length === 0 || selectedStyles.includes(dieline.style);
+
+      // 4. Closure Type Checkbox Filter
+      const matchClosure = selectedClosures.length === 0 || selectedClosures.includes(dieline.closure);
+
+      return matchCategory && matchSearch && matchStyle && matchClosure;
+    });
+
+    // 5. Sorting
+    if (sortBy === 'newest') {
+      result = [...result].reverse(); // Fake newest by reversing
+    } else if (sortBy === 'alphabetical') {
+      result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return result;
+  }, [selectedCategory, searchTerm, selectedStyles, selectedClosures, sortBy]);
+
+  // Reset page count on filter change
   useEffect(() => {
     setVisibleCount(24);
-  }, [selectedCategory, searchTerm]);
-
-  // Paginated list to render in DOM
-  const paginatedDielines = useMemo(() => {
-    return filteredDielines.slice(0, visibleCount);
-  }, [filteredDielines, visibleCount]);
+  }, [selectedCategory, searchTerm, selectedStyles, selectedClosures, sortBy]);
 
   const handleLoadMore = () => {
     setVisibleCount(prev => prev + 24);
   };
 
   return (
-    <div className="dieline-page">
-      {/* Header */}
-      <div className="dieline-header">
-        <div className="dieline-header-content">
-          <h1 className="dieline-title">
-            <span className="arrow-icon">➜</span>
-            3,000+ Free printable & customizable box templates
-          </h1>
-          <p className="dieline-description">
-            Designing attractive, effective boxes for your product is essential to sell well. 
-            Our library of customizable box templates can assist you in creating your box templates.
-          </p>
-          <div className="dieline-search">
-            <input
-              type="text"
-              placeholder="Search 7,000+ templates by keywords (e.g. mailer, cosmetic, shipping...)"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="dieline-search-input"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="dieline-container">
-        {/* Sidebar with Categories */}
-        <aside className="dieline-sidebar">
-          <div className="dieline-filters">
-            {/* By Uses Accordion */}
-            <div className="accordion-group">
-              <button 
-                className="accordion-header" 
-                onClick={() => setUsesOpen(!usesOpen)}
-              >
-                <span>By Uses</span>
-                <i className={`fas ${usesOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-              </button>
-              {usesOpen && (
-                <div className="accordion-content">
-                  <div className="static-notice">Select "By Models" to filter by box shape</div>
-                </div>
-              )}
+    <div className="dieline-saas-layout">
+      {/* 80px High Premium Header */}
+      <header className="saas-header">
+        <div className="header-left">
+          <a href="javascript:void(0)" onClick={onBack} className="saas-brand">
+            <div className="logo-icon">
+              <i className="fas fa-cube text-white"></i>
             </div>
+            <span className="brand-text">Dieline.lib</span>
+          </a>
+          <nav className="saas-nav">
+            <a href="javascript:void(0)" onClick={onBack} className="nav-link active">Dieline Templates</a>
+            <a href="#" className="nav-link">Box Builder</a>
+            <a href="#" className="nav-link">3D Preview</a>
+            <a href="#" className="nav-link">Pricing</a>
+            <a href="#" className="nav-link">Resources</a>
+          </nav>
+        </div>
 
-            {/* By Models Accordion */}
-            <div className="accordion-group">
-              <button 
-                className="accordion-header" 
-                onClick={() => setModelsOpen(!modelsOpen)}
-              >
-                <span>By Models</span>
-                <i className={`fas ${modelsOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-              </button>
-              
-              {modelsOpen && (
-                <div className="filter-categories">
-                  {categoriesList.map((category) => (
-                    <button
-                      key={category.id}
-                      className={`category-button ${selectedCategory === category.id ? 'active' : ''}`}
-                      onClick={() => setSelectedCategory(category.id)}
-                    >
-                      <span className="category-name"># {category.name}</span>
-                      <span className="category-count-inline">{category.count}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
+        {/* Large 420px Wide Search Bar */}
+        <div className="header-search">
+          <i className="fas fa-search search-icon"></i>
+          <input
+            ref={searchInputRef}
+            type="text"
+            placeholder="Search box templates..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <span className="search-hint">Ctrl+K</span>
+        </div>
+
+        <div className="header-right">
+          <a href="#" className="signin-link">Sign In</a>
+          <a href="#" className="cta-button-dark">Start free</a>
+          <button className="mobile-hamburger" onClick={() => setIsSidebarOpen(true)}>
+            <i className="fas fa-bars"></i>
+          </button>
+        </div>
+      </header>
+
+      {/* Main App Layout */}
+      <div className="saas-container">
+        
+        {/* ===== SIDEBAR PANEL ===== */}
+        <aside className={`saas-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+          <div className="sidebar-header-mobile">
+            <span className="sidebar-mobile-title">Filters</span>
+            <button className="close-sidebar-btn" onClick={() => setIsSidebarOpen(false)}>
+              <i className="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div className="sidebar-section">
+            <p className="sidebar-sec-title">Categories</p>
+            <div className="sidebar-menu-list">
+              {CATEGORIES.map(cat => (
+                <button
+                  key={cat.id}
+                  className={`sidebar-menu-item ${selectedCategory === cat.id ? 'active' : ''}`}
+                  onClick={() => {
+                    setSelectedCategory(cat.id);
+                    setIsSidebarOpen(false); // Close drawer on mobile
+                  }}
+                >
+                  <div className="menu-item-left">
+                    <i className={`fas ${cat.icon} menu-icon`}></i>
+                    <span>{cat.name}</span>
+                  </div>
+                  <span className="menu-badge">{categoryCounts[cat.id]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="sidebar-divider"></div>
+
+          {/* Box Style Checkbox Group */}
+          <div className="sidebar-section">
+            <p className="sidebar-sec-title">Box Style</p>
+            <div className="checkbox-stack">
+              {['Folding Carton', 'Rigid Box', 'Corrugated', 'Tube & Core'].map(style => (
+                <label key={style} className="checkbox-item">
+                  <input
+                    type="checkbox"
+                    checked={selectedStyles.includes(style)}
+                    onChange={() => handleStyleToggle(style)}
+                  />
+                  <span className="checkbox-custom"></span>
+                  <span className="checkbox-lbl">{style}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="sidebar-divider"></div>
+
+          {/* Closure Type Checkbox Group */}
+          <div className="sidebar-section">
+            <p className="sidebar-sec-title">Closure Type</p>
+            <div className="checkbox-stack">
+              {['Tuck End', 'Auto Lock', 'Snap Lock', 'Hinged Lid', 'Magnetic'].map(closure => (
+                <label key={closure} className="checkbox-item">
+                  <input
+                    type="checkbox"
+                    checked={selectedClosures.includes(closure)}
+                    onChange={() => handleClosureToggle(closure)}
+                  />
+                  <span className="checkbox-custom"></span>
+                  <span className="checkbox-lbl">{closure}</span>
+                </label>
+              ))}
             </div>
           </div>
         </aside>
 
-        {/* Main Content Area */}
-        <main className="dieline-main">
-          <div className="dieline-results-header">
-            <h2 className="results-title">
-              {selectedCategory === 'all'
-                ? 'All Dielines'
-                : `${categoriesList.find(c => c.id === selectedCategory)?.name}`}
-            </h2>
-            <p className="results-count">{filteredDielines.length} Templates</p>
+        {/* Mobile Sidebar Overlay */}
+        {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
+
+        {/* ===== MAIN CONTENT AREA ===== */}
+        <main className="saas-content">
+          
+          {/* 500px High Premium Hero Card */}
+          <div className="saas-hero-card">
+            {/* Blur Gradient Backgrounds for depth */}
+            <div className="hero-blur-orange"></div>
+            <div className="hero-blur-blue"></div>
+            <div className="hero-blur-green"></div>
+
+            <div className="hero-inner-content">
+              <div className="hero-badge">
+                <span>Updated weekly · Free for commercial use</span>
+              </div>
+              <h2 className="hero-title">
+                3,000+ Free Printable<br />
+                <span className="text-highlight">Box Dieline</span> Templates
+              </h2>
+              <p className="hero-description">
+                Download production-ready packaging dielines with precise cut, fold, and glue lines. 
+                Every template includes a 2D flat dieline and 3D assembled preview — ready for AI, PDF, DXF, and SVG workflows.
+              </p>
+
+              {/* 4-Column Stats */}
+              <div className="hero-stats-grid">
+                <div className="stat-column">
+                  <span className="stat-number">3,247</span>
+                  <span className="stat-label">Templates</span>
+                </div>
+                <div className="stat-column">
+                  <span className="stat-number">12</span>
+                  <span className="stat-label">Box Categories</span>
+                </div>
+                <div className="stat-column">
+                  <span className="stat-number">5</span>
+                  <span className="stat-label">File Formats</span>
+                </div>
+                <div className="stat-column">
+                  <span className="stat-number">186k</span>
+                  <span className="stat-label">Downloads</span>
+                </div>
+              </div>
+
+              <div className="hero-buttons">
+                <button className="btn-primary" onClick={() => {
+                  setSelectedCategory('all');
+                  setSelectedStyles([]);
+                  setSelectedClosures([]);
+                  setSearchTerm('');
+                }}>Browse all templates</button>
+                <a href="#" className="btn-secondary-outline">How it works</a>
+              </div>
+            </div>
           </div>
 
-          {/* Grid of Dielines */}
-          <div className="dieline-grid">
-            {paginatedDielines.map((dieline) => (
+          {/* Toolbar for controls */}
+          <div className="saas-toolbar">
+            <div className="toolbar-left">
+              <span className="results-text">
+                Showing <b>{Math.min(visibleCount, filteredDielines.length)}</b> of <b>{filteredDielines.length}</b> templates
+              </span>
+            </div>
+            
+            <div className="toolbar-right">
+              {/* Sort Dropdown */}
+              <div className="sort-dropdown-container">
+                <i className="fas fa-sort-amount-down sort-icon"></i>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="sort-select"
+                >
+                  <option value="popular">Most popular</option>
+                  <option value="newest">Newest templates</option>
+                  <option value="alphabetical">Alphabetical</option>
+                </select>
+              </div>
+
+              {/* Grid/List View Toggles */}
+              <div className="view-toggle-group">
+                <button
+                  className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                  onClick={() => setViewMode('grid')}
+                  aria-label="Grid View"
+                >
+                  <i className="fas fa-th-large"></i>
+                </button>
+                <button
+                  className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
+                  onClick={() => setViewMode('list')}
+                  aria-label="List View"
+                >
+                  <i className="fas fa-list"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Cards Grid */}
+          <div className={`saas-grid ${viewMode}`}>
+            {filteredDielines.slice(0, visibleCount).map((dieline) => (
               <div
                 key={dieline.id}
-                className="dieline-card"
+                className="saas-card"
                 onClick={() => onSelectDieline?.(dieline)}
-                style={{ cursor: 'pointer' }}
               >
-                {/* Split Thumbnail: Left side shows detailed Dieline (blue/red), Right side shows Pacdora 3D mockup */}
-                <div className="dieline-card-image split-thumbnail">
+                {/* Preview Image with Printable/Downloadable Pills */}
+                <div className="saas-card-preview split-thumbnail">
+                  <div className="pills-overlay">
+                    <span className="pill-badge">Printable</span>
+                    <span className="pill-badge">Downloadable</span>
+                  </div>
+
                   <div className="thumbnail-2d-side detailed-vector-bg">
-                    <img 
-                      src={dieline.dieline_image} 
-                      alt={`${dieline.name} dieline`} 
-                      loading="lazy" 
+                    <img
+                      src={dieline.dieline_image}
+                      alt={`${dieline.name} dieline`}
+                      loading="lazy"
                       onError={(e) => {
                         e.target.style.display = 'none';
                       }}
                     />
                   </div>
                   <div className="thumbnail-3d-side">
-                    <img 
-                      src={dieline.image} 
-                      alt={dieline.name} 
-                      loading="lazy" 
+                    <img
+                      src={dieline.image}
+                      alt={dieline.name}
+                      loading="lazy"
                       onError={(e) => {
                         e.target.src = '/images/mockups/tuck-end-box.png';
                       }}
                     />
                   </div>
-                  <div className="dieline-card-overlay">
-                    <button className="dieline-action-btn">View & Edit</button>
+
+                  <div className="card-hover-overlay">
+                    <span className="overlay-btn">View & Edit</span>
                   </div>
                 </div>
-                <div className="dieline-card-content">
-                  <h4 className="dieline-card-title">{dieline.name}</h4>
-                  <div className="dieline-formats">
-                    {dieline.formats.map((format) => (
-                      <span key={format} className="format-badge">{format}</span>
-                    ))}
-                  </div>
+
+                {/* Card Info */}
+                <div className="saas-card-footer">
+                  <span className="card-tag">ALL TEMPLATES</span>
+                  <h4 className="card-title-text">{dieline.name}</h4>
                 </div>
               </div>
             ))}
           </div>
 
+          {/* Empty State */}
           {filteredDielines.length === 0 && (
-            <div className="no-results">
-              <p>No dielines found matching your search.</p>
+            <div className="saas-empty-state">
+              <i className="fas fa-box-open empty-icon"></i>
+              <h3>No box templates found</h3>
+              <p>Try adjusting your keyword search, categories, or style filters.</p>
             </div>
           )}
 
-          {/* Pagination / Load More Button */}
+          {/* Pagination Load More */}
           {filteredDielines.length > visibleCount && (
-            <div className="load-more-container">
-              <button onClick={handleLoadMore} className="load-more-btn">
+            <div className="saas-load-more">
+              <button className="load-more-btn" onClick={handleLoadMore}>
                 Load More Templates ({filteredDielines.length - visibleCount} remaining)
               </button>
             </div>

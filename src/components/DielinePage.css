@@ -1,406 +1,972 @@
 /* ══════════════════════════════════════════════════════
-   DIELINE PAGE
+   Packwave — SaaS Dieline List Page Stylesheet
    ══════════════════════════════════════════════════════ */
 
 :root {
-  --accent: #22c55e;
+  --saas-bg: #f8f5f1;
+  --saas-card-bg: #ffffff;
+  --saas-border: #ece7e2;
+  --saas-fg-primary: #1e1e1e;
+  --saas-fg-secondary: #666666;
+  --saas-accent: #10b981; /* Premium Emerald */
+  --saas-accent-dark: #059669;
+  --saas-accent-light: rgba(16, 185, 129, 0.08);
+  --saas-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  --saas-hover-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+  --saas-radius-btn: 12px;
+  --saas-radius-card: 24px;
+  --saas-radius-hero: 36px;
+  --saas-radius-pill: 999px;
+  --saas-transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dieline-page {
+.dieline-saas-layout {
+  min-height: 100vh;
+  background-color: var(--saas-bg);
+  color: var(--saas-fg-primary);
+  font-family: 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 100vh;
-  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
-  overflow: hidden;
 }
 
-/* ── Header ── */
-.dieline-header {
-  padding: 40px 60px;
-  background: linear-gradient(135deg, #fff 0%, #fafafa 100%);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  overflow-y: auto;
-  max-height: 35%;
+/* ── Header (80px high) ── */
+.saas-header {
+  height: 80px;
+  background-color: var(--saas-card-bg);
+  border-bottom: 1px solid var(--saas-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
-.dieline-header-content {
-  max-width: 1200px;
-  margin: 0 auto;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
 }
 
-.dieline-title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #1a0e08;
-  margin: 0 0 16px 0;
+.saas-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  line-height: 1.2;
-  letter-spacing: -0.5px;
+  text-decoration: none;
 }
 
-.arrow-icon {
-  color: var(--accent);
-  font-size: 28px;
-}
-
-.dieline-description {
-  font-size: 14px;
-  color: #666;
-  line-height: 1.6;
-  margin: 0 0 24px 0;
-  max-width: 600px;
-}
-
-.dieline-search {
-  position: relative;
-}
-
-.dieline-search-input {
-  width: 100%;
-  max-width: 500px;
-  padding: 12px 16px 12px 40px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  font-size: 14px;
-  background: #fff;
-  transition: all 0.3s ease;
-}
-
-.dieline-search-input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
-}
-
-.dieline-search::before {
-  content: '🔍';
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 16px;
-}
-
-/* ── Container & Layout ── */
-.dieline-container {
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background-color: var(--saas-accent);
+  border-radius: 10px;
   display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-/* ── Sidebar ── */
-.dieline-sidebar {
-  width: 280px;
-  background: #fff;
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
-  overflow-y: auto;
-  padding: 24px;
-}
-
-.dieline-filters {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.filter-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1a0e08;
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Accordion Group */
-.accordion-group {
-  margin-bottom: 16px;
-}
-
-.accordion-header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
-  background: transparent;
-  border: none;
+  justify-content: center;
+}
+
+.logo-icon i {
   font-size: 16px;
-  font-weight: 600;
-  color: #111;
-  cursor: pointer;
 }
 
-.accordion-header i {
-  font-size: 14px;
-  color: #4b5563;
+.brand-text {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--saas-fg-primary);
+  letter-spacing: -0.03em;
 }
 
-.accordion-content {
-  padding: 8px 4px 16px 4px;
-}
-
-.static-notice {
-  font-size: 12px;
-  color: #888;
-  font-style: italic;
-}
-
-.filter-categories {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-left: 4px;
-}
-
-.category-button {
+.saas-nav {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  background: transparent;
-  color: #374151;
-  font-size: 15px;
+}
+
+.saas-nav .nav-link {
+  font-size: 14px;
   font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  text-align: left;
-  width: fit-content;
+  color: var(--saas-fg-secondary);
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: var(--saas-radius-btn);
+  transition: var(--saas-transition);
 }
 
-.category-button:hover {
-  background: #f3f4f6;
-  color: #111;
+.saas-nav .nav-link:hover {
+  color: var(--saas-fg-primary);
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
-.category-button.active {
-  border-color: #000;
-  color: #000;
+.saas-nav .nav-link.active {
+  color: #ffffff;
+  background-color: var(--saas-fg-primary);
   font-weight: 600;
 }
 
-.category-count-inline {
-  font-size: 13px;
-  color: #9ca3af;
-  font-weight: 400;
-  margin-left: 2px;
+/* Header Search Bar (420px wide) */
+.header-search {
+  position: relative;
+  width: 420px;
 }
 
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a1a1aa;
+  font-size: 15px;
+}
 
-/* ── Dieline Main ── */
-.dieline-main {
+.header-search input {
+  width: 100%;
+  height: 46px;
+  padding: 0 80px 0 46px; /* Space for icon and shortcut */
+  border: 1.5px solid var(--saas-border);
+  border-radius: var(--saas-radius-btn);
+  background-color: var(--saas-bg);
+  font-size: 14px;
+  color: var(--saas-fg-primary);
+  outline: none;
+  transition: var(--saas-transition);
+  font-family: inherit;
+}
+
+.header-search input:focus {
+  border-color: var(--saas-accent);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.search-hint {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  background-color: var(--saas-card-bg);
+  border: 1.5px solid var(--saas-border);
+  padding: 3px 8px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.signin-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--saas-fg-secondary);
+  text-decoration: none;
+  transition: var(--saas-transition);
+}
+
+.signin-link:hover {
+  color: var(--saas-fg-primary);
+}
+
+.cta-button-dark {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--saas-fg-primary);
+  padding: 10px 22px;
+  border-radius: var(--saas-radius-btn);
+  text-decoration: none;
+  transition: var(--saas-transition);
+}
+
+.cta-button-dark:hover {
+  background-color: #000000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-hamburger {
+  display: none;
+  font-size: 20px;
+  background: transparent;
+  border: none;
+  color: var(--saas-fg-primary);
+  cursor: pointer;
+}
+
+/* ── Container Layout ── */
+.saas-container {
+  display: flex;
   flex: 1;
-  padding: 40px 60px;
-  overflow-y: auto;
-  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+  max-width: 1600px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px;
+  gap: 40px;
 }
 
-.dieline-results-header {
+/* ── Sidebar (280px wide, Fixed during scrolling) ── */
+.saas-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 120px;
+  height: calc(100vh - 160px);
+  overflow-y: auto;
+  padding-right: 12px;
+}
+
+.saas-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.saas-sidebar::-webkit-scrollbar-thumb {
+  background: var(--saas-border);
+  border-radius: 10px;
+}
+
+.sidebar-header-mobile {
+  display: none;
+}
+
+.sidebar-section {
+  margin-bottom: 24px;
+}
+
+.sidebar-sec-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--saas-fg-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+}
+
+.sidebar-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--saas-radius-btn);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: var(--saas-transition);
+  color: var(--saas-fg-secondary);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.menu-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-icon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+.menu-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--saas-fg-secondary);
+  background-color: var(--saas-border);
+  padding: 2px 8px;
+  border-radius: var(--saas-radius-pill);
+}
+
+.sidebar-menu-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--saas-fg-primary);
+}
+
+.sidebar-menu-item.active {
+  background-color: var(--saas-fg-primary);
+  color: #ffffff;
+}
+
+.sidebar-menu-item.active .menu-badge {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background-color: var(--saas-border);
+  margin: 24px 0;
+}
+
+/* Checkbox Styling */
+.checkbox-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--saas-fg-secondary);
+  user-select: none;
+}
+
+.checkbox-item input {
+  display: none;
+}
+
+.checkbox-custom {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--saas-border);
+  border-radius: 6px;
+  background-color: #ffffff;
+  position: relative;
+  transition: var(--saas-transition);
+  flex-shrink: 0;
+}
+
+.checkbox-item input:checked + .checkbox-custom {
+  border-color: var(--saas-accent);
+  background-color: var(--saas-accent);
+}
+
+.checkbox-item input:checked + .checkbox-custom::after {
+  content: '\f00c';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  color: #ffffff;
+  font-size: 11px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.checkbox-item:hover .checkbox-custom {
+  border-color: var(--saas-fg-secondary);
+}
+
+.checkbox-lbl {
+  transition: var(--saas-transition);
+}
+
+.checkbox-item input:checked ~ .checkbox-lbl {
+  color: var(--saas-fg-primary);
+  font-weight: 600;
+}
+
+/* ── Main Content Area ── */
+.saas-content {
+  flex: 1;
+}
+
+/* ── Premium Hero Card (500px high) ── */
+.saas-hero-card {
+  height: 500px;
+  background-color: var(--saas-card-bg);
+  border-radius: var(--saas-radius-hero);
+  border: 1px solid var(--saas-border);
+  position: relative;
+  overflow: hidden;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: var(--saas-shadow);
+  margin-bottom: 64px;
+}
+
+/* Soft Blur Gradients */
+.hero-blur-orange {
+  position: absolute;
+  top: -100px;
+  right: -50px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.hero-blur-blue {
+  position: absolute;
+  bottom: -50px;
+  left: 10%;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.hero-blur-green {
+  position: absolute;
+  top: 40%;
+  left: 45%;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.07) 0%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.hero-inner-content {
+  position: relative;
+  z-index: 10;
+  max-width: 720px;
+}
+
+.hero-badge {
+  display: inline-block;
+  background-color: var(--saas-accent-light);
+  color: var(--saas-accent-dark);
+  padding: 6px 16px;
+  border-radius: var(--saas-radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.hero-title {
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--saas-fg-primary);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 18px;
+}
+
+.hero-title .text-highlight {
+  color: var(--saas-accent);
+}
+
+.hero-description {
+  font-size: 16px;
+  color: var(--saas-fg-secondary);
+  line-height: 1.6;
   margin-bottom: 32px;
 }
 
-.results-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1a0e08;
-  margin: 0 0 8px 0;
-  letter-spacing: -0.3px;
-}
-
-.results-count {
-  font-size: 14px;
-  color: #999;
-  margin: 0;
-}
-
-/* ── Dieline Grid ── */
-.dieline-grid {
+/* Stats columns */
+.hero-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 36px;
+}
+
+.stat-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--saas-fg-primary);
+  letter-spacing: -0.02em;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--saas-fg-secondary);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.hero-buttons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-primary {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--saas-accent);
+  border: none;
+  padding: 14px 28px;
+  border-radius: var(--saas-radius-btn);
+  cursor: pointer;
+  transition: var(--saas-transition);
+}
+
+.btn-primary:hover {
+  background-color: var(--saas-accent-dark);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+}
+
+.btn-secondary-outline {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--saas-fg-primary);
+  background-color: transparent;
+  border: 1.5px solid var(--saas-border);
+  padding: 12px 28px;
+  border-radius: var(--saas-radius-btn);
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--saas-transition);
+  display: inline-block;
+}
+
+.btn-secondary-outline:hover {
+  background-color: var(--saas-bg);
+  border-color: var(--saas-fg-secondary);
+}
+
+/* ── Toolbar (Sorting, view modes) ── */
+.saas-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  border-bottom: 1.5px solid var(--saas-border);
+  padding-bottom: 16px;
+}
+
+.results-text {
+  font-size: 14px;
+  color: var(--saas-fg-secondary);
+}
+
+.results-text b {
+  color: var(--saas-fg-primary);
+  font-weight: 600;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Sort dropdown */
+.sort-dropdown-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.sort-icon {
+  font-size: 14px;
+  color: var(--saas-fg-secondary);
+}
+
+.sort-select {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--saas-fg-primary);
+  border: 1.5px solid var(--saas-border);
+  border-radius: var(--saas-radius-btn);
+  padding: 6px 12px;
+  background-color: var(--saas-card-bg);
+  outline: none;
+  cursor: pointer;
+  transition: var(--saas-transition);
+}
+
+.sort-select:hover {
+  border-color: var(--saas-fg-secondary);
+}
+
+/* Grid/List View Toggles */
+.view-toggle-group {
+  display: flex;
+  align-items: center;
+  background-color: var(--saas-border);
+  padding: 3px;
+  border-radius: var(--saas-radius-btn);
+  gap: 2px;
+}
+
+.view-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--saas-fg-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--saas-transition);
+  font-size: 13px;
+}
+
+.view-btn.active {
+  background-color: var(--saas-card-bg);
+  color: var(--saas-fg-primary);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* ── Dieline Grid (SaaS Style) ── */
+.saas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   margin-bottom: 40px;
 }
 
-.dieline-card {
-  background: #fff;
-  border-radius: 12px;
+/* Card */
+.saas-card {
+  background-color: var(--saas-card-bg);
+  border-radius: var(--saas-radius-card);
+  border: 1.5px solid var(--saas-border);
   overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.05);
   cursor: pointer;
+  box-shadow: var(--saas-shadow);
+  transition: var(--saas-transition);
+  display: flex;
+  flex-direction: column;
 }
 
-.dieline-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  border-color: var(--accent);
+.saas-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--saas-hover-shadow);
+  border-color: rgba(16, 185, 129, 0.2);
 }
 
-/* ── Split Thumbnail View ── */
-.dieline-card-image.split-thumbnail {
+/* Card Image/Preview Area */
+.saas-card-preview {
+  height: 260px;
   position: relative;
-  width: 100%;
-  height: 180px;
-  overflow: hidden;
   display: flex;
-  background: #fdfdfd;
-  border-bottom: 1px solid #f1f1f1;
-}
-
-/* Left side: Detailed vector (blue & red cuts) on light grey background */
-.thumbnail-2d-side.detailed-vector-bg {
-  flex: 1;
-  width: 50%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f8fafc;
-  padding: 16px;
-  border-right: 1px dashed #e2e8f0;
-}
-
-/* Right side: 3D folded mockup photo */
-.thumbnail-3d-side {
-  flex: 1;
-  width: 50%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ffffff;
-  padding: 8px;
+  background-color: var(--saas-bg);
   overflow: hidden;
 }
 
-.thumbnail-2d-side.detailed-vector-bg img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  opacity: 0.9;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.thumbnail-3d-side img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 4px;
-  transition: transform 0.3s ease;
-}
-
-/* Hover micro-animations */
-.dieline-card:hover .thumbnail-2d-side.detailed-vector-bg img {
-  transform: scale(1.05);
-  opacity: 1;
-}
-
-.dieline-card:hover .thumbnail-3d-side img {
-  transform: scale(1.06);
-}
-
-.dieline-card-overlay {
+/* Badges overlay on Card top left */
+.pills-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.25s ease;
+  top: 16px;
+  left: 16px;
   z-index: 10;
-}
-
-.dieline-card:hover .dieline-card-overlay {
-  opacity: 1;
-}
-
-.dieline-action-btn {
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.dieline-action-btn:hover {
-  background: #16a34a;
-}
-
-.dieline-card-content {
-  padding: 16px;
-}
-
-.dieline-card-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1a0e08;
-  margin: 0 0 12px 0;
-  line-height: 1.4;
-  height: 40px;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.dieline-formats {
   display: flex;
   gap: 6px;
 }
 
-.format-badge {
-  font-size: 10px;
+.pill-badge {
+  font-size: 11px;
   font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: #f0f0f0;
-  color: #666;
+  color: var(--saas-fg-secondary);
+  background-color: var(--saas-card-bg);
+  border: 1px solid var(--saas-border);
+  padding: 4px 10px;
+  border-radius: var(--saas-radius-pill);
 }
 
-.no-results {
-  text-align: center;
-  padding: 60px 0;
-  color: #999;
+/* Split Thumbnail rendering */
+.saas-card-preview .thumbnail-2d-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fcfcfc;
+  border-right: 1px solid var(--saas-border);
+  overflow: hidden;
+  padding: 24px;
 }
 
-/* Load More Styles */
-.load-more-container {
+.saas-card-preview .thumbnail-2d-side img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: var(--saas-transition);
+}
+
+.saas-card-preview .thumbnail-3d-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--saas-card-bg);
+  overflow: hidden;
+  padding: 24px;
+}
+
+.saas-card-preview .thumbnail-3d-side img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: var(--saas-transition);
+}
+
+.saas-card:hover .saas-card-preview img {
+  transform: scale(1.03);
+}
+
+/* Action Hover Overlay */
+.card-hover-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(30, 30, 30, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: var(--saas-transition);
+}
+
+.saas-card:hover .card-hover-overlay {
+  opacity: 1;
+}
+
+.overlay-btn {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--saas-fg-primary);
+  background-color: #ffffff;
+  padding: 10px 20px;
+  border-radius: var(--saas-radius-btn);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Footer/Body */
+.saas-card-footer {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: var(--saas-card-bg);
+}
+
+.card-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--saas-accent);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.card-title-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--saas-fg-primary);
+  line-height: 1.35;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 44px;
+}
+
+/* ── LIST VIEW MODE ── */
+.saas-grid.list {
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.saas-grid.list .saas-card {
+  flex-direction: row;
+  height: 140px;
+}
+
+.saas-grid.list .saas-card-preview {
+  width: 240px;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.saas-grid.list .saas-card-footer {
+  flex: 1;
+  justify-content: center;
+  padding: 0 32px;
+}
+
+.saas-grid.list .card-title-text {
+  height: auto;
+  font-size: 18px;
+}
+
+/* ── Load More / Pagination ── */
+.saas-load-more {
   display: flex;
   justify-content: center;
-  margin: 40px 0 20px 0;
+  margin: 20px 0 60px 0;
 }
 
 .load-more-btn {
-  background: #fff;
-  color: var(--accent);
-  border: 2px solid var(--accent);
-  padding: 12px 32px;
-  border-radius: 30px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
+  color: var(--saas-fg-primary);
+  background-color: var(--saas-card-bg);
+  border: 1.5px solid var(--saas-border);
+  padding: 14px 32px;
+  border-radius: var(--saas-radius-btn);
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.08);
+  transition: var(--saas-transition);
 }
 
 .load-more-btn:hover {
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
-  transform: translateY(-2px);
+  border-color: var(--saas-fg-primary);
+  background-color: var(--saas-bg);
 }
 
+/* ── Empty State ── */
+.saas-empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  background-color: var(--saas-card-bg);
+  border-radius: var(--saas-radius-card);
+  border: 1.5px solid var(--saas-border);
+}
+
+.empty-icon {
+  font-size: 48px;
+  color: var(--saas-border);
+  margin-bottom: 16px;
+}
+
+.saas-empty-state h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--saas-fg-primary);
+}
+
+.saas-empty-state p {
+  font-size: 14px;
+  color: var(--saas-fg-secondary);
+}
+
+/* ── Mobile Sidebar Overlay ── */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+}
+
+/* ── Responsive Styling ── */
+@media (max-width: 1200px) {
+  .saas-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .saas-hero-card {
+    height: auto;
+    padding: 32px;
+  }
+  .hero-title {
+    font-size: 42px;
+  }
+}
+
+@media (max-width: 992px) {
+  .saas-container {
+    padding: 24px;
+    gap: 0;
+  }
+  /* Sidebar turns into Mobile Drawer */
+  .saas-sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px; /* Hidden offscreen */
+    width: 280px;
+    height: 100vh;
+    background-color: var(--saas-card-bg);
+    z-index: 1001;
+    padding: 24px;
+    border-right: 1.5px solid var(--saas-border);
+    transition: var(--saas-transition);
+  }
+  .saas-sidebar.open {
+    left: 0;
+  }
+  .sidebar-header-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .sidebar-mobile-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--saas-fg-primary);
+  }
+  .close-sidebar-btn {
+    font-size: 20px;
+    background: transparent;
+    border: none;
+    color: var(--saas-fg-secondary);
+    cursor: pointer;
+  }
+  .mobile-hamburger {
+    display: block;
+  }
+  .header-search {
+    width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .saas-header {
+    height: 72px;
+    padding: 0 20px;
+  }
+  .saas-nav {
+    display: none;
+  }
+  .header-search {
+    display: none; /* Hide main search bar in header, fallback search can be added or searched by drawer */
+  }
+  .saas-grid {
+    grid-template-columns: 1fr;
+  }
+  .saas-grid.list .saas-card {
+    flex-direction: column;
+    height: auto;
+  }
+  .saas-grid.list .saas-card-preview {
+    width: 100%;
+    height: 220px;
+  }
+  .saas-grid.list .saas-card-footer {
+    padding: 20px;
+  }
+  .hero-title {
+    font-size: 32px;
+  }
+  .hero-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .saas-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .toolbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

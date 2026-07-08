@@ -34,38 +34,62 @@ async function processLineByLine() {
     }
 
     const lowerName = name.toLowerCase();
-    let category = 'folding';
+    let category = 'tuckend'; // fallback default
 
-    if (lowerName.includes('window') || lowerName.includes('cutout') || lowerName.includes('cut-out')) {
+    if (lowerName.includes('pillow')) {
+      category = 'pillow';
+    } else if (lowerName.includes('gable') || lowerName.includes('handle') || lowerName.includes('carrier')) {
+      category = 'gable';
+    } else if (lowerName.includes('sleeve')) {
+      category = 'sleeve';
+    } else if (lowerName.includes('window') || lowerName.includes('cutout') || lowerName.includes('cut-out')) {
       category = 'window';
-    } else if (lowerName.includes('insert') || lowerName.includes('partition') || lowerName.includes('divider')) {
-      category = 'insert';
-    } else if (lowerName.includes('bag') || lowerName.includes('pouch') || lowerName.includes('sachet') || lowerName.includes('envelope')) {
-      category = 'bags';
-    } else if (lowerName.includes('display') || lowerName.includes('counter') || lowerName.includes('showcase') || lowerName.includes('pop-up')) {
-      category = 'display';
-    } else if (lowerName.includes('storage') || lowerName.includes('organizer') || lowerName.includes('archive') || lowerName.includes('file')) {
-      category = 'storage';
-    } else if (lowerName.includes('fefco') || lowerName.includes('rsc') || lowerName.includes('0201') || lowerName.includes('0300') || lowerName.includes('0426') || lowerName.includes('0427')) {
-      category = 'fefco';
-    } else if (lowerName.includes('tuck') && (lowerName.includes('auto') || lowerName.includes('lock') || lowerName.includes('snap') || lowerName.includes('bottom') || lowerName.includes('1-2-3') || lowerName.includes('variation'))) {
-      category = 'tuckend_var';
+    } else if (lowerName.includes('hanger') || lowerName.includes('hanging')) {
+      category = 'hanger';
+    } else if (lowerName.includes('polygon') || lowerName.includes('hexagon') || lowerName.includes('cone') || lowerName.includes('tube')) {
+      category = 'hexagonal';
+    } else if (lowerName.includes('auto lock') || lowerName.includes('snap lock') || lowerName.includes('crash lock') || lowerName.includes('1-2-3')) {
+      category = 'autolock';
+    } else if (lowerName.includes('mailer') || lowerName.includes('hinged') || lowerName.includes('fefco 0427') || lowerName.includes('fefco 0426')) {
+      category = 'mailer';
+    } else if (lowerName.includes('tray') || lowerName.includes('display') || lowerName.includes('counter') || lowerName.includes('pos')) {
+      category = 'tray';
+    } else if (lowerName.includes('lid') || lowerName.includes('base') || lowerName.includes('telescope') || lowerName.includes('two-piece') || lowerName.includes('two piece') || lowerName.includes('board game')) {
+      category = 'twopiece';
     } else if (lowerName.includes('tuck')) {
       category = 'tuckend';
-    } else if (lowerName.includes('rigid') || lowerName.includes('magnetic') || lowerName.includes('drawer') || lowerName.includes('slide') || lowerName.includes('slipcase')) {
-      category = 'rigid';
-    } else if (lowerName.includes('lid') || lowerName.includes('cover') || lowerName.includes('telescope') || lowerName.includes('cap')) {
-      category = 'lid';
-    } else if (lowerName.includes('tray') || lowerName.includes('sleeve')) {
-      category = 'tray';
     } else {
-      category = 'folding'; // fallback/default
+      category = 'tuckend'; // default fallback to tuckend
+    }
+
+    // Assign styles dynamically
+    let style = 'Folding Carton';
+    if (lowerName.includes('rigid') || lowerName.includes('magnetic') || lowerName.includes('drawer') || lowerName.includes('slide')) {
+      style = 'Rigid Box';
+    } else if (lowerName.includes('fefco') || lowerName.includes('rsc') || lowerName.includes('corrugated') || lowerName.includes('shipping')) {
+      style = 'Corrugated';
+    } else if (lowerName.includes('tube') || lowerName.includes('cone') || lowerName.includes('cylinder') || lowerName.includes('core')) {
+      style = 'Tube & Core';
+    }
+
+    // Assign closure type dynamically
+    let closure = 'Tuck End';
+    if (lowerName.includes('auto') || lowerName.includes('1-2-3')) {
+      closure = 'Auto Lock';
+    } else if (lowerName.includes('snap')) {
+      closure = 'Snap Lock';
+    } else if (lowerName.includes('hinged') || lowerName.includes('mailer')) {
+      closure = 'Hinged Lid';
+    } else if (lowerName.includes('magnetic')) {
+      closure = 'Magnetic';
     }
 
     dielines.push({
       id: id++,
       name,
       category,
+      style,
+      closure,
       formats: ["AI", "PDF", "DXF", "SVG"],
       dieline_image,
       image: render_image
@@ -78,7 +102,7 @@ async function processLineByLine() {
   }
 
   fs.writeFileSync('C:/Users/zahran/Documents/packwave/src/data/pacdora_dielines.json', JSON.stringify(dielines, null, 2));
-  console.log(`Successfully converted ${dielines.length} items to pacdora_dielines.json with refined categories`);
+  console.log(`Successfully converted ${dielines.length} items to pacdora_dielines.json with styled SaaS category fields`);
 }
 
 processLineByLine();
