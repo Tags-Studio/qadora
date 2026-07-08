@@ -175,9 +175,10 @@
     display: flex;
     flex-direction: column;
     background: #ffffff;
-    border-right: 1px solid var(--border);
+    border-left: 1px solid var(--border);
     direction: ltr;
     text-align: left;
+    order: 1;
 }
 
 /* ── Center Viewport (2D Canvas) ── */
@@ -206,10 +207,11 @@
     display: flex;
     flex-direction: row;
     background: #ffffff;
-    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
     overflow: hidden;
     direction: ltr;
     text-align: left;
+    order: -1;
 }
 
 /* Vertical Tab Bar (Left strip of sidebar) */

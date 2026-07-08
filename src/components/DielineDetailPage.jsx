@@ -127,20 +127,22 @@ export default function DielineDetailPage({ dieline, onBack }) {
     }
 
     // Default Mailer/Tuck Box Geometry
-    const gW = Math.round(W * 0.18);
-    const dH = Math.round(W * 0.38);
-    const tH_tab = Math.round(W * 0.12);
-    const dI = Math.round(W * 0.07);
-    const gI = Math.round(gW * 0.25);
+    const glW = Math.round(W * 0.2);
+    const duH = Math.round(W * 0.4);
+    const liH = H;
+    const tuH = Math.round(W * 0.14);
+    const boH = duH;
+    const dI = Math.round(W * 0.08);
+    const gI = Math.round(glW * 0.3);
 
-    const xG = 0, xS1 = gW, xF = gW + W, xB = gW + W + L, xS2 = gW + W + L + L;
-    const tW = gW + W + L + L + W;
-    const yT = 0, yL = tH_tab, yLE = tH_tab + H, yDT = tH_tab + H, yDTE = tH_tab + H + dH;
-    const tH2 = tH_tab + H + dH;
-    const yM = tH2, yME = tH2 + H, yDB = yME, yDBE = yME + dH, yB = yDBE, yBE = yDBE + H, yTB = yBE, yTBE = yBE + tH_tab;
-    const totalH = yTBE;
+    const xG = 0, xS1 = glW, xF = glW + W, xB = glW + W + L, xS2 = glW + W + L + L;
+    const tW = glW + W + L + L + W;
+    const topH = Math.max(duH, liH + tuH);
+    const yTu = 0, yLi = tuH, yDuT = topH - duH;
+    const mY = topH, yBo = mY + H;
+    const tH = yBo + boH;
 
-    return { gW, dH, tH: totalH, dI, gI, xG, xS1, xF, xB, xS2, tW, yT, yL, yLE, yDT, yDTE, tH2, yM, yME, yDB, yDBE, yB, yBE, yTB, yTBE, totalH };
+    return { glW, duH, liH, tuH, boH, dI, gI, xG, xS1, xF, xB, xS2, tW, yTu, yLi, yDuT, mY, yBo, tH, topH };
   };
 
   const drawDieline = () => {
