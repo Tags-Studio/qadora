@@ -35,18 +35,31 @@ async function processLineByLine() {
 
     const lowerName = name.toLowerCase();
     let category = 'folding';
-    if (lowerName.includes('bag') || lowerName.includes('pouch') || lowerName.includes('sachet') || lowerName.includes('envelope')) {
+
+    if (lowerName.includes('window') || lowerName.includes('cutout') || lowerName.includes('cut-out')) {
+      category = 'window';
+    } else if (lowerName.includes('insert') || lowerName.includes('partition') || lowerName.includes('divider')) {
+      category = 'insert';
+    } else if (lowerName.includes('bag') || lowerName.includes('pouch') || lowerName.includes('sachet') || lowerName.includes('envelope')) {
       category = 'bags';
-    } else if (lowerName.includes('fefco 0427') || (lowerName.includes('drawer') && lowerName.includes('food')) || lowerName.includes('sleeve')) {
-      category = 'tray';
-    } else if (lowerName.includes('fefco') || lowerName.includes('slotted') || lowerName.includes('rsc') || lowerName.includes('0201') || lowerName.includes('0300') || lowerName.includes('0426') || lowerName.includes('carrying') || lowerName.includes('mailer')) {
+    } else if (lowerName.includes('display') || lowerName.includes('counter') || lowerName.includes('showcase') || lowerName.includes('pop-up')) {
+      category = 'display';
+    } else if (lowerName.includes('storage') || lowerName.includes('organizer') || lowerName.includes('archive') || lowerName.includes('file')) {
+      category = 'storage';
+    } else if (lowerName.includes('fefco') || lowerName.includes('rsc') || lowerName.includes('0201') || lowerName.includes('0300') || lowerName.includes('0426') || lowerName.includes('0427')) {
       category = 'fefco';
+    } else if (lowerName.includes('tuck') && (lowerName.includes('auto') || lowerName.includes('lock') || lowerName.includes('snap') || lowerName.includes('bottom') || lowerName.includes('1-2-3') || lowerName.includes('variation'))) {
+      category = 'tuckend_var';
     } else if (lowerName.includes('tuck')) {
       category = 'tuckend';
-    } else if (lowerName.includes('rigid') || lowerName.includes('gift') || lowerName.includes('magnetic') || lowerName.includes('drawer')) {
+    } else if (lowerName.includes('rigid') || lowerName.includes('magnetic') || lowerName.includes('drawer') || lowerName.includes('slide') || lowerName.includes('slipcase')) {
       category = 'rigid';
-    } else if (lowerName.includes('tray')) {
+    } else if (lowerName.includes('lid') || lowerName.includes('cover') || lowerName.includes('telescope') || lowerName.includes('cap')) {
+      category = 'lid';
+    } else if (lowerName.includes('tray') || lowerName.includes('sleeve')) {
       category = 'tray';
+    } else {
+      category = 'folding'; // fallback/default
     }
 
     dielines.push({
@@ -65,7 +78,7 @@ async function processLineByLine() {
   }
 
   fs.writeFileSync('C:/Users/zahran/Documents/packwave/src/data/pacdora_dielines.json', JSON.stringify(dielines, null, 2));
-  console.log(`Successfully converted ${dielines.length} items to pacdora_dielines.json with optimized URLs`);
+  console.log(`Successfully converted ${dielines.length} items to pacdora_dielines.json with refined categories`);
 }
 
 processLineByLine();

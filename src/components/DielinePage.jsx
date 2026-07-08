@@ -6,17 +6,44 @@ export default function DielinePage({ onBack, onSelectDieline }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [visibleCount, setVisibleCount] = useState(24);
+  
+  // Accordion states for the sidebar categories
+  const [modelsOpen, setModelsOpen] = useState(true);
+  const [usesOpen, setUsesOpen] = useState(false);
+
+  // Categories mapping matching the screenshot exactly
+  const CATEGORIES_MAPPING = useMemo(() => [
+    { id: 'all', name: 'All' },
+    { id: 'fefco', name: 'FEFCO Boxes' },
+    { id: 'folding', name: 'Folding Boxes' },
+    { id: 'tray', name: 'Tray Boxes' },
+    { id: 'display', name: 'Display Boxes' },
+    { id: 'tuckend', name: 'Tuck End Boxes' },
+    { id: 'insert', name: 'Box Inserts' },
+    { id: 'bags', name: 'Paper Bags' },
+    { id: 'rigid', name: 'Rigid Boxes' },
+    { id: 'window', name: 'Window Boxes' },
+    { id: 'lid', name: 'Boxes with Lid' },
+    { id: 'storage', name: 'Storage Boxes' },
+    { id: 'tuckend_var', name: 'Tuck End Box Variations' }
+  ], []);
 
   // Compute category counts dynamically based on the 7,396 items
   const categoriesList = useMemo(() => {
     const counts = {
       all: pacdoraDielines.length,
       fefco: 0,
-      tuckend: 0,
       folding: 0,
       tray: 0,
+      display: 0,
+      tuckend: 0,
+      insert: 0,
+      bags: 0,
       rigid: 0,
-      bags: 0
+      window: 0,
+      lid: 0,
+      storage: 0,
+      tuckend_var: 0
     };
 
     pacdoraDielines.forEach(item => {
@@ -25,16 +52,11 @@ export default function DielinePage({ onBack, onSelectDieline }) {
       }
     });
 
-    return [
-      { id: 'all', name: 'All Dielines', count: counts.all },
-      { id: 'fefco', name: 'FEFCO', count: counts.fefco },
-      { id: 'tuckend', name: 'Tuck End Box', count: counts.tuckend },
-      { id: 'folding', name: 'Folding Carton', count: counts.folding },
-      { id: 'tray', name: 'Tray & Box', count: counts.tray },
-      { id: 'rigid', name: 'Rigid Box', count: counts.rigid },
-      { id: 'bags', name: 'Paper Bag', count: counts.bags }
-    ];
-  }, []);
+    return CATEGORIES_MAPPING.map(cat => ({
+      ...cat,
+      count: counts[cat.id] || 0
+    }));
+  }, [CATEGORIES_MAPPING]);
 
   // Filter templates based on selected category and search query
   const filteredDielines = useMemo(() => {
@@ -89,18 +111,46 @@ export default function DielinePage({ onBack, onSelectDieline }) {
         {/* Sidebar with Categories */}
         <aside className="dieline-sidebar">
           <div className="dieline-filters">
-            <h3 className="filter-title">By Models</h3>
-            <div className="filter-categories">
-              {categoriesList.map((category) => (
-                <button
-                  key={category.id}
-                  className={`category-button ${selectedCategory === category.id ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(category.id)}
-                >
-                  <span className="category-name"># {category.name}</span>
-                  <span className="category-count">{category.count}</span>
-                </button>
-              ))}
+            {/* By Uses Accordion */}
+            <div className="accordion-group">
+              <button 
+                className="accordion-header" 
+                onClick={() => setUsesOpen(!usesOpen)}
+              >
+                <span>By Uses</span>
+                <i className={`fas ${usesOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
+              </button>
+              {usesOpen && (
+                <div className="accordion-content">
+                  <div className="static-notice">Select "By Models" to filter by box shape</div>
+                </div>
+              )}
+            </div>
+
+            {/* By Models Accordion */}
+            <div className="accordion-group">
+              <button 
+                className="accordion-header" 
+                onClick={() => setModelsOpen(!modelsOpen)}
+              >
+                <span>By Models</span>
+                <i className={`fas ${modelsOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
+              </button>
+              
+              {modelsOpen && (
+                <div className="filter-categories">
+                  {categoriesList.map((category) => (
+                    <button
+                      key={category.id}
+                      className={`category-button ${selectedCategory === category.id ? 'active' : ''}`}
+                      onClick={() => setSelectedCategory(category.id)}
+                    >
+                      <span className="category-name"># {category.name}</span>
+                      <span className="category-count-inline">{category.count}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </aside>
@@ -133,7 +183,6 @@ export default function DielinePage({ onBack, onSelectDieline }) {
                       alt={`${dieline.name} dieline`} 
                       loading="lazy" 
                       onError={(e) => {
-                        // Fallback in case S3 image fails to load
                         e.target.style.display = 'none';
                       }}
                     />
@@ -144,7 +193,6 @@ export default function DielinePage({ onBack, onSelectDieline }) {
                       alt={dieline.name} 
                       loading="lazy" 
                       onError={(e) => {
-                        // Fallback in case render image fails to load
                         e.target.src = '/images/mockups/tuck-end-box.png';
                       }}
                     />

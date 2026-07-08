@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "Rollover hinged lid mailer box dieline",
-    "category": "fefco",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -41,7 +41,7 @@
   {
     "id": 4,
     "name": "Tuck end mailer box packaging  dieline",
-    "category": "fefco",
+    "category": "tuckend",
     "formats": [
       "AI",
       "PDF",
@@ -197,7 +197,7 @@
   {
     "id": 16,
     "name": "FEFCO 0427 roll end tray with locking cover dieline",
-    "category": "tray",
+    "category": "fefco",
     "formats": [
       "AI",
       "PDF",
@@ -236,7 +236,7 @@
   {
     "id": 19,
     "name": "Food drawer box dieline",
-    "category": "tray",
+    "category": "rigid",
     "formats": [
       "AI",
       "PDF",
@@ -288,7 +288,7 @@
   {
     "id": 23,
     "name": "Board game box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -301,7 +301,7 @@
   {
     "id": 24,
     "name": "Double door gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -379,7 +379,7 @@
   {
     "id": 30,
     "name": "Gable box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -392,7 +392,7 @@
   {
     "id": 31,
     "name": "Flip top gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -418,7 +418,7 @@
   {
     "id": 33,
     "name": "POS display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -431,7 +431,7 @@
   {
     "id": 34,
     "name": "Bakery display box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -444,7 +444,7 @@
   {
     "id": 35,
     "name": "Sliding surprise gift box dieline",
-    "category": "rigid",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -483,7 +483,7 @@
   {
     "id": 38,
     "name": "Perfume box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -535,7 +535,7 @@
   {
     "id": 42,
     "name": "Self-locking flip top and front tuck box dieline",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -561,7 +561,7 @@
   {
     "id": 44,
     "name": "Custom dimensions bottle inserts 3 pack dieline 310430",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -574,7 +574,7 @@
   {
     "id": 45,
     "name": "Square gift cake box with lid dieline",
-    "category": "rigid",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -600,7 +600,7 @@
   {
     "id": 47,
     "name": "Hanging flip-top window box dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -626,7 +626,7 @@
   {
     "id": 49,
     "name": "Custom dimensions boxes with lid paper dieline 161080",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -678,7 +678,7 @@
   {
     "id": 53,
     "name": "FEFCO 0840 cardboard display stand dieline",
-    "category": "fefco",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -691,7 +691,7 @@
   {
     "id": 54,
     "name": "Custom dimensions box with lid luxury box dieline 366010",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -808,7 +808,7 @@
   {
     "id": 63,
     "name": "Display box packaging dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -821,7 +821,7 @@
   {
     "id": 64,
     "name": "Custom dimensions square hole inserts inserts dieline 310013",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -847,7 +847,7 @@
   {
     "id": 66,
     "name": "Cosmetics tube box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -886,7 +886,7 @@
   {
     "id": 69,
     "name": "Tuck end mailer box dieline",
-    "category": "fefco",
+    "category": "tuckend",
     "formats": [
       "AI",
       "PDF",
@@ -925,7 +925,7 @@
   {
     "id": 72,
     "name": "Barbie gift box template",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -1016,7 +1016,7 @@
   {
     "id": 79,
     "name": "Product display box with backboard dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -1029,7 +1029,7 @@
   {
     "id": 80,
     "name": "Hanging display window box dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -1068,7 +1068,7 @@
   {
     "id": 83,
     "name": "Flip top mailer box dieline",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -1159,7 +1159,7 @@
   {
     "id": 90,
     "name": "POS display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -1185,7 +1185,7 @@
   {
     "id": 92,
     "name": "Custom dimensions tuck end box variations triangle dieline 114070",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -1211,7 +1211,7 @@
   {
     "id": 94,
     "name": "Gift drawer style boxes with insert dieline",
-    "category": "rigid",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -1276,7 +1276,7 @@
   {
     "id": 99,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -1289,7 +1289,7 @@
   {
     "id": 100,
     "name": "Lid and base box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -1315,7 +1315,7 @@
   {
     "id": 102,
     "name": "Custom dimensions inserts/dividers dieline 310370",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -1367,7 +1367,7 @@
   {
     "id": 106,
     "name": "Custom dimensions mailer boxes hook dieline 150161",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -1419,7 +1419,7 @@
   {
     "id": 110,
     "name": "Custom dimensions tuck end box variations hexagonal boxes dieline 112730",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -1445,7 +1445,7 @@
   {
     "id": 112,
     "name": "Cake box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -1458,7 +1458,7 @@
   {
     "id": 113,
     "name": "Six pack display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -1536,7 +1536,7 @@
   {
     "id": 119,
     "name": "POS display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -1562,7 +1562,7 @@
   {
     "id": 121,
     "name": "Buckle lock bottom carton gift mailer box dieline",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -1588,7 +1588,7 @@
   {
     "id": 123,
     "name": "Tuck top display box dieline",
-    "category": "tuckend",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -1640,7 +1640,7 @@
   {
     "id": 127,
     "name": "Gift box with lid dieline",
-    "category": "rigid",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -1653,7 +1653,7 @@
   {
     "id": 128,
     "name": "Sphere surprise gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -1666,7 +1666,7 @@
   {
     "id": 129,
     "name": "Sleeve drawer perfume box dieline",
-    "category": "tray",
+    "category": "rigid",
     "formats": [
       "AI",
       "PDF",
@@ -1692,7 +1692,7 @@
   {
     "id": 131,
     "name": "3-tier product display stand dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -1705,7 +1705,7 @@
   {
     "id": 132,
     "name": "Custom dimensions inserts round hole inserts dieline 310011",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -1731,7 +1731,7 @@
   {
     "id": 134,
     "name": "Pasta box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -1757,7 +1757,7 @@
   {
     "id": 136,
     "name": "Double door open gift boxes dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -1783,7 +1783,7 @@
   {
     "id": 138,
     "name": "Tuck top mailer box dieline",
-    "category": "fefco",
+    "category": "tuckend",
     "formats": [
       "AI",
       "PDF",
@@ -1822,7 +1822,7 @@
   {
     "id": 141,
     "name": "Basic display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -1900,7 +1900,7 @@
   {
     "id": 147,
     "name": "Custom dimensions boxes with lid auto lock bottom dieline 161130",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -1913,7 +1913,7 @@
   {
     "id": 148,
     "name": "Custom dimensions inserts/dividers inserts dieline 310020",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -1926,7 +1926,7 @@
   {
     "id": 149,
     "name": "Custom dimensions tray boxes upper cover lock dieline 121060",
-    "category": "tray",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -1978,7 +1978,7 @@
   {
     "id": 153,
     "name": "Custom dimensions tuck end boxes with window dieline 100242",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -2017,7 +2017,7 @@
   {
     "id": 156,
     "name": "Hanging flip-top window box dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -2056,7 +2056,7 @@
   {
     "id": 159,
     "name": "Gift flip lid box with sleeve dieline",
-    "category": "tray",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -2082,7 +2082,7 @@
   {
     "id": 161,
     "name": "Display box packaging dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -2147,7 +2147,7 @@
   {
     "id": 166,
     "name": "House gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -2173,7 +2173,7 @@
   {
     "id": 168,
     "name": "Cardboard display stand dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -2186,7 +2186,7 @@
   {
     "id": 169,
     "name": "Hanging flip-top window box dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -2251,7 +2251,7 @@
   {
     "id": 174,
     "name": "Flip top cookies box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -2264,7 +2264,7 @@
   {
     "id": 175,
     "name": "Custom dimensions tuck end box variations overlapping dieline 111630",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -2290,7 +2290,7 @@
   {
     "id": 177,
     "name": "Custom dimensions flip top boxes rectangular inserts dieline 150170",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -2355,7 +2355,7 @@
   {
     "id": 182,
     "name": "Custom dimensions tuck end box variations with window dieline 110801",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -2368,7 +2368,7 @@
   {
     "id": 183,
     "name": "Custom dimensions tuck end box variations round lock mortiselock boxes dieline 110080",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -2485,7 +2485,7 @@
   {
     "id": 192,
     "name": "Custom dimensions boxes with lid double ears dieline 161013",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -2498,7 +2498,7 @@
   {
     "id": 193,
     "name": "Box with lid dieline 160024",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -2511,7 +2511,7 @@
   {
     "id": 194,
     "name": "Luxury jewelry gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -2576,7 +2576,7 @@
   {
     "id": 199,
     "name": "Square box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -2706,7 +2706,7 @@
   {
     "id": 209,
     "name": "Sweet box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -2823,7 +2823,7 @@
   {
     "id": 218,
     "name": "Custom dimensions boxes with lid finger buckles dieline 160161",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -2862,7 +2862,7 @@
   {
     "id": 221,
     "name": "Display box with 9 slots dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -2914,7 +2914,7 @@
   {
     "id": 225,
     "name": "Custom dimensions tuck end box variations auto lock bottom dieline 116730",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -2927,7 +2927,7 @@
   {
     "id": 226,
     "name": "Gift box with window dieline",
-    "category": "rigid",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -2940,7 +2940,7 @@
   {
     "id": 227,
     "name": "Bevel display box mockup",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -2992,7 +2992,7 @@
   {
     "id": 231,
     "name": "Custom dimensions tuck end box variations flip covers dieline 112820",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -3005,7 +3005,7 @@
   {
     "id": 232,
     "name": "Serum box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -3018,7 +3018,7 @@
   {
     "id": 233,
     "name": "FEFCO 0804 display box dieline",
-    "category": "fefco",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -3031,7 +3031,7 @@
   {
     "id": 234,
     "name": "Three-compartment trapezoidal display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -3044,7 +3044,7 @@
   {
     "id": 235,
     "name": "Custom dimensions luxury box gifts box dieline 360150",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -3096,7 +3096,7 @@
   {
     "id": 239,
     "name": "Custom dimensions boxes with lid flower types dieline 163010",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -3148,7 +3148,7 @@
   {
     "id": 243,
     "name": "Custom dimensions lock insert boxes window display dieline 100102",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -3187,7 +3187,7 @@
   {
     "id": 246,
     "name": "Polygonal gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -3200,7 +3200,7 @@
   {
     "id": 247,
     "name": "Coffee capsules box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -3226,7 +3226,7 @@
   {
     "id": 249,
     "name": "Retail display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -3239,7 +3239,7 @@
   {
     "id": 250,
     "name": "Custom dimensions no-lid boxes bring your own storage dieline 200201",
-    "category": "fefco",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -3278,7 +3278,7 @@
   {
     "id": 253,
     "name": "Polygonal box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -3291,7 +3291,7 @@
   {
     "id": 254,
     "name": "Custom dimensions flip top boxes with window dieline 153181",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -3304,7 +3304,7 @@
   {
     "id": 255,
     "name": "Custom dimensions tuck end box variations regular octagon dieline 113010",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -3330,7 +3330,7 @@
   {
     "id": 257,
     "name": "Barbie doll box with window template",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -3343,7 +3343,7 @@
   {
     "id": 258,
     "name": "Coffee capsules box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -3395,7 +3395,7 @@
   {
     "id": 262,
     "name": "Custom dimensions 6 botttles carrier box with handle inserts dieline 310300",
-    "category": "fefco",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -3447,7 +3447,7 @@
   {
     "id": 266,
     "name": "Hanging toy box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -3486,7 +3486,7 @@
   {
     "id": 269,
     "name": "Jewelry gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -3499,7 +3499,7 @@
   {
     "id": 270,
     "name": "Box with lid moisturizer box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -3512,7 +3512,7 @@
   {
     "id": 271,
     "name": "Hanging window box dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -3564,7 +3564,7 @@
   {
     "id": 275,
     "name": "Custom dimensions boxes with lid four folds dieline 160170",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -3629,7 +3629,7 @@
   {
     "id": 280,
     "name": "Custom dimensions tuck end box variations square windows dieline 112084",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -3694,7 +3694,7 @@
   {
     "id": 285,
     "name": "Surprise gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -3759,7 +3759,7 @@
   {
     "id": 290,
     "name": "Custom dimensions tuck end box variations lock inserts dieline 114011",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -3772,7 +3772,7 @@
   {
     "id": 291,
     "name": "Custom dimensions tuck end box variations roof boxes dieline 112040",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -3785,7 +3785,7 @@
   {
     "id": 292,
     "name": "Tuck end window software box dieline",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -3811,7 +3811,7 @@
   {
     "id": 294,
     "name": "Display box packaging dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -3824,7 +3824,7 @@
   {
     "id": 295,
     "name": "Hanging electronic product box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -3837,7 +3837,7 @@
   {
     "id": 296,
     "name": "Custom dimensions box with lid book box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -3850,7 +3850,7 @@
   {
     "id": 297,
     "name": "Custom dimensions inserts square hole inserts dieline 310012",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -3876,7 +3876,7 @@
   {
     "id": 299,
     "name": "Square box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -3889,7 +3889,7 @@
   {
     "id": 300,
     "name": "Christmas eve gift  box packaging dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -3915,7 +3915,7 @@
   {
     "id": 302,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -3928,7 +3928,7 @@
   {
     "id": 303,
     "name": "2-pack carrier display box with handle dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -3954,7 +3954,7 @@
   {
     "id": 305,
     "name": "long sleeve gift drawer box dieline",
-    "category": "tray",
+    "category": "rigid",
     "formats": [
       "AI",
       "PDF",
@@ -4019,7 +4019,7 @@
   {
     "id": 310,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -4045,7 +4045,7 @@
   {
     "id": 312,
     "name": "Jewelry luxury gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -4058,7 +4058,7 @@
   {
     "id": 313,
     "name": "Gift box packaging dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -4071,7 +4071,7 @@
   {
     "id": 314,
     "name": "Square sweet box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -4097,7 +4097,7 @@
   {
     "id": 316,
     "name": "Easy lock-top tuck end ampoule box dieline",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -4149,7 +4149,7 @@
   {
     "id": 320,
     "name": "FEFCO 0960 3-steps display stand dieline",
-    "category": "fefco",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -4162,7 +4162,7 @@
   {
     "id": 321,
     "name": "Custom dimensions inserts/dividers monolithic dieline 310330",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -4240,7 +4240,7 @@
   {
     "id": 327,
     "name": "Custom dimensions regular triangle mortise lock boxes with window dieline 180081",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -4266,7 +4266,7 @@
   {
     "id": 329,
     "name": "Food sleeve box with window dieline",
-    "category": "tray",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -4305,7 +4305,7 @@
   {
     "id": 332,
     "name": "Tuck end box with window dieline 112045",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -4331,7 +4331,7 @@
   {
     "id": 334,
     "name": "Window bread box dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -4383,7 +4383,7 @@
   {
     "id": 338,
     "name": "Cardboard display box with divider dieline",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -4396,7 +4396,7 @@
   {
     "id": 339,
     "name": "Custom dimensions display boxes/stands hexagonal dieline 175070",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -4422,7 +4422,7 @@
   {
     "id": 341,
     "name": "FEFCO 0802 cardboard display box dieline",
-    "category": "fefco",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -4435,7 +4435,7 @@
   {
     "id": 342,
     "name": "Pos display dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -4461,7 +4461,7 @@
   {
     "id": 344,
     "name": "7-sided box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -4474,7 +4474,7 @@
   {
     "id": 345,
     "name": "Customize the number of circular holes for insert dieline 310016",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -4513,7 +4513,7 @@
   {
     "id": 348,
     "name": "Custom dimensions display box/shelf shoe shelf dieline 176050",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -4539,7 +4539,7 @@
   {
     "id": 350,
     "name": "Folding box with window dieline 151051",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -4552,7 +4552,7 @@
   {
     "id": 351,
     "name": "Sleeve food box with window dieline",
-    "category": "tray",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -4578,7 +4578,7 @@
   {
     "id": 353,
     "name": "Gift box with window dieline",
-    "category": "rigid",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -4669,7 +4669,7 @@
   {
     "id": 360,
     "name": "FEFCO 0716 two cells display box dieline",
-    "category": "fefco",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -4786,7 +4786,7 @@
   {
     "id": 369,
     "name": "Custom dimensions concave buffer inserts dieline 316210",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -4903,7 +4903,7 @@
   {
     "id": 378,
     "name": "Folding display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -4929,7 +4929,7 @@
   {
     "id": 380,
     "name": "4-pack carrier display tray box with handle dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -4955,7 +4955,7 @@
   {
     "id": 382,
     "name": "Custom dimensions tuck end box variations hexagon dieline 112700",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -4981,7 +4981,7 @@
   {
     "id": 384,
     "name": "Custom dimensions tuck end boxes lock inserts dieline 102670",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -4994,7 +4994,7 @@
   {
     "id": 385,
     "name": "Sleeve drawer box dieline 128080",
-    "category": "tray",
+    "category": "rigid",
     "formats": [
       "AI",
       "PDF",
@@ -5046,7 +5046,7 @@
   {
     "id": 389,
     "name": "Surprise gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -5059,7 +5059,7 @@
   {
     "id": 390,
     "name": "Window gift box dieline",
-    "category": "rigid",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -5085,7 +5085,7 @@
   {
     "id": 392,
     "name": "Coffee capsules box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -5098,7 +5098,7 @@
   {
     "id": 393,
     "name": "Sleeve drawer perfume box dieline",
-    "category": "tray",
+    "category": "rigid",
     "formats": [
       "AI",
       "PDF",
@@ -5137,7 +5137,7 @@
   {
     "id": 396,
     "name": "Custom dimensions half circle inserts inserts/dividers dieline 310051",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -5150,7 +5150,7 @@
   {
     "id": 397,
     "name": "Custom dimensions inserts tuck end box inserts dieline 310030",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -5163,7 +5163,7 @@
   {
     "id": 398,
     "name": "Six hole insert dieline 310017",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -5215,7 +5215,7 @@
   {
     "id": 402,
     "name": "Gusseted polygonal tube box with integrated lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -5228,7 +5228,7 @@
   {
     "id": 403,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -5241,7 +5241,7 @@
   {
     "id": 404,
     "name": "Gift box with lid dieline",
-    "category": "rigid",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -5280,7 +5280,7 @@
   {
     "id": 407,
     "name": "Tuck end mailer box dieline",
-    "category": "fefco",
+    "category": "tuckend",
     "formats": [
       "AI",
       "PDF",
@@ -5293,7 +5293,7 @@
   {
     "id": 408,
     "name": "Custom dimensions flip top boxes lock inserts dieline 150111",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -5319,7 +5319,7 @@
   {
     "id": 410,
     "name": "Custom dimensions tuck end box variations ladder-type dieline 112640",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -5384,7 +5384,7 @@
   {
     "id": 415,
     "name": "Skincare box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -5410,7 +5410,7 @@
   {
     "id": 417,
     "name": "Paw balm display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -5423,7 +5423,7 @@
   {
     "id": 418,
     "name": "Board game box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -5462,7 +5462,7 @@
   {
     "id": 421,
     "name": "Display box packaging dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -5488,7 +5488,7 @@
   {
     "id": 423,
     "name": "Custom dimensions box with lid luxury box dieline 366011",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -5501,7 +5501,7 @@
   {
     "id": 424,
     "name": "Custom dimensions tall box bottle box with snap cover dieline 362110",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -5514,7 +5514,7 @@
   {
     "id": 425,
     "name": "FEFCO 0930 4-cell partition dieline",
-    "category": "fefco",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -5527,7 +5527,7 @@
   {
     "id": 426,
     "name": "Custom dimensions inserts/dividers folds dieline 311030",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -5540,7 +5540,7 @@
   {
     "id": 427,
     "name": "Fixed at both ends insert dieline 310052",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -5553,7 +5553,7 @@
   {
     "id": 428,
     "name": "insert box dieline",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -5657,7 +5657,7 @@
   {
     "id": 436,
     "name": "Custom dimensions file pockets file holders dieline 171250",
-    "category": "folding",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -5735,7 +5735,7 @@
   {
     "id": 442,
     "name": "Custom dimensions flip top boxes flip covers dieline 151070",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -5748,7 +5748,7 @@
   {
     "id": 443,
     "name": "Custom dimensions mailer boxes mailer with window dieline",
-    "category": "fefco",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -5787,7 +5787,7 @@
   {
     "id": 446,
     "name": "Custom dimensions tuck end box variations flip covers dieline 110551",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -5813,7 +5813,7 @@
   {
     "id": 448,
     "name": "Square gift box with lid dieline 36601201",
-    "category": "rigid",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -5839,7 +5839,7 @@
   {
     "id": 450,
     "name": "Folding semicircular display baking box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -5865,7 +5865,7 @@
   {
     "id": 452,
     "name": "Christmas fruit gift box packaging dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -5878,7 +5878,7 @@
   {
     "id": 453,
     "name": "Open gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -5891,7 +5891,7 @@
   {
     "id": 454,
     "name": "Sphere surprise gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -5904,7 +5904,7 @@
   {
     "id": 455,
     "name": "Cosmetics box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -6008,7 +6008,7 @@
   {
     "id": 463,
     "name": "Triangular display stand dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6021,7 +6021,7 @@
   {
     "id": 464,
     "name": "Hanging hinge door hook display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6047,7 +6047,7 @@
   {
     "id": 466,
     "name": "Custom dimensions inserts/dividers positive dieline 310290",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -6138,7 +6138,7 @@
   {
     "id": 473,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6151,7 +6151,7 @@
   {
     "id": 474,
     "name": "Display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6164,7 +6164,7 @@
   {
     "id": 475,
     "name": "Custom dimensions boxes with lid flower types dieline 163020",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -6203,7 +6203,7 @@
   {
     "id": 478,
     "name": "Tuck end box snap lock dieline",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -6255,7 +6255,7 @@
   {
     "id": 482,
     "name": "FEFCO 0436.2 Display tray box dieline",
-    "category": "fefco",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6268,7 +6268,7 @@
   {
     "id": 483,
     "name": "Arc display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6281,7 +6281,7 @@
   {
     "id": 484,
     "name": "Custom dimensions tuck end box variations cylinder dieline 116180",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -6320,7 +6320,7 @@
   {
     "id": 487,
     "name": "Angled lid and top display panel gravity feed dispenser box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6333,7 +6333,7 @@
   {
     "id": 488,
     "name": "Custom dimensions tuck end box variations positive & negative dieline 110150",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -6372,7 +6372,7 @@
   {
     "id": 491,
     "name": "Food box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -6424,7 +6424,7 @@
   {
     "id": 495,
     "name": "POS display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6463,7 +6463,7 @@
   {
     "id": 498,
     "name": "Gorgeous gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -6476,7 +6476,7 @@
   {
     "id": 499,
     "name": "Medicine display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6541,7 +6541,7 @@
   {
     "id": 504,
     "name": "Square perfume box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -6567,7 +6567,7 @@
   {
     "id": 506,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6580,7 +6580,7 @@
   {
     "id": 507,
     "name": "Custom dimensions display boxes/stands top cover folded dieline 170130",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6593,7 +6593,7 @@
   {
     "id": 508,
     "name": "3-tier cardboard product display dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6606,7 +6606,7 @@
   {
     "id": 509,
     "name": "Custom dimensions display boxes/stands auto lock bottom dieline 171160",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6619,7 +6619,7 @@
   {
     "id": 510,
     "name": "Display box with handle dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6632,7 +6632,7 @@
   {
     "id": 511,
     "name": "Display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6671,7 +6671,7 @@
   {
     "id": 514,
     "name": "Custom dimensions inserts/dividers supports dieline 310140",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -6775,7 +6775,7 @@
   {
     "id": 522,
     "name": "Variable quantity polygonal box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -6814,7 +6814,7 @@
   {
     "id": 525,
     "name": "FEFCO 0801 folding display box dieline",
-    "category": "fefco",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -6840,7 +6840,7 @@
   {
     "id": 527,
     "name": "Boxes with lid bottom cover buckles dieline 160032",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -6905,7 +6905,7 @@
   {
     "id": 532,
     "name": "Hexagon pizza box with window dieline 156242",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -6957,7 +6957,7 @@
   {
     "id": 536,
     "name": "Custom dimensions mailer boxes flip top dieline 150050",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -6970,7 +6970,7 @@
   {
     "id": 537,
     "name": "Custom dimensions flip top boxes window display dieline 150041",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -6983,7 +6983,7 @@
   {
     "id": 538,
     "name": "Food sleeve display box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -7035,7 +7035,7 @@
   {
     "id": 542,
     "name": "Custom dimensions tuck end box variations tear open dieline 114090",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -7217,7 +7217,7 @@
   {
     "id": 556,
     "name": "Window product display box dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -7230,7 +7230,7 @@
   {
     "id": 557,
     "name": "Polygonal display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -7295,7 +7295,7 @@
   {
     "id": 562,
     "name": "Tuck end window cake box dieline",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -7321,7 +7321,7 @@
   {
     "id": 564,
     "name": "Premium gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -7360,7 +7360,7 @@
   {
     "id": 567,
     "name": "Box with lid body lotion box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -7373,7 +7373,7 @@
   {
     "id": 568,
     "name": "Box with lid lotion box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -7399,7 +7399,7 @@
   {
     "id": 570,
     "name": "Cake box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -7412,7 +7412,7 @@
   {
     "id": 571,
     "name": "Board game box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -7451,7 +7451,7 @@
   {
     "id": 574,
     "name": "Hanging display medicine box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -7529,7 +7529,7 @@
   {
     "id": 580,
     "name": "Display stand dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -7568,7 +7568,7 @@
   {
     "id": 583,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -7594,7 +7594,7 @@
   {
     "id": 585,
     "name": "Hanging polygonal display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -7607,7 +7607,7 @@
   {
     "id": 586,
     "name": "Hanging electronic product box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -7620,7 +7620,7 @@
   {
     "id": 587,
     "name": "File pocket with slot dieline",
-    "category": "folding",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -7646,7 +7646,7 @@
   {
     "id": 589,
     "name": "6-sided box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -7685,7 +7685,7 @@
   {
     "id": 592,
     "name": "Open internal fixed insert dieline 317010",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -7698,7 +7698,7 @@
   {
     "id": 593,
     "name": "Dividers six slot blocks insert dieline 316013",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -7750,7 +7750,7 @@
   {
     "id": 597,
     "name": "Custom dimensions inserts/dividers pastry box inserts dieline 310180",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -7763,7 +7763,7 @@
   {
     "id": 598,
     "name": "FEFCO 0955 custom dimensions inserts buffer inserts dieline",
-    "category": "fefco",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -7815,7 +7815,7 @@
   {
     "id": 602,
     "name": "File pocket with slot dieline 246023",
-    "category": "folding",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -8049,7 +8049,7 @@
   {
     "id": 620,
     "name": "Display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -8062,7 +8062,7 @@
   {
     "id": 621,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -8075,7 +8075,7 @@
   {
     "id": 622,
     "name": "Custom dimensions boxes with lid double ears dieline 161014",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -8088,7 +8088,7 @@
   {
     "id": 623,
     "name": "Sweet box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -8101,7 +8101,7 @@
   {
     "id": 624,
     "name": "Triangle cake slice lid and base box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -8179,7 +8179,7 @@
   {
     "id": 630,
     "name": "Custom self-locking mailer box dieline",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -8192,7 +8192,7 @@
   {
     "id": 631,
     "name": "Custom dimensions flip top boxes lock inserts dieline 152040",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -8205,7 +8205,7 @@
   {
     "id": 632,
     "name": "Custom dimensions flip top boxes tuck front mailer box dieline 151030",
-    "category": "fefco",
+    "category": "tuckend",
     "formats": [
       "AI",
       "PDF",
@@ -8244,7 +8244,7 @@
   {
     "id": 635,
     "name": "Custom dimensions mailer boxes with window wingless mailer dieline 150031",
-    "category": "fefco",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -8309,7 +8309,7 @@
   {
     "id": 640,
     "name": "Custom dimensions tuck end box variations bell towers dieline 116710",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -8335,7 +8335,7 @@
   {
     "id": 642,
     "name": "Custom dimensions tuck end box variations with window dieline 116012",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -8348,7 +8348,7 @@
   {
     "id": 643,
     "name": "Display box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -8374,7 +8374,7 @@
   {
     "id": 645,
     "name": "Custom dimensions tuck end box variations trapezoid dieline 110660",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -8387,7 +8387,7 @@
   {
     "id": 646,
     "name": "Custom dimensions tuck end box variations window slope dieline 110101",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -8439,7 +8439,7 @@
   {
     "id": 650,
     "name": "Sleeve with window box dieline",
-    "category": "tray",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -8465,7 +8465,7 @@
   {
     "id": 652,
     "name": "Dessert box display dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -8504,7 +8504,7 @@
   {
     "id": 655,
     "name": "Open square gift box dieline 36018001",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -8517,7 +8517,7 @@
   {
     "id": 656,
     "name": "Custom dimensions auto bottome snap lock boxes flat top gift dieline 112470",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -8530,7 +8530,7 @@
   {
     "id": 657,
     "name": "Triangle box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -8543,7 +8543,7 @@
   {
     "id": 658,
     "name": "Tuck end mailer box dieline",
-    "category": "fefco",
+    "category": "tuckend",
     "formats": [
       "AI",
       "PDF",
@@ -8556,7 +8556,7 @@
   {
     "id": 659,
     "name": "Double tuck box with hang hole for display board dieline",
-    "category": "tuckend",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -8634,7 +8634,7 @@
   {
     "id": 665,
     "name": "Square gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -8660,7 +8660,7 @@
   {
     "id": 667,
     "name": "Pasta box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -8686,7 +8686,7 @@
   {
     "id": 669,
     "name": "Display box with handle dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -8699,7 +8699,7 @@
   {
     "id": 670,
     "name": "FEFCO 0433 display box dieline",
-    "category": "fefco",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -8712,7 +8712,7 @@
   {
     "id": 671,
     "name": "Custom dimensions inserts/dividers 3-point blocks dieline 316140",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -8777,7 +8777,7 @@
   {
     "id": 676,
     "name": "Custom dimensions tuck end box variations adhesive bottom dieline 116011",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -8790,7 +8790,7 @@
   {
     "id": 677,
     "name": "Custom dimensions tuck end box variations folded edge locks dieline 114040",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -8855,7 +8855,7 @@
   {
     "id": 682,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -8894,7 +8894,7 @@
   {
     "id": 685,
     "name": "Custom dimensions tuck end box variations auto lock bottom dieline 112241",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -8907,7 +8907,7 @@
   {
     "id": 686,
     "name": "Custom dimensions tuck end box variations snap lock dieline 110802",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -8946,7 +8946,7 @@
   {
     "id": 689,
     "name": "Square gift box dieline 36601202",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -8998,7 +8998,7 @@
   {
     "id": 693,
     "name": "Custom dimensions double tray boxes storage with front opening dieline 100103",
-    "category": "tray",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -9011,7 +9011,7 @@
   {
     "id": 694,
     "name": "Gift box with lid dieline",
-    "category": "rigid",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -9037,7 +9037,7 @@
   {
     "id": 696,
     "name": "Hand cream box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -9050,7 +9050,7 @@
   {
     "id": 697,
     "name": "Box with lid face wash box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -9076,7 +9076,7 @@
   {
     "id": 699,
     "name": "Flip top stationery gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -9232,7 +9232,7 @@
   {
     "id": 711,
     "name": "Coffee capsule box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -9323,7 +9323,7 @@
   {
     "id": 718,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -9336,7 +9336,7 @@
   {
     "id": 719,
     "name": "Window display box dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -9349,7 +9349,7 @@
   {
     "id": 720,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -9362,7 +9362,7 @@
   {
     "id": 721,
     "name": "2-pack carrier display box with handle dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -9388,7 +9388,7 @@
   {
     "id": 723,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -9401,7 +9401,7 @@
   {
     "id": 724,
     "name": "Pos display box packaging dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -9427,7 +9427,7 @@
   {
     "id": 726,
     "name": "Cardboard display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -9440,7 +9440,7 @@
   {
     "id": 727,
     "name": "Product display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -9453,7 +9453,7 @@
   {
     "id": 728,
     "name": "Display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -9466,7 +9466,7 @@
   {
     "id": 729,
     "name": "Product display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -9479,7 +9479,7 @@
   {
     "id": 730,
     "name": "Hanging toy box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -9492,7 +9492,7 @@
   {
     "id": 731,
     "name": "Hanging display box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -9505,7 +9505,7 @@
   {
     "id": 732,
     "name": "Display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -9544,7 +9544,7 @@
   {
     "id": 735,
     "name": "Hanging card box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -9557,7 +9557,7 @@
   {
     "id": 736,
     "name": "Hanging toy box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -9570,7 +9570,7 @@
   {
     "id": 737,
     "name": "Hanging card box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -9609,7 +9609,7 @@
   {
     "id": 740,
     "name": "Custom dimensions box with lid luxury box dieline 360011",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -9674,7 +9674,7 @@
   {
     "id": 745,
     "name": "Protect buffer insert dieline 310510",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -9687,7 +9687,7 @@
   {
     "id": 746,
     "name": "Custom dimensions inserts/dividers pull dieline 310310",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -9700,7 +9700,7 @@
   {
     "id": 747,
     "name": "Custom dimensions inserts/dividers multifunctional buffers dieline 310230",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -9739,7 +9739,7 @@
   {
     "id": 750,
     "name": "Custom dimensions easy folding inserts inserts/dividers dieline 310160",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -9986,7 +9986,7 @@
   {
     "id": 769,
     "name": "Custom dimensions cartons lock inserts dieline 200280",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -10155,7 +10155,7 @@
   {
     "id": 782,
     "name": "Gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -10298,7 +10298,7 @@
   {
     "id": 793,
     "name": "Custom dimensions packaging boxes with lid dieline 160023",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -10311,7 +10311,7 @@
   {
     "id": 794,
     "name": "Custom dimensions box with inserts tuck front box dieline 158090",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -10389,7 +10389,7 @@
   {
     "id": 800,
     "name": "Custom dimensions flip top boxes inserts dieline 156001",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -10428,7 +10428,7 @@
   {
     "id": 803,
     "name": "Custom dimensions flip top boxes traceless cover dieline 151600",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -10467,7 +10467,7 @@
   {
     "id": 806,
     "name": "Custom dimensions flip top boxes inserts dieline 150033",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -10480,7 +10480,7 @@
   {
     "id": 807,
     "name": "Custom dimensions mailer boxes double safety buckles dieline 150014",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -10506,7 +10506,7 @@
   {
     "id": 809,
     "name": "Side latch drawer box with window dieline 128071",
-    "category": "rigid",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -10532,7 +10532,7 @@
   {
     "id": 811,
     "name": "Sleeve gift box with window dieline",
-    "category": "tray",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -10636,7 +10636,7 @@
   {
     "id": 819,
     "name": "Custom dimensions tuck end box variations portable dieline 116190",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -10649,7 +10649,7 @@
   {
     "id": 820,
     "name": "Custom dimensions tuck end box variations roof dieline 116020",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -10662,7 +10662,7 @@
   {
     "id": 821,
     "name": "Custom dimensions tuck end box variations with window dieline 114041",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -10701,7 +10701,7 @@
   {
     "id": 824,
     "name": "Custom dimensions tuck end box variations hexagon dieline 112701",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -10727,7 +10727,7 @@
   {
     "id": 826,
     "name": "Custom dimensions tuck end box variations portable dieline 112260",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -10766,7 +10766,7 @@
   {
     "id": 829,
     "name": "Trapezoidal tuck top snap-lock bottom box dieline",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -10818,7 +10818,7 @@
   {
     "id": 833,
     "name": "Custom dimensions tuck end box variations adhesive bottom dieline 110016",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -10831,7 +10831,7 @@
   {
     "id": 834,
     "name": "Custom dimensions tuck end boxes interlocking buckles dieline 108080",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -10857,7 +10857,7 @@
   {
     "id": 836,
     "name": "Custom dimensions auto lock bottom boxes window display dieline 105014",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -10870,7 +10870,7 @@
   {
     "id": 837,
     "name": "Custom dimensions auto lock bottom boxes window display dieline 105013",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -10883,7 +10883,7 @@
   {
     "id": 838,
     "name": "Snap lock bottom window hang tab boxes dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -10896,7 +10896,7 @@
   {
     "id": 839,
     "name": "Custom dimensions back open boxes window display dieline 103014",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -10935,7 +10935,7 @@
   {
     "id": 842,
     "name": "Custom dimensions back open boxes window display dieline 102614",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -10987,7 +10987,7 @@
   {
     "id": 846,
     "name": "Custom dimensions auto bottome snap lock boxes insert dieline 102030",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -11052,7 +11052,7 @@
   {
     "id": 851,
     "name": "Open square mailer box dieline 15001001",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -11065,7 +11065,7 @@
   {
     "id": 852,
     "name": "Square cardboard box with lid dieline 16002201",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -11078,7 +11078,7 @@
   {
     "id": 853,
     "name": "Open square gift box  dieline 36009001",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -11117,7 +11117,7 @@
   {
     "id": 856,
     "name": "Pasta box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -11130,7 +11130,7 @@
   {
     "id": 857,
     "name": "Food box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -11143,7 +11143,7 @@
   {
     "id": 858,
     "name": "Food box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -11156,7 +11156,7 @@
   {
     "id": 859,
     "name": "Sweet box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -11234,7 +11234,7 @@
   {
     "id": 865,
     "name": "Custom dimensions flip top boxes lock inserts dieline 156160",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -11247,7 +11247,7 @@
   {
     "id": 866,
     "name": "File folder dieline",
-    "category": "folding",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -11273,7 +11273,7 @@
   {
     "id": 868,
     "name": "Tuck end cookie window box dieline",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -11286,7 +11286,7 @@
   {
     "id": 869,
     "name": "Corrugated boxes with lid open-bottom with lids dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -11312,7 +11312,7 @@
   {
     "id": 871,
     "name": "Custom dimensions tuck end box variations adhesive bottom dieline 116010",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -11325,7 +11325,7 @@
   {
     "id": 872,
     "name": "Gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -11351,7 +11351,7 @@
   {
     "id": 874,
     "name": "Gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -11403,7 +11403,7 @@
   {
     "id": 878,
     "name": "Flip top gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -11416,7 +11416,7 @@
   {
     "id": 879,
     "name": "Custom dimensions tuck end boxes positive mortise lock dieline 102617",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -11455,7 +11455,7 @@
   {
     "id": 882,
     "name": "face cream box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -11780,7 +11780,7 @@
   {
     "id": 907,
     "name": "Square sweet box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -11806,7 +11806,7 @@
   {
     "id": 909,
     "name": "Square board game box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -11819,7 +11819,7 @@
   {
     "id": 910,
     "name": "Personal care box dieline（Mailer box)",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -11832,7 +11832,7 @@
   {
     "id": 911,
     "name": "Beauty box dieline (mailer box)",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -11897,7 +11897,7 @@
   {
     "id": 916,
     "name": "Coffee capsules box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -11962,7 +11962,7 @@
   {
     "id": 921,
     "name": "Tuck end window ampoule box dieline",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -12469,7 +12469,7 @@
   {
     "id": 960,
     "name": "Perfume box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -12495,7 +12495,7 @@
   {
     "id": 962,
     "name": "Custom dimensions file holder auto lock bottom dieline 171500",
-    "category": "folding",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -12508,7 +12508,7 @@
   {
     "id": 963,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12521,7 +12521,7 @@
   {
     "id": 964,
     "name": "FEFCO 0808 cardboard display box dieline",
-    "category": "fefco",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12547,7 +12547,7 @@
   {
     "id": 966,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12560,7 +12560,7 @@
   {
     "id": 967,
     "name": "Product display dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12586,7 +12586,7 @@
   {
     "id": 969,
     "name": "Display box packaging dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12599,7 +12599,7 @@
   {
     "id": 970,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12612,7 +12612,7 @@
   {
     "id": 971,
     "name": "Display box with round hole dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12625,7 +12625,7 @@
   {
     "id": 972,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12638,7 +12638,7 @@
   {
     "id": 973,
     "name": "Custom dimensions display boxes/stands security buckles dieline 171170",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12664,7 +12664,7 @@
   {
     "id": 975,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12677,7 +12677,7 @@
   {
     "id": 976,
     "name": "Product display box with round holes dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12690,7 +12690,7 @@
   {
     "id": 977,
     "name": "Product display box with handle dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12703,7 +12703,7 @@
   {
     "id": 978,
     "name": "4 bottles display box frame dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12716,7 +12716,7 @@
   {
     "id": 979,
     "name": "POS display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12755,7 +12755,7 @@
   {
     "id": 982,
     "name": "I-beam display dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12768,7 +12768,7 @@
   {
     "id": 983,
     "name": "Display box packaging dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12781,7 +12781,7 @@
   {
     "id": 984,
     "name": "2-step product display dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12794,7 +12794,7 @@
   {
     "id": 985,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12807,7 +12807,7 @@
   {
     "id": 986,
     "name": "Cardboard display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12885,7 +12885,7 @@
   {
     "id": 992,
     "name": "Display box with handles dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12911,7 +12911,7 @@
   {
     "id": 994,
     "name": "Custom dimensions display boxes bottom buckles dieline 171490",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12924,7 +12924,7 @@
   {
     "id": 995,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12950,7 +12950,7 @@
   {
     "id": 997,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -12963,7 +12963,7 @@
   {
     "id": 998,
     "name": "Display box packaging dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13002,7 +13002,7 @@
   {
     "id": 1001,
     "name": "Hanging polygonal display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13015,7 +13015,7 @@
   {
     "id": 1002,
     "name": "FEFCO 0431 display tray box dieline",
-    "category": "fefco",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13054,7 +13054,7 @@
   {
     "id": 1005,
     "name": "Display box packaging dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13067,7 +13067,7 @@
   {
     "id": 1006,
     "name": "Cardboard display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13093,7 +13093,7 @@
   {
     "id": 1008,
     "name": "Hanging slim tall display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13106,7 +13106,7 @@
   {
     "id": 1009,
     "name": "Hanging display box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -13119,7 +13119,7 @@
   {
     "id": 1010,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13132,7 +13132,7 @@
   {
     "id": 1011,
     "name": "Display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13145,7 +13145,7 @@
   {
     "id": 1012,
     "name": "Hanging display box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -13158,7 +13158,7 @@
   {
     "id": 1013,
     "name": "Display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13171,7 +13171,7 @@
   {
     "id": 1014,
     "name": "Hanging polygonal display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13184,7 +13184,7 @@
   {
     "id": 1015,
     "name": "Hanging toy box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -13197,7 +13197,7 @@
   {
     "id": 1016,
     "name": "Display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13210,7 +13210,7 @@
   {
     "id": 1017,
     "name": "Beveled display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13223,7 +13223,7 @@
   {
     "id": 1018,
     "name": "Hanging polygonal display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13236,7 +13236,7 @@
   {
     "id": 1019,
     "name": "Display box with handle dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13249,7 +13249,7 @@
   {
     "id": 1020,
     "name": "Display box packaging dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13275,7 +13275,7 @@
   {
     "id": 1022,
     "name": "Display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13288,7 +13288,7 @@
   {
     "id": 1023,
     "name": "Hanging triangular display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13301,7 +13301,7 @@
   {
     "id": 1024,
     "name": "Display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13314,7 +13314,7 @@
   {
     "id": 1025,
     "name": "Display box with handle dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13340,7 +13340,7 @@
   {
     "id": 1027,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13353,7 +13353,7 @@
   {
     "id": 1028,
     "name": "Hanging triangular display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13379,7 +13379,7 @@
   {
     "id": 1030,
     "name": "Cardboard display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13405,7 +13405,7 @@
   {
     "id": 1032,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13496,7 +13496,7 @@
   {
     "id": 1039,
     "name": "Display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13509,7 +13509,7 @@
   {
     "id": 1040,
     "name": "Hanging triangular display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13522,7 +13522,7 @@
   {
     "id": 1041,
     "name": "Concave-hanger display hanging box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13574,7 +13574,7 @@
   {
     "id": 1045,
     "name": "Display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13587,7 +13587,7 @@
   {
     "id": 1046,
     "name": "Hanging medicine box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -13626,7 +13626,7 @@
   {
     "id": 1049,
     "name": "Hanging triangular display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13847,7 +13847,7 @@
   {
     "id": 1066,
     "name": "Custom dimensions pvc boxes reverse inserts dieline 400100",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -13873,7 +13873,7 @@
   {
     "id": 1068,
     "name": "Hanging display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -13912,7 +13912,7 @@
   {
     "id": 1071,
     "name": "square hanging toy box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -13925,7 +13925,7 @@
   {
     "id": 1072,
     "name": "Custom dimensions pvc boxes reverse inserts dieline 400080",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -13951,7 +13951,7 @@
   {
     "id": 1074,
     "name": "Custom dimensions pvc boxes cover upside down dieline 401080",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -13964,7 +13964,7 @@
   {
     "id": 1075,
     "name": "Hanging card box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -14003,7 +14003,7 @@
   {
     "id": 1078,
     "name": "Hanging toy box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -14029,7 +14029,7 @@
   {
     "id": 1080,
     "name": "Custom dimensions pvc boxes reverse inserts dieline 403010",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14055,7 +14055,7 @@
   {
     "id": 1082,
     "name": "square hanging display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -14068,7 +14068,7 @@
   {
     "id": 1083,
     "name": "Custom dimensions pvc boxes reverse inserts dieline 401060",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14107,7 +14107,7 @@
   {
     "id": 1086,
     "name": "Custom dimensions pvc boxes reverse inserts dieline 400090",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14549,7 +14549,7 @@
   {
     "id": 1120,
     "name": "Straight tuck end box with window dieline",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -14614,7 +14614,7 @@
   {
     "id": 1125,
     "name": "FEFCO 0938 Fold the divider dieline",
-    "category": "fefco",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14627,7 +14627,7 @@
   {
     "id": 1126,
     "name": "Custom dimensions half-folded three-slot blocks inserts/dividers dieline 316130",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14640,7 +14640,7 @@
   {
     "id": 1127,
     "name": "Custom dimensions dividers 3-slot blocks dieline 316012",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14653,7 +14653,7 @@
   {
     "id": 1128,
     "name": "Custom dimensions dividers double-slot grids dieline 316011",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14705,7 +14705,7 @@
   {
     "id": 1132,
     "name": "Custom dimensions inserts/dividers one-piece dieline 311050",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14718,7 +14718,7 @@
   {
     "id": 1133,
     "name": "Custom dimensions blocks inserts dieline 311010",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14744,7 +14744,7 @@
   {
     "id": 1135,
     "name": "Custom dimensions inserts/dividers full-covered dieline 310270",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14757,7 +14757,7 @@
   {
     "id": 1136,
     "name": "Custom dimensions inserts/dividers dieline 310260",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14770,7 +14770,7 @@
   {
     "id": 1137,
     "name": "Custom dimensions inserts/dividers four sides dieline 310240",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14796,7 +14796,7 @@
   {
     "id": 1139,
     "name": "Insert box with dust flap dieline 310224",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14835,7 +14835,7 @@
   {
     "id": 1142,
     "name": "Custom dimensions inserts/dividers half-pack inner trays dieline 310210",
-    "category": "tray",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14848,7 +14848,7 @@
   {
     "id": 1143,
     "name": "Custom dimensions tuck end folding inserts inserts/dividers dieline 310190",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14861,7 +14861,7 @@
   {
     "id": 1144,
     "name": "Custom dimensions rectangular base inserts inserts/dividers dieline 310130",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14874,7 +14874,7 @@
   {
     "id": 1145,
     "name": "Custom dimensions rectangular card holder inserts inserts/dividers dieline 310120",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14887,7 +14887,7 @@
   {
     "id": 1146,
     "name": "Custom dimensions four-pipe inserts inserts/dividers dieline 310100",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14900,7 +14900,7 @@
   {
     "id": 1147,
     "name": "Custom dimensions rectangular protective inserts inserts/dividers dieline 310090",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14913,7 +14913,7 @@
   {
     "id": 1148,
     "name": "Custom dimensions protective inserts inserts/dividers dieline 310080",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14926,7 +14926,7 @@
   {
     "id": 1149,
     "name": "Custom dimensions nail buckle liner inserts/dividers dieline 310070",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14939,7 +14939,7 @@
   {
     "id": 1150,
     "name": "Custom dimensions half-folded inner cards inserts/dividers dieline 310060",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14952,7 +14952,7 @@
   {
     "id": 1151,
     "name": "Custom dimensions half circle inserts inserts/dividers dieline 310050",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14965,7 +14965,7 @@
   {
     "id": 1152,
     "name": "Custom dimensions buffer files inserts/dividers dieline 310040",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14978,7 +14978,7 @@
   {
     "id": 1153,
     "name": "Paper buffer insert dieline 310033",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -14991,7 +14991,7 @@
   {
     "id": 1154,
     "name": "Custom dimensions inserts/dividers dieline 310032",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -16109,7 +16109,7 @@
   {
     "id": 1240,
     "name": "brochure double-ply files dieline 242003",
-    "category": "folding",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -16278,7 +16278,7 @@
   {
     "id": 1253,
     "name": "Custom dimensions brochure double-ply files dieline 242000",
-    "category": "folding",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -16356,7 +16356,7 @@
   {
     "id": 1259,
     "name": "Shirt gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -16512,7 +16512,7 @@
   {
     "id": 1271,
     "name": "Cardboard mailer box with lock dieline",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -16681,7 +16681,7 @@
   {
     "id": 1284,
     "name": "Custom dimensions folding box with 6 grids inserts one piece papar packaging dieline 200250",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -17110,7 +17110,7 @@
   {
     "id": 1317,
     "name": "Tree shaped holiday box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -17396,7 +17396,7 @@
   {
     "id": 1339,
     "name": "Sandwich box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -17630,7 +17630,7 @@
   {
     "id": 1357,
     "name": "Flip lock display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -17643,7 +17643,7 @@
   {
     "id": 1358,
     "name": "Custom dimensions display boxes/stands ladder-type dieline 171580",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -17656,7 +17656,7 @@
   {
     "id": 1359,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -17669,7 +17669,7 @@
   {
     "id": 1360,
     "name": "Arc display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -17682,7 +17682,7 @@
   {
     "id": 1361,
     "name": "Display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -17695,7 +17695,7 @@
   {
     "id": 1362,
     "name": "Display box with handle dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -17708,7 +17708,7 @@
   {
     "id": 1363,
     "name": "Custom dimensions tuck end box variations security buckles dieline 112570",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -17734,7 +17734,7 @@
   {
     "id": 1365,
     "name": "Custom dimensions display boxes/stands snap lock dieline 171231",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -17747,7 +17747,7 @@
   {
     "id": 1366,
     "name": "Display box with handle dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -17760,7 +17760,7 @@
   {
     "id": 1367,
     "name": "FEFCO 0460 display tray box with high wall dieline",
-    "category": "fefco",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -17786,7 +17786,7 @@
   {
     "id": 1369,
     "name": "Slotted-type box with top self-locking double crease flaps dieline",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -17799,7 +17799,7 @@
   {
     "id": 1370,
     "name": "Self locking and sides window tray with sleeve dieline",
-    "category": "tray",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -17812,7 +17812,7 @@
   {
     "id": 1371,
     "name": "Folding display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -17825,7 +17825,7 @@
   {
     "id": 1372,
     "name": "Handle display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -17851,7 +17851,7 @@
   {
     "id": 1374,
     "name": "Custom dimensions boxes with lid auto lock bottom dieline 161140",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -17864,7 +17864,7 @@
   {
     "id": 1375,
     "name": "Polygonal display tray box dieline",
-    "category": "tray",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -17890,7 +17890,7 @@
   {
     "id": 1377,
     "name": "Folding hexagonal shaped box wtih lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -17903,7 +17903,7 @@
   {
     "id": 1378,
     "name": "Box with shallow depth lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -17916,7 +17916,7 @@
   {
     "id": 1379,
     "name": "Full-depth cover top and base cardboard box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -17942,7 +17942,7 @@
   {
     "id": 1381,
     "name": "Corrugated lid and base box with double walls dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -17955,7 +17955,7 @@
   {
     "id": 1382,
     "name": "Custom dimensions packaging boxes with lid dieline 160163",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -17968,7 +17968,7 @@
   {
     "id": 1383,
     "name": "Custom dimensions boxes with lid hand holes dieline 160162",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -17981,7 +17981,7 @@
   {
     "id": 1384,
     "name": "Rectangle box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -18007,7 +18007,7 @@
   {
     "id": 1386,
     "name": "Custom dimensions boxes with lid half-pack dieline 160030",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -18020,7 +18020,7 @@
   {
     "id": 1387,
     "name": "Custom dimensions boxes with lid corrugated cartons dieline 160022",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -18033,7 +18033,7 @@
   {
     "id": 1388,
     "name": "Custom dimensions window cartons corrugated dieline 160021",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -18046,7 +18046,7 @@
   {
     "id": 1389,
     "name": "Round insert paper packaging box dieline",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -18137,7 +18137,7 @@
   {
     "id": 1396,
     "name": "Custom dimensions packaging mailer box dieline 158060",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -18267,7 +18267,7 @@
   {
     "id": 1406,
     "name": "Custom dimensions tuck end box variations buffer inserts dieline 110511",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -18371,7 +18371,7 @@
   {
     "id": 1414,
     "name": "Pizza box have window dieline 156217",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -18449,7 +18449,7 @@
   {
     "id": 1420,
     "name": "Custom dimensions flip top boxes bottom lock inserts dieline",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -18501,7 +18501,7 @@
   {
     "id": 1424,
     "name": "Custom dimensions flip top boxes polygonal mailer dieline 156080",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -18566,7 +18566,7 @@
   {
     "id": 1429,
     "name": "Custom dimensions portable lock inserts dieline 153110",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -18670,7 +18670,7 @@
   {
     "id": 1437,
     "name": "Custom dimensions flip top boxes mailer dieline 152180",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -18696,7 +18696,7 @@
   {
     "id": 1439,
     "name": "Self locking flip top mailer box dieline",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -18722,7 +18722,7 @@
   {
     "id": 1441,
     "name": "Custom dimensions flip top boxes easy flip covers dieline 152080",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -18800,7 +18800,7 @@
   {
     "id": 1447,
     "name": "Custom dimensions flip top boxes lock inserts dieline 151220",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -18943,7 +18943,7 @@
   {
     "id": 1458,
     "name": "Custom dimensions flip top boxes flip covers dieline 151071",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -18956,7 +18956,7 @@
   {
     "id": 1459,
     "name": "Custom dimensions flip top boxes lock inserts dieline 151060",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -18969,7 +18969,7 @@
   {
     "id": 1460,
     "name": "Folding box have window dieline 151052",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -19086,7 +19086,7 @@
   {
     "id": 1469,
     "name": "Flip top mailer box dieline",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -19125,7 +19125,7 @@
   {
     "id": 1472,
     "name": "Self-locking angled front mailer box dieline",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -19138,7 +19138,7 @@
   {
     "id": 1473,
     "name": "Custom dimensions mailer boxes window display dieline 150090",
-    "category": "fefco",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -19151,7 +19151,7 @@
   {
     "id": 1474,
     "name": "Gift folding box  dieline 150082",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -19164,7 +19164,7 @@
   {
     "id": 1475,
     "name": "Custom dimensions mailer boxes window display dieline 150080",
-    "category": "fefco",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -19177,7 +19177,7 @@
   {
     "id": 1476,
     "name": "Custom dimensions mailer boxes window display dieline 150070",
-    "category": "fefco",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -19190,7 +19190,7 @@
   {
     "id": 1477,
     "name": "Custom dimensions window display boxes mailer dieline 150060",
-    "category": "fefco",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -19281,7 +19281,7 @@
   {
     "id": 1484,
     "name": "Custom dimensions flip top boxes mailer dieline 150018",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -19294,7 +19294,7 @@
   {
     "id": 1485,
     "name": "Custom dimensions mailer boxes carrying cases dieline 150017",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -19307,7 +19307,7 @@
   {
     "id": 1486,
     "name": "Custom dimensions flip top boxes mailer dieline 150015",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -19320,7 +19320,7 @@
   {
     "id": 1487,
     "name": "Custom dimensions mailer boxes security buckles dieline 150013",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -19346,7 +19346,7 @@
   {
     "id": 1489,
     "name": "Custom dimensions tray boxes lock inserts dieline 128050",
-    "category": "tray",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -19372,7 +19372,7 @@
   {
     "id": 1491,
     "name": "Custom dimensions tray box with 4 grids inserts paper dieline 128023",
-    "category": "tray",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -19385,7 +19385,7 @@
   {
     "id": 1492,
     "name": "Folding display base box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -19437,7 +19437,7 @@
   {
     "id": 1496,
     "name": "Hexagonal shaped flip cover box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -19502,7 +19502,7 @@
   {
     "id": 1501,
     "name": "Mini cupcake gable box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -19528,7 +19528,7 @@
   {
     "id": 1503,
     "name": "Gable box non-adhesive cover dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -19645,7 +19645,7 @@
   {
     "id": 1512,
     "name": "Window box dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -19697,7 +19697,7 @@
   {
     "id": 1516,
     "name": "Cardboard display box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -19827,7 +19827,7 @@
   {
     "id": 1526,
     "name": "Custom dimensions tuck end boxes variations back open dieline 117010",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -19840,7 +19840,7 @@
   {
     "id": 1527,
     "name": "Custom dimensions tuck end box variations double boxes dieline 116790",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -19853,7 +19853,7 @@
   {
     "id": 1528,
     "name": "Custom dimensions tuck end box variations bell tower roof dieline 116713",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -19879,7 +19879,7 @@
   {
     "id": 1530,
     "name": "Custom dimensions tuck end box variations angularity dieline 116590",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -19892,7 +19892,7 @@
   {
     "id": 1531,
     "name": "Custom dimensions tuck end box variations side dieline 116580",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -19905,7 +19905,7 @@
   {
     "id": 1532,
     "name": "Custom dimensions tuck end box variations side buckles dieline 116410",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -19931,7 +19931,7 @@
   {
     "id": 1534,
     "name": "Custom dimensions tuck end box variations dividers/separators dieline 116360",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -19970,7 +19970,7 @@
   {
     "id": 1537,
     "name": "Custom dimensions tuck end box variations pin-style dieline 116331",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -19983,7 +19983,7 @@
   {
     "id": 1538,
     "name": "Custom dimensions tuck end box variations pin-style dieline 116330",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20009,7 +20009,7 @@
   {
     "id": 1540,
     "name": "Custom dimensions tuck end box variations sealing dieline 116130",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20022,7 +20022,7 @@
   {
     "id": 1541,
     "name": "Custom dimensions tuck end box variations handles dieline 116120",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20035,7 +20035,7 @@
   {
     "id": 1542,
     "name": "Custom dimensions tuck end box variations swivel dieline 116060",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20087,7 +20087,7 @@
   {
     "id": 1546,
     "name": "Custom dimensions tuck end box variations bevel dieline 110130",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20100,7 +20100,7 @@
   {
     "id": 1547,
     "name": "Custom dimensions tuck end box variations angled opening dieline 114210",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20113,7 +20113,7 @@
   {
     "id": 1548,
     "name": "Custom dimensions tuck end box variations four folds dieline 114180",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20126,7 +20126,7 @@
   {
     "id": 1549,
     "name": "Custom dimensions tuck end box variations tear-off wire inserts dieline 114130",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -20139,7 +20139,7 @@
   {
     "id": 1550,
     "name": "Custom dimensions tuck end box variations flower types dieline 114110",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20152,7 +20152,7 @@
   {
     "id": 1551,
     "name": "Custom dimensions tuck end box variations tear away box dieline 114100",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20165,7 +20165,7 @@
   {
     "id": 1552,
     "name": "Custom dimensions tuck end box variations side mortise locks dieline 114081",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20178,7 +20178,7 @@
   {
     "id": 1553,
     "name": "Custom dimensions tuck end box variations angled opening dieline 114080",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20191,7 +20191,7 @@
   {
     "id": 1554,
     "name": "Custom dimensions tuck end box variations diagonal dieline 114061",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20204,7 +20204,7 @@
   {
     "id": 1555,
     "name": "Custom dimensions tuck end box variations diagonal dieline 114060",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20217,7 +20217,7 @@
   {
     "id": 1556,
     "name": "Custom dimensions tuck end box variations polygonal folding lids dieline 114030",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20230,7 +20230,7 @@
   {
     "id": 1557,
     "name": "Custom dimensions tuck end box variations drawstring buffers dieline 114010",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20256,7 +20256,7 @@
   {
     "id": 1559,
     "name": "Custom dimensions tuck end box variations round mouth dieline 112690",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20269,7 +20269,7 @@
   {
     "id": 1560,
     "name": "Custom dimensions tuck end box variations security buckles dieline 112680",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20282,7 +20282,7 @@
   {
     "id": 1561,
     "name": "Custom dimensions tuck end box variations front open dieline 112670",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20295,7 +20295,7 @@
   {
     "id": 1562,
     "name": "Custom dimensions tuck end box variations edgefold dieline 112661",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20308,7 +20308,7 @@
   {
     "id": 1563,
     "name": "Custom dimensions tuck end box variations edgefold dieline 112660",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20321,7 +20321,7 @@
   {
     "id": 1564,
     "name": "Custom dimensions tuck end box variations dump dieline 112630",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20334,7 +20334,7 @@
   {
     "id": 1565,
     "name": "Gable gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -20347,7 +20347,7 @@
   {
     "id": 1566,
     "name": "Custom dimensions tuck end box variations security buckles dieline 112611",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20360,7 +20360,7 @@
   {
     "id": 1567,
     "name": "Custom dimensions tuck end box variations security buckles dieline 112610",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20373,7 +20373,7 @@
   {
     "id": 1568,
     "name": "Custom dimensions tuck end box variations lock boxes dieline 112600",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20386,7 +20386,7 @@
   {
     "id": 1569,
     "name": "Custom dimensions tuck end box variations auto lock bottom dieline 112590",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20399,7 +20399,7 @@
   {
     "id": 1570,
     "name": "Custom dimensions tuck end box variations positive button bottom dieline 112580",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20412,7 +20412,7 @@
   {
     "id": 1571,
     "name": "Custom dimensions tuck end box variations security buckles dieline 112550",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20425,7 +20425,7 @@
   {
     "id": 1572,
     "name": "Custom dimensions tuck end box variations overlapping dieline 112530",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20438,7 +20438,7 @@
   {
     "id": 1573,
     "name": "Custom dimensions tuck end box variations overlapping dieline 112520",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20451,7 +20451,7 @@
   {
     "id": 1574,
     "name": "Custom dimensions tuck end box variations flat top dieline 112511",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20477,7 +20477,7 @@
   {
     "id": 1576,
     "name": "Custom dimensions tuck end box variations double safety buckles dieline 112500",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20490,7 +20490,7 @@
   {
     "id": 1577,
     "name": "Custom dimensions tuck end box variations bevel dieline 112490",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20529,7 +20529,7 @@
   {
     "id": 1580,
     "name": "Custom dimensions auto bottome snap lock boxes reverse tuck end dieline 112471",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20542,7 +20542,7 @@
   {
     "id": 1581,
     "name": "Custom dimensions tuck end box variations double snap locks dieline 112451",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20555,7 +20555,7 @@
   {
     "id": 1582,
     "name": "Custom dimensions tuck end box variations carrying cases dieline 112450",
-    "category": "fefco",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20568,7 +20568,7 @@
   {
     "id": 1583,
     "name": "Custom dimensions tuck end box variations adhesive opening dieline 112431",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20581,7 +20581,7 @@
   {
     "id": 1584,
     "name": "Custom dimensions tuck end box variations adhesive opening dieline 112430",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20594,7 +20594,7 @@
   {
     "id": 1585,
     "name": "Custom dimensions tuck end box variations positive button bottom dieline 112394",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20607,7 +20607,7 @@
   {
     "id": 1586,
     "name": "Custom dimensions tuck end box variations positive button bottom dieline 112392",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20620,7 +20620,7 @@
   {
     "id": 1587,
     "name": "Custom dimensions tuck end box variations positive button bottom dieline 112391",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20633,7 +20633,7 @@
   {
     "id": 1588,
     "name": "Custom dimensions tuck end box variations positive button bottom dieline 112390",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20698,7 +20698,7 @@
   {
     "id": 1593,
     "name": "Custom dimensions safety buckle boxes carrying cases dieline 112361",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -20737,7 +20737,7 @@
   {
     "id": 1596,
     "name": "Tuck end snap lock handle box dieline",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20750,7 +20750,7 @@
   {
     "id": 1597,
     "name": "Custom dimensions carrying cases snap lock boxes dieline 112341",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -20776,7 +20776,7 @@
   {
     "id": 1599,
     "name": "Custom dimensions reverse tuck end boxes 123 bottom dieline 112331",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20815,7 +20815,7 @@
   {
     "id": 1602,
     "name": "Carrying handle snap lock gable box dieline",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -20880,7 +20880,7 @@
   {
     "id": 1607,
     "name": "Custom dimensions tuck end box variations reverse three button bottom dieline 112301",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20906,7 +20906,7 @@
   {
     "id": 1609,
     "name": "Custom dimensions tuck end box variations auto lock bottom dieline 112280",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20919,7 +20919,7 @@
   {
     "id": 1610,
     "name": "Custom dimensions tuck end box variations angled dieline 112243",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20932,7 +20932,7 @@
   {
     "id": 1611,
     "name": "Custom dimensions tuck end box variations with window dieline 112242",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -20945,7 +20945,7 @@
   {
     "id": 1612,
     "name": "Custom dimensions tuck end box variations angled mortise lock dieline 112240",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20958,7 +20958,7 @@
   {
     "id": 1613,
     "name": "Custom dimensions tuck end box variations auto bottome snap lock boxes dieline 112230",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20971,7 +20971,7 @@
   {
     "id": 1614,
     "name": "Custom dimensions tuck end box variations 2-in-1 snap lock boxes dieline 112190",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20984,7 +20984,7 @@
   {
     "id": 1615,
     "name": "Custom dimensions tuck end box variations handle dieline 112160",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -20997,7 +20997,7 @@
   {
     "id": 1616,
     "name": "Custom dimensions tuck end box variations handles dieline 112110",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21010,7 +21010,7 @@
   {
     "id": 1617,
     "name": "Custom dimensions tuck end box variations dome dieline 112092",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21023,7 +21023,7 @@
   {
     "id": 1618,
     "name": "Custom dimensions tuck end box variations polygonal button bottom dieline 112085",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21036,7 +21036,7 @@
   {
     "id": 1619,
     "name": "Custom dimensions tuck end box variations ribbon holes dieline 112091",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21049,7 +21049,7 @@
   {
     "id": 1620,
     "name": "Gift box with ribbon holes dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -21062,7 +21062,7 @@
   {
     "id": 1621,
     "name": "Custom dimensions tuck end box variations handle dieline 112083",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21075,7 +21075,7 @@
   {
     "id": 1622,
     "name": "Custom dimensions tuck end box variations handle dieline 112081",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21088,7 +21088,7 @@
   {
     "id": 1623,
     "name": "Custom dimensions tuck end box variations handle dieline 112080",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21101,7 +21101,7 @@
   {
     "id": 1624,
     "name": "Folding display handle box dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -21114,7 +21114,7 @@
   {
     "id": 1625,
     "name": "Custom dimensions tuck end box variations buckle bottom folding boxes dieline 112052",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21127,7 +21127,7 @@
   {
     "id": 1626,
     "name": "Custom dimensions tuck end box variations auto bottom flat boxes dieline 112051",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21140,7 +21140,7 @@
   {
     "id": 1627,
     "name": "Custom dimensions tuck end box variations auto bottome snap lock boxes dieline 112050",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21153,7 +21153,7 @@
   {
     "id": 1628,
     "name": "Custom dimensions tuck end box variations roof covers dieline 112042",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21166,7 +21166,7 @@
   {
     "id": 1629,
     "name": "Custom dimensions tuck end box variations roof boxes dieline 112041",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21205,7 +21205,7 @@
   {
     "id": 1632,
     "name": "Custom dimensions tuck end box variations back open dieline 111680",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21218,7 +21218,7 @@
   {
     "id": 1633,
     "name": "Custom dimensions tuck end box variations overlapping dieline 111650",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21231,7 +21231,7 @@
   {
     "id": 1634,
     "name": "Custom dimensions easy & economical lock boxes tuck end box variations dieline 111612",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21244,7 +21244,7 @@
   {
     "id": 1635,
     "name": "Custom dimensions tuck end box variations handle dieline 111611",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21257,7 +21257,7 @@
   {
     "id": 1636,
     "name": "Rhombus lid and base box dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -21270,7 +21270,7 @@
   {
     "id": 1637,
     "name": "Custom dimensions tuck end box variations auto lock bottom dieline 111080",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21296,7 +21296,7 @@
   {
     "id": 1639,
     "name": "Custom dimensions tuck end box variations bottom buckles dieline 111070",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21309,7 +21309,7 @@
   {
     "id": 1640,
     "name": "Custom dimensions tuck end box variations lid dieline 110900",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21322,7 +21322,7 @@
   {
     "id": 1641,
     "name": "Custom dimensions tuck end box variations roof type dieline 110890",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21335,7 +21335,7 @@
   {
     "id": 1642,
     "name": "Custom dimensions tuck end box variations with holes paper dieline 110860",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21348,7 +21348,7 @@
   {
     "id": 1643,
     "name": "Custom dimensions tuck end box variations tongue inserts dieline 110810",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -21361,7 +21361,7 @@
   {
     "id": 1644,
     "name": "Custom dimensions tuck end box variations snap lock dieline 110800",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21374,7 +21374,7 @@
   {
     "id": 1645,
     "name": "Custom dimensions tuck end box variations double-insert dieline 110690",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -21400,7 +21400,7 @@
   {
     "id": 1647,
     "name": "Custom dimensions tuck end box variations security buckles dieline 110661",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21413,7 +21413,7 @@
   {
     "id": 1648,
     "name": "Custom dimensions tuck end box variations side dieline 110631",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21426,7 +21426,7 @@
   {
     "id": 1649,
     "name": "Custom dimensions tuck end box variations interlocking buckles dieline 110630",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21439,7 +21439,7 @@
   {
     "id": 1650,
     "name": "Custom dimensions tuck end box variations inner lock dieline 110620",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21452,7 +21452,7 @@
   {
     "id": 1651,
     "name": "Custom dimensions tuck end box variations overlapping dieline 110611",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21465,7 +21465,7 @@
   {
     "id": 1652,
     "name": "Custom dimensions tuck end box variations overlapping dieline 110610",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21478,7 +21478,7 @@
   {
     "id": 1653,
     "name": "Custom dimensions tuck end box variations inserts dieline 110580",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -21491,7 +21491,7 @@
   {
     "id": 1654,
     "name": "Custom dimensions tuck end box variations flip covers dieline 110550",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21530,7 +21530,7 @@
   {
     "id": 1657,
     "name": "Custom dimensions tuck end box variations insert style dieline 110513",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -21543,7 +21543,7 @@
   {
     "id": 1658,
     "name": "Custom dimensions tuck end box variations buffer inserts dieline 110510",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -21556,7 +21556,7 @@
   {
     "id": 1659,
     "name": "Custom dimensions insert boxes snap lock dieline 110501",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -21569,7 +21569,7 @@
   {
     "id": 1660,
     "name": "Custom dimensions beveled inserts reverse mortise lock boxes dieline 110500",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -21582,7 +21582,7 @@
   {
     "id": 1661,
     "name": "Custom dimensions tuck end box variations triangle dieline 110490",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21595,7 +21595,7 @@
   {
     "id": 1662,
     "name": "Custom dimensions tuck end box variations foreboard dieline 110470",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21608,7 +21608,7 @@
   {
     "id": 1663,
     "name": "Custom dimensions tuck end box variations auto bottome snap lock boxes dieline 110461",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21621,7 +21621,7 @@
   {
     "id": 1664,
     "name": "Custom dimensions tuck end box variations reverse tuck end boxes dieline 110460",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21647,7 +21647,7 @@
   {
     "id": 1666,
     "name": "Custom dimensions tuck end box variations finger buckles dieline 110421",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21660,7 +21660,7 @@
   {
     "id": 1667,
     "name": "Custom dimensions tuck end box variations trans dieline 110420",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21673,7 +21673,7 @@
   {
     "id": 1668,
     "name": "Custom dimensions tuck end box variations adhesive boxes dieline 110410",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21686,7 +21686,7 @@
   {
     "id": 1669,
     "name": "Custom dimensions tuck end box variations rotated dieline 110350",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21699,7 +21699,7 @@
   {
     "id": 1670,
     "name": "Custom dimensions tuck end box variations tongue plugs dieline 110330",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21712,7 +21712,7 @@
   {
     "id": 1671,
     "name": "Custom dimensions tuck end box variations divider inserts dieline 110310",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -21738,7 +21738,7 @@
   {
     "id": 1673,
     "name": "Custom dimensions tuck end box variations security buckles dieline 110280",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21751,7 +21751,7 @@
   {
     "id": 1674,
     "name": "Custom dimensions tuck end box variations tear lines dieline 110271",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21764,7 +21764,7 @@
   {
     "id": 1675,
     "name": "Custom dimensions tuck end box variations tear lines dieline 110270",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21777,7 +21777,7 @@
   {
     "id": 1676,
     "name": "Custom dimensions tuck end box variations cardboard dividers dieline 110250",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -21790,7 +21790,7 @@
   {
     "id": 1677,
     "name": "Custom dimensions tuck end box variations trapezoid dieline 110240",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21803,7 +21803,7 @@
   {
     "id": 1678,
     "name": "Custom dimensions tuck end box variations round dieline 110230",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21816,7 +21816,7 @@
   {
     "id": 1679,
     "name": "Custom dimensions tuck end box variations flip covers dieline 110220",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21829,7 +21829,7 @@
   {
     "id": 1680,
     "name": "Custom dimensions tuck end box variations lid dieline 110210",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21842,7 +21842,7 @@
   {
     "id": 1681,
     "name": "Custom dimensions tuck end box variations velcro dieline 110200",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21855,7 +21855,7 @@
   {
     "id": 1682,
     "name": "Custom dimensions tuck end box variations tear lines dieline 110190",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21868,7 +21868,7 @@
   {
     "id": 1683,
     "name": "Custom dimensions tuck end box variations angled dieline 110180",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21894,7 +21894,7 @@
   {
     "id": 1685,
     "name": "Custom dimensions tuck end box variations side dieline 110170",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21920,7 +21920,7 @@
   {
     "id": 1687,
     "name": "Custom dimensions tuck end box variations bevel dieline 110140",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21933,7 +21933,7 @@
   {
     "id": 1688,
     "name": "Custom dimensions tuck end box variations lock inserts dieline 110120",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -21946,7 +21946,7 @@
   {
     "id": 1689,
     "name": "Custom dimensions tuck end box variations with window dieline 110111",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -21959,7 +21959,7 @@
   {
     "id": 1690,
     "name": "Custom dimensions tuck end box variations double-layer dieline 110110",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21972,7 +21972,7 @@
   {
     "id": 1691,
     "name": "Custom dimensions tuck end box variations bevel dieline 110100",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -21998,7 +21998,7 @@
   {
     "id": 1693,
     "name": "Custom dimensions tuck end box variations heart-shaped dieline 110081",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -22011,7 +22011,7 @@
   {
     "id": 1694,
     "name": "Custom dimensions tuck end box variations security buckles dieline 110062",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -22024,7 +22024,7 @@
   {
     "id": 1695,
     "name": "Custom dimensions tuck end box variations security buckles dieline 110061",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -22037,7 +22037,7 @@
   {
     "id": 1696,
     "name": "Custom dimensions tuck end box variations paper dieline 110060",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -22089,7 +22089,7 @@
   {
     "id": 1700,
     "name": "Custom dimensions tuck end box variations interlocking buckles dieline 110041",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -22102,7 +22102,7 @@
   {
     "id": 1701,
     "name": "Custom dimensions tuck end box variations lock inserts dieline 110040",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -22115,7 +22115,7 @@
   {
     "id": 1702,
     "name": "Custom dimensions tuck end box variations paper dieline 110030",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -22128,7 +22128,7 @@
   {
     "id": 1703,
     "name": "Custom dimensions file boxes reverse tuck end dieline 110021",
-    "category": "tuckend",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -22141,7 +22141,7 @@
   {
     "id": 1704,
     "name": "Custom dimensions file boxes auto bottome snap lock dieline 110020",
-    "category": "folding",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -22154,7 +22154,7 @@
   {
     "id": 1705,
     "name": "Kraft paper display box without cap dieline",
-    "category": "folding",
+    "category": "display",
     "formats": [
       "AI",
       "PDF",
@@ -22167,7 +22167,7 @@
   {
     "id": 1706,
     "name": "Custom dimensions tuck end box variations bottom buckles dieline 110017",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -22180,7 +22180,7 @@
   {
     "id": 1707,
     "name": "Custom dimensions lock-top boxes file dieline 110011",
-    "category": "folding",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -22193,7 +22193,7 @@
   {
     "id": 1708,
     "name": "Custom dimensions lock insert boxes file dieline 110010",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -22375,7 +22375,7 @@
   {
     "id": 1722,
     "name": "Custom dimensions snap lock tuck end boxes dieline 108011",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -22479,7 +22479,7 @@
   {
     "id": 1730,
     "name": "Custom dimensions back open boxes window display dieline 106014",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -22492,7 +22492,7 @@
   {
     "id": 1731,
     "name": "Custom dimensions back open boxes window display dieline 106013",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -22570,7 +22570,7 @@
   {
     "id": 1737,
     "name": "Custom dimensions tuck end boxes auto lock bottom dieline 105090",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -22648,7 +22648,7 @@
   {
     "id": 1743,
     "name": "Custom dimensions auto lock bottom inserts dieline 105030",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -22674,7 +22674,7 @@
   {
     "id": 1745,
     "name": "Custom dimensions tuck end boxes window display dieline 105017",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -22713,7 +22713,7 @@
   {
     "id": 1748,
     "name": "Custom dimensions auto lock bottom boxes tuck end dieline 105011",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -22752,7 +22752,7 @@
   {
     "id": 1751,
     "name": "Hanging display box with window dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -22869,7 +22869,7 @@
   {
     "id": 1760,
     "name": "Tuck end box with lock dieline 102692",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -22908,7 +22908,7 @@
   {
     "id": 1763,
     "name": "Straight tuck end box with window dieline",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -22947,7 +22947,7 @@
   {
     "id": 1766,
     "name": "Custom dimensions back open boxes lock insert dieline 102613",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -23038,7 +23038,7 @@
   {
     "id": 1773,
     "name": "Custom dimensions tuck end boxes polygonal button bottom dieline 102180",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -23103,7 +23103,7 @@
   {
     "id": 1778,
     "name": "Custom dimensions tuck end boxes with window dieline 102112",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -23155,7 +23155,7 @@
   {
     "id": 1782,
     "name": "Custom dimensions tuck end boxes auto bottome snap lock dieline 102064",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -23207,7 +23207,7 @@
   {
     "id": 1786,
     "name": "Custom dimensions tuck end boxes reverse inserts dieline 102043",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -23259,7 +23259,7 @@
   {
     "id": 1790,
     "name": "Custom dimensions tuck end box variations hidden lock buckles dieline 101720",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -23324,7 +23324,7 @@
   {
     "id": 1795,
     "name": "Custom dimensions back open boxes window display dieline 101514",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -23337,7 +23337,7 @@
   {
     "id": 1796,
     "name": "Custom dimensions window display boxes back open dieline 101513",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -23350,7 +23350,7 @@
   {
     "id": 1797,
     "name": "Custom dimensions lock insert boxes nail buckles dieline 101512",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -23376,7 +23376,7 @@
   {
     "id": 1799,
     "name": "Custom dimensions lock insert boxes reverse mortise lock dieline 101510",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -23415,7 +23415,7 @@
   {
     "id": 1802,
     "name": "Tuck end box with window dieline",
-    "category": "tuckend",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -23493,7 +23493,7 @@
   {
     "id": 1808,
     "name": "Custom dimensions tuck end boxes snap lock dieline 100200",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -23584,7 +23584,7 @@
   {
     "id": 1815,
     "name": "Custom dimensions window display boxes snap lock dieline 100104",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -23597,7 +23597,7 @@
   {
     "id": 1816,
     "name": "Custom dimensions lock insert boxes nail buckles dieline 100101",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -23623,7 +23623,7 @@
   {
     "id": 1818,
     "name": "Custom dimensions tuck end boxes reverse mortise lock dieline 100060",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -23688,7 +23688,7 @@
   {
     "id": 1823,
     "name": "Custom dimensions lock insert boxes tuck end dieline 100032",
-    "category": "tuckend",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -23701,7 +23701,7 @@
   {
     "id": 1824,
     "name": "Custom dimensions tuck end boxes interlocking buckles dieline 100019",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -23714,7 +23714,7 @@
   {
     "id": 1825,
     "name": "Custom dimensions tuck end boxes interlocking buckles dieline 100017",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -23727,7 +23727,7 @@
   {
     "id": 1826,
     "name": "Custom dimensions snap lock boxes lock insert dieline 100016",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -23740,7 +23740,7 @@
   {
     "id": 1827,
     "name": "Custom dimensions tuck end boxes reverse mortise lock dieline 100015",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -23753,7 +23753,7 @@
   {
     "id": 1828,
     "name": "Custom dimensions window display boxes reverse mortise lock dieline 100014",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -23766,7 +23766,7 @@
   {
     "id": 1829,
     "name": "Custom dimensions tuck end boxes lock-top dieline 100012",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -23805,7 +23805,7 @@
   {
     "id": 1832,
     "name": "Custom dimensions flip top boxes mailer dieline 151230",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -23844,7 +23844,7 @@
   {
     "id": 1835,
     "name": "Square mailer box dieline 15001101",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -23896,7 +23896,7 @@
   {
     "id": 1839,
     "name": "Square gift box dieline 36018002",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -23961,7 +23961,7 @@
   {
     "id": 1844,
     "name": "Square gift box with lid dieline 36601203",
-    "category": "rigid",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -24026,7 +24026,7 @@
   {
     "id": 1849,
     "name": "Open square mailer box  dieline 15621001",
-    "category": "fefco",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -24078,7 +24078,7 @@
   {
     "id": 1853,
     "name": "Custom dimensions tuck end box variations handle dieline 111610",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -24351,7 +24351,7 @@
   {
     "id": 1874,
     "name": "Tuck lock mailer box dieline",
-    "category": "fefco",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -24364,7 +24364,7 @@
   {
     "id": 1875,
     "name": "Glue flap tuck lock auto bottom box dieline",
-    "category": "tuckend",
+    "category": "tuckend_var",
     "formats": [
       "AI",
       "PDF",
@@ -24403,7 +24403,7 @@
   {
     "id": 1878,
     "name": "Windowed locking flip lid box dieline",
-    "category": "folding",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -24468,7 +24468,7 @@
   {
     "id": 1883,
     "name": "Custom dimensions inserts inlay dieline 310014",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -24845,7 +24845,7 @@
   {
     "id": 1912,
     "name": "Roll end tuck front mailer box dieline",
-    "category": "fefco",
+    "category": "tuckend",
     "formats": [
       "AI",
       "PDF",
@@ -25274,7 +25274,7 @@
   {
     "id": 1945,
     "name": "Custom gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -25378,7 +25378,7 @@
   {
     "id": 1953,
     "name": "Round jewelry gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -25430,7 +25430,7 @@
   {
     "id": 1957,
     "name": "Heart shaped gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -25625,7 +25625,7 @@
   {
     "id": 1972,
     "name": "Wine box with inserts wine bottles wine bottle dieline",
-    "category": "folding",
+    "category": "insert",
     "formats": [
       "AI",
       "PDF",
@@ -26054,7 +26054,7 @@
   {
     "id": 2005,
     "name": "Surprise gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26067,7 +26067,7 @@
   {
     "id": 2006,
     "name": "baseball cap with plastic snap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -26119,7 +26119,7 @@
   {
     "id": 2010,
     "name": "Baseball cap with hook dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -26184,7 +26184,7 @@
   {
     "id": 2015,
     "name": "Christmas gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26197,7 +26197,7 @@
   {
     "id": 2016,
     "name": "Surprise gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26210,7 +26210,7 @@
   {
     "id": 2017,
     "name": "Gorgeous gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26223,7 +26223,7 @@
   {
     "id": 2018,
     "name": "Birthday gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26236,7 +26236,7 @@
   {
     "id": 2019,
     "name": "Jewelry gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26249,7 +26249,7 @@
   {
     "id": 2020,
     "name": "Christmas gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26262,7 +26262,7 @@
   {
     "id": 2021,
     "name": "Christmas gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26275,7 +26275,7 @@
   {
     "id": 2022,
     "name": "Square gift box with  ribbon dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26288,7 +26288,7 @@
   {
     "id": 2023,
     "name": "Christmas gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26301,7 +26301,7 @@
   {
     "id": 2024,
     "name": "Christmas gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26314,7 +26314,7 @@
   {
     "id": 2025,
     "name": "Surprise gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26327,7 +26327,7 @@
   {
     "id": 2026,
     "name": "Christmas gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26340,7 +26340,7 @@
   {
     "id": 2027,
     "name": "Rectangular gift box with ribbon dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26366,7 +26366,7 @@
   {
     "id": 2029,
     "name": "Chocolate gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26379,7 +26379,7 @@
   {
     "id": 2030,
     "name": "Small gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26405,7 +26405,7 @@
   {
     "id": 2032,
     "name": "Gift box with  ribbon dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26470,7 +26470,7 @@
   {
     "id": 2037,
     "name": "Surprise gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26483,7 +26483,7 @@
   {
     "id": 2038,
     "name": "Jewelry gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26496,7 +26496,7 @@
   {
     "id": 2039,
     "name": "Gift box with lid dieline",
-    "category": "rigid",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -26522,7 +26522,7 @@
   {
     "id": 2041,
     "name": "Round birthday gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26548,7 +26548,7 @@
   {
     "id": 2043,
     "name": "Kraft gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26574,7 +26574,7 @@
   {
     "id": 2045,
     "name": "Jewelry gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26587,7 +26587,7 @@
   {
     "id": 2046,
     "name": "Paper surprise gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26600,7 +26600,7 @@
   {
     "id": 2047,
     "name": "Paper gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26613,7 +26613,7 @@
   {
     "id": 2048,
     "name": "Paper gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26626,7 +26626,7 @@
   {
     "id": 2049,
     "name": "Gift Box with bow and silk ribbons dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26652,7 +26652,7 @@
   {
     "id": 2051,
     "name": "Wedding glossy gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26665,7 +26665,7 @@
   {
     "id": 2052,
     "name": "Kraft paper gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26678,7 +26678,7 @@
   {
     "id": 2053,
     "name": "Hexagon gift box with ribbon dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26691,7 +26691,7 @@
   {
     "id": 2054,
     "name": "Heart shaped gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26704,7 +26704,7 @@
   {
     "id": 2055,
     "name": "Round cookie gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26717,7 +26717,7 @@
   {
     "id": 2056,
     "name": "Lid and base luxury gift box dieline",
-    "category": "rigid",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -26769,7 +26769,7 @@
   {
     "id": 2060,
     "name": "Luxury custom exquisite gift box with Handle dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26795,7 +26795,7 @@
   {
     "id": 2062,
     "name": "Surprise gift box dileine",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26821,7 +26821,7 @@
   {
     "id": 2064,
     "name": "Healthy gift snack box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -26834,7 +26834,7 @@
   {
     "id": 2065,
     "name": "Candy gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -27432,7 +27432,7 @@
   {
     "id": 2111,
     "name": "Surprise gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -30760,7 +30760,7 @@
   {
     "id": 2367,
     "name": "Brochure Cover Dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -31124,7 +31124,7 @@
   {
     "id": 2395,
     "name": "Hardcover notebook dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -31163,7 +31163,7 @@
   {
     "id": 2398,
     "name": "6×9 Hardcover book dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -31215,7 +31215,7 @@
   {
     "id": 2402,
     "name": "Blank hardcover book  dieline 901010",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -31228,7 +31228,7 @@
   {
     "id": 2403,
     "name": "Open hardcover book dieline 901300",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -31293,7 +31293,7 @@
   {
     "id": 2408,
     "name": "Landscape book  dieline 901260",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -31319,7 +31319,7 @@
   {
     "id": 2410,
     "name": "Open softcover book dieline 901310",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -31397,7 +31397,7 @@
   {
     "id": 2416,
     "name": "Open softcover book dieline 901320",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -31514,7 +31514,7 @@
   {
     "id": 2425,
     "name": "Book cover presentation dieline 901100",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -31527,7 +31527,7 @@
   {
     "id": 2426,
     "name": "Landscape book dieline 901090",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -31540,7 +31540,7 @@
   {
     "id": 2427,
     "name": "Standing softcover book  dieline 901050",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -31553,7 +31553,7 @@
   {
     "id": 2428,
     "name": "6×9 Hardcover book  dieline 901040",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -39431,7 +39431,7 @@
   {
     "id": 3034,
     "name": "5 panel adjustable baseball cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -39457,7 +39457,7 @@
   {
     "id": 3036,
     "name": "Adjustable snapback dad cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -39470,7 +39470,7 @@
   {
     "id": 3037,
     "name": "Trucker cap with metal buckle back strap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -41992,7 +41992,7 @@
   {
     "id": 3231,
     "name": "Magazine cover dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -43812,7 +43812,7 @@
   {
     "id": 3371,
     "name": "Square jewelry box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -43851,7 +43851,7 @@
   {
     "id": 3374,
     "name": "Round jewelry box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -44254,7 +44254,7 @@
   {
     "id": 3405,
     "name": "Drinking cup with dome cap dieline 510330",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -45541,7 +45541,7 @@
   {
     "id": 3504,
     "name": "Plastic lunch box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -45554,7 +45554,7 @@
   {
     "id": 3505,
     "name": "Plastic lunch box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -46425,7 +46425,7 @@
   {
     "id": 3572,
     "name": "Capsule packaging dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -47543,7 +47543,7 @@
   {
     "id": 3658,
     "name": "Eight-sided food storage packaging dieline",
-    "category": "folding",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -48492,7 +48492,7 @@
   {
     "id": 3731,
     "name": "Paper tube with steel cap cylinder tube dieline 603670",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -48505,7 +48505,7 @@
   {
     "id": 3732,
     "name": "Candy window paper pouch dieline",
-    "category": "bags",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -48596,7 +48596,7 @@
   {
     "id": 3739,
     "name": "Round gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -49051,7 +49051,7 @@
   {
     "id": 3774,
     "name": "110 ml plastic box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -49441,7 +49441,7 @@
   {
     "id": 3804,
     "name": "Cylinder tube with a cap label tube dieline 602800",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -50741,7 +50741,7 @@
   {
     "id": 3904,
     "name": "Plastic box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -50754,7 +50754,7 @@
   {
     "id": 3905,
     "name": "Plastic box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -51222,7 +51222,7 @@
   {
     "id": 3941,
     "name": "Cup with lid dieline 601790",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -52028,7 +52028,7 @@
   {
     "id": 4003,
     "name": "Soup cup with lid dieline 601410",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -57644,7 +57644,7 @@
   {
     "id": 4435,
     "name": "Gift box with shirt dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -57748,7 +57748,7 @@
   {
     "id": 4443,
     "name": "Gift box with ribbon dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -61219,7 +61219,7 @@
   {
     "id": 4710,
     "name": "Lug cap bamboo glass jar dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -61232,7 +61232,7 @@
   {
     "id": 4711,
     "name": "Flip top seal lid squeeze folding sipper bottle dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -61245,7 +61245,7 @@
   {
     "id": 4712,
     "name": "Flip-top seal lid  squeeze sipper bottle dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -61362,7 +61362,7 @@
   {
     "id": 4721,
     "name": "Flip top seal lid squeeze bottle dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -61622,7 +61622,7 @@
   {
     "id": 4741,
     "name": "150 ml supplement bottle with open cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -61648,7 +61648,7 @@
   {
     "id": 4743,
     "name": "300 ml pill bottle with open cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -61778,7 +61778,7 @@
   {
     "id": 4753,
     "name": "White cylinder box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -62272,7 +62272,7 @@
   {
     "id": 4791,
     "name": "Twist cap soda bottle dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -62285,7 +62285,7 @@
   {
     "id": 4792,
     "name": "Twist cap beer bottle dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -62298,7 +62298,7 @@
   {
     "id": 4793,
     "name": "500 ml twist cap beer bottle dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -62311,7 +62311,7 @@
   {
     "id": 4794,
     "name": "Twist cap beer bottle dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -63247,7 +63247,7 @@
   {
     "id": 4866,
     "name": "Plastic bowl with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -64053,7 +64053,7 @@
   {
     "id": 4928,
     "name": "Chocolate box with lid dieline 512060",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -64079,7 +64079,7 @@
   {
     "id": 4930,
     "name": "Chocolate box with lid dieline 512040",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -64092,7 +64092,7 @@
   {
     "id": 4931,
     "name": "Chocolate box with lid dieline 512030",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -64963,7 +64963,7 @@
   {
     "id": 4998,
     "name": "Plastic cup with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -65457,7 +65457,7 @@
   {
     "id": 5036,
     "name": "Plastic cup with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -65691,7 +65691,7 @@
   {
     "id": 5054,
     "name": "Bottle with cap 250ml plastic cans dieline 510820",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66445,7 +66445,7 @@
   {
     "id": 5112,
     "name": "Button flip cap tumbler dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66471,7 +66471,7 @@
   {
     "id": 5114,
     "name": "Screw cap tumbler dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66484,7 +66484,7 @@
   {
     "id": 5115,
     "name": "Tumbler with handle screw cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66497,7 +66497,7 @@
   {
     "id": 5116,
     "name": "Screw cap tumbler dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66510,7 +66510,7 @@
   {
     "id": 5117,
     "name": "Tumbler with handle cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66562,7 +66562,7 @@
   {
     "id": 5121,
     "name": "Screw cap tumbler dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66575,7 +66575,7 @@
   {
     "id": 5122,
     "name": "Screw cap tumbler dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66588,7 +66588,7 @@
   {
     "id": 5123,
     "name": "Screw cap tumbler dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66614,7 +66614,7 @@
   {
     "id": 5125,
     "name": "Screw cap tumbler dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66640,7 +66640,7 @@
   {
     "id": 5127,
     "name": "Screw cap tumbler dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66692,7 +66692,7 @@
   {
     "id": 5131,
     "name": "40oz ringneck tumbler with clear cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66744,7 +66744,7 @@
   {
     "id": 5135,
     "name": "20oz tumbler with clear cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66757,7 +66757,7 @@
   {
     "id": 5136,
     "name": "Flip cap tumbler dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66783,7 +66783,7 @@
   {
     "id": 5138,
     "name": "Flip cap tumbler dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -66861,7 +66861,7 @@
   {
     "id": 5144,
     "name": "20oz ringneck tumbler with clear cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -67160,7 +67160,7 @@
   {
     "id": 5167,
     "name": "Soup cup with lid dieline 601430",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -67407,7 +67407,7 @@
   {
     "id": 5186,
     "name": "Clear dome lid cup dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -69591,7 +69591,7 @@
   {
     "id": 5354,
     "name": "Paper buckets with lid dieline 508470",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -73959,7 +73959,7 @@
   {
     "id": 5690,
     "name": "Plastic jar with cap plastic cans can dieline 505330",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -75675,7 +75675,7 @@
   {
     "id": 5822,
     "name": "Jars with lid plastic cans can dieline 504060",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -76325,7 +76325,7 @@
   {
     "id": 5872,
     "name": "Plastic bottle with cap product label plastic cans dieline 503570",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -76689,7 +76689,7 @@
   {
     "id": 5900,
     "name": "Plastic cup with cap cups dieline 503380",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -79913,7 +79913,7 @@
   {
     "id": 6148,
     "name": "500 ml plastic water bottle with cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -82084,7 +82084,7 @@
   {
     "id": 6315,
     "name": "Hardcover notebook  dieline 605070",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -82162,7 +82162,7 @@
   {
     "id": 6321,
     "name": "30ml twist cap plastic dropper bottle dieline 511710",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -82175,7 +82175,7 @@
   {
     "id": 6322,
     "name": "60ml twist cap plastic dropper bottle dieline 511711",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -82188,7 +82188,7 @@
   {
     "id": 6323,
     "name": "125ml twist cap plastic dropper bottle dieline 511712",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -82214,7 +82214,7 @@
   {
     "id": 6325,
     "name": "100ml twist cap plastic dropper bottle dieline 511713",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -82227,7 +82227,7 @@
   {
     "id": 6326,
     "name": "150ml twist cap plastic dropper bottle dieline 511714",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -82240,7 +82240,7 @@
   {
     "id": 6327,
     "name": "250ml twist cap plastic dropper bottle dieline 511715",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -82253,7 +82253,7 @@
   {
     "id": 6328,
     "name": "180ml twist cap plastic dropper bottle dieline 511716",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -82292,7 +82292,7 @@
   {
     "id": 6331,
     "name": "80ml twist cap plastic dropper bottle dieline 511717",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -82617,7 +82617,7 @@
   {
     "id": 6356,
     "name": "Packaging bottle gift box dieline 510370",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -82929,7 +82929,7 @@
   {
     "id": 6380,
     "name": "Custom dimensions plastic box with lid product label dieline 602170",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -83098,7 +83098,7 @@
   {
     "id": 6393,
     "name": "Magazine cover dieline 651404",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -83189,7 +83189,7 @@
   {
     "id": 6400,
     "name": "Gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -84918,7 +84918,7 @@
   {
     "id": 6533,
     "name": "Landscape notebook dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -85048,7 +85048,7 @@
   {
     "id": 6543,
     "name": "Hardcover book with bookmark  dieline 901190",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -85178,7 +85178,7 @@
   {
     "id": 6553,
     "name": "Open hardcover book dieline 901380",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -85204,7 +85204,7 @@
   {
     "id": 6555,
     "name": "Open landscape dieline 901330",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -85217,7 +85217,7 @@
   {
     "id": 6556,
     "name": "Landscape book dieline 901270",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -85243,7 +85243,7 @@
   {
     "id": 6558,
     "name": "Hardcover landscape book dieline 901220",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -85256,7 +85256,7 @@
   {
     "id": 6559,
     "name": "Hardcover book with bookmark dieline 901210",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -85269,7 +85269,7 @@
   {
     "id": 6560,
     "name": "Hardcover landscape book dieline 901200",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -85282,7 +85282,7 @@
   {
     "id": 6561,
     "name": "Hardcover square book dieline 901170",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -85321,7 +85321,7 @@
   {
     "id": 6564,
     "name": "8.5×11 Book cover dieline 901080",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -85334,7 +85334,7 @@
   {
     "id": 6565,
     "name": "Hardcover book dieline 901070",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -89026,7 +89026,7 @@
   {
     "id": 6849,
     "name": "Capsule packaging dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -89091,7 +89091,7 @@
   {
     "id": 6854,
     "name": "Open gift box dieline",
-    "category": "rigid",
+    "category": "folding",
     "formats": [
       "AI",
       "PDF",
@@ -89546,7 +89546,7 @@
   {
     "id": 6889,
     "name": "Oval box with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -89559,7 +89559,7 @@
   {
     "id": 6890,
     "name": "Bucket with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -90417,7 +90417,7 @@
   {
     "id": 6956,
     "name": "Spandex table cover dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -90469,7 +90469,7 @@
   {
     "id": 6960,
     "name": "Plastic bottle dieline with cap",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -92107,7 +92107,7 @@
   {
     "id": 7086,
     "name": "20oz ringneck tumbler with clear cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -92939,7 +92939,7 @@
   {
     "id": 7150,
     "name": "Glass storage jar dieline",
-    "category": "folding",
+    "category": "storage",
     "formats": [
       "AI",
       "PDF",
@@ -93485,7 +93485,7 @@
   {
     "id": 7192,
     "name": "Jar with screw cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -93563,7 +93563,7 @@
   {
     "id": 7198,
     "name": "Jar with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -93576,7 +93576,7 @@
   {
     "id": 7199,
     "name": "Glass jar with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -93628,7 +93628,7 @@
   {
     "id": 7203,
     "name": "Tumbler with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -93641,7 +93641,7 @@
   {
     "id": 7204,
     "name": "Square cup with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -93719,7 +93719,7 @@
   {
     "id": 7210,
     "name": "Plastic jar with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -93784,7 +93784,7 @@
   {
     "id": 7215,
     "name": "Glass jar with clip lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -93823,7 +93823,7 @@
   {
     "id": 7218,
     "name": "Plastic jar with lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -94031,7 +94031,7 @@
   {
     "id": 7234,
     "name": "Plastic jar with clear lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -94213,7 +94213,7 @@
   {
     "id": 7248,
     "name": "Cosmetic jar with metallic lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -94291,7 +94291,7 @@
   {
     "id": 7254,
     "name": "Jar with covered lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -94304,7 +94304,7 @@
   {
     "id": 7255,
     "name": "White jar with ruffled lid dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -94460,7 +94460,7 @@
   {
     "id": 7267,
     "name": "One page landscape magazine dieline 651416",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -94603,7 +94603,7 @@
   {
     "id": 7278,
     "name": "Pet food window pouch dieline",
-    "category": "bags",
+    "category": "window",
     "formats": [
       "AI",
       "PDF",
@@ -95136,7 +95136,7 @@
   {
     "id": 7319,
     "name": "Sun visor tennis cap dieline",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95149,7 +95149,7 @@
   {
     "id": 7320,
     "name": "Landscape magazine dieline 651419",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95162,7 +95162,7 @@
   {
     "id": 7321,
     "name": "A4 landscape magazine dieline 651418",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95175,7 +95175,7 @@
   {
     "id": 7322,
     "name": "Square magazine cover dieline 651417",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95201,7 +95201,7 @@
   {
     "id": 7324,
     "name": "Open landscape magazine dieline 651412",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95227,7 +95227,7 @@
   {
     "id": 7326,
     "name": "Magazine cover dieline 651406",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95240,7 +95240,7 @@
   {
     "id": 7327,
     "name": "8.5 x 11 Magazine cover dieline 651405",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95708,7 +95708,7 @@
   {
     "id": 7363,
     "name": "Coffee capsule dieline 511290",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95721,7 +95721,7 @@
   {
     "id": 7364,
     "name": "Coffee capsule dieline 511240",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95760,7 +95760,7 @@
   {
     "id": 7367,
     "name": "Disposable bowl with lid food packaging salad box dieline 510890",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95773,7 +95773,7 @@
   {
     "id": 7368,
     "name": "disposable bowl with lid food packaging paper bowl dieline 510880",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95903,7 +95903,7 @@
   {
     "id": 7378,
     "name": "Magazine cover dieline 651414",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95942,7 +95942,7 @@
   {
     "id": 7381,
     "name": "A4 Landscape magazine dieline 651423",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95955,7 +95955,7 @@
   {
     "id": 7382,
     "name": "Open square magazine cover dieline 651422",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95968,7 +95968,7 @@
   {
     "id": 7383,
     "name": "A4 Magazine cover dieline 651409",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
@@ -95994,7 +95994,7 @@
   {
     "id": 7385,
     "name": "Open landscape magazine cover dieline 651411",
-    "category": "folding",
+    "category": "lid",
     "formats": [
       "AI",
       "PDF",
