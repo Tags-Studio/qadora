@@ -20,13 +20,21 @@
   --saas-transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.dieline-view-clean {
+  width: 100%;
+  height: 100%;
+  background-color: var(--saas-bg);
+}
+
 .dieline-saas-layout {
   min-height: 100vh;
+  width: 100%;
   background-color: var(--saas-bg);
   color: var(--saas-fg-primary);
   font-family: 'Inter', sans-serif;
   display: flex;
   flex-direction: column;
+  direction: ltr;
 }
 
 /* ── Header (80px high) ── */
