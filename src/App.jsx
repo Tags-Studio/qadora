@@ -7,7 +7,7 @@ import ControlPanel from './components/Editor/ControlPanel';
 import './App.css';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('home');
+  const [currentView, setCurrentView] = useState('dieline');
   const [selectedDieline, setSelectedDieline] = useState(null);
 
   const handleNavigate = (sectionId) => {
@@ -15,7 +15,7 @@ export default function App() {
   };
 
   const handleBackHome = () => {
-    setCurrentView('home');
+    setCurrentView('dieline');
     setSelectedDieline(null);
   };
 
@@ -41,10 +41,7 @@ export default function App() {
   // 2. Dieline List View
   if (currentView === 'dieline') {
     return (
-      <div className="app-layout dieline-view">
-        <button className="back-home-btn" onClick={handleBackHome} title="Back to Home">
-          ← Home
-        </button>
+      <div className="app-layout dieline-view-clean">
         <DielinePage onBack={handleBackHome} onSelectDieline={handleSelectDieline} />
       </div>
     );
