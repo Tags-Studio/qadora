@@ -123,147 +123,147 @@ const DIELINE_CATEGORIES = [
   { id: 'bags', name: 'Paper Bag', count: 1 }
 ];
 
-// Beautiful high-quality 3D folded rendering box images
+// Beautiful high-quality original Pacdora 3D folded rendering box images
 const REAL_DIELINE_DATA = [
   {
     id: 1,
     name: "Rollover hinged lid mailer box dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=400&auto=format&fit=crop" // 3D Mailer box
+    image: "https://cdn.pacdora.com/preview/dieline-150010.png"
   },
   {
     id: 2,
     name: "Reverse tuck end box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://images.unsplash.com/photo-1512909006721-3d6018887383?q=80&w=400&auto=format&fit=crop" // Tall gift box
+    image: "https://cdn.pacdora.com/preview/dieline-100010.png"
   },
   {
     id: 3,
     name: "Tuck end mailer box packaging dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF", "SVG"],
-    image: "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=400&auto=format&fit=crop" // Kraft box
+    image: "https://cdn.pacdora.com/preview/dieline-102010.png"
   },
   {
     id: 4,
     name: "FEFCO 0217 carrying handle top",
     category: "fefco",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=400&auto=format&fit=crop" // Handle box
+    image: "https://cdn.pacdora.com/preview/dieline-112310.png"
   },
   {
     id: 5,
     name: "Medicine box dieline",
     category: "folding",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://images.unsplash.com/photo-1607619056574-7b8f304b3c83?q=80&w=400&auto=format&fit=crop" // Medicine packet
+    image: "https://cdn.pacdora.com/preview/dieline-100030.png"
   },
   {
     id: 6,
     name: "Sweet box dieline",
     category: "folding",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=400&auto=format&fit=crop" // Chocolate/sweet gift box
+    image: "https://cdn.pacdora.com/preview/dieline-105020.png"
   },
   {
     id: 7,
     name: "FEFCO 0201 regular slotted box (RSC) dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF", "SVG"],
-    image: "https://images.unsplash.com/photo-1530587191325-3db32d826c18?q=80&w=400&auto=format&fit=crop" // Brown cardboard shipping box
+    image: "https://cdn.pacdora.com/preview/dieline-110010.png"
   },
   {
     id: 8,
     name: "FEFCO 0426 tray with front self locking walls and hinged lid dieline",
     category: "fefco",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=400&auto=format&fit=crop" // Self locking cover mailer
+    image: "https://cdn.pacdora.com/preview/dieline-156210.png"
   },
   {
     id: 9,
     name: "Cosmetic box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?q=80&w=400&auto=format&fit=crop" // Cosmetic package
+    image: "https://cdn.pacdora.com/preview/dieline-102680.png"
   },
   {
     id: 10,
     name: "Square cosmetics jar box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=400&auto=format&fit=crop" // Square cosmetic box
+    image: "https://cdn.pacdora.com/preview/dieline-101010.png"
   },
   {
     id: 11,
     name: "FEFCO 0300 full telescope side slotted box (FTSSC) dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://images.unsplash.com/photo-1530587191325-3db32d826c18?q=80&w=400&auto=format&fit=crop" // Telescope shipping box
+    image: "https://cdn.pacdora.com/preview/dieline-160010.png"
   },
   {
     id: 12,
     name: "Flip top magnetic gift box dieline",
     category: "rigid",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=400&auto=format&fit=crop" // Rigid flip box
+    image: "https://cdn.pacdora.com/preview/dieline-185010.png"
   },
   {
     id: 13,
     name: "Drawer gift box dieline",
     category: "rigid",
     formats: ["AI", "PDF", "DXF", "SVG"],
-    image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=400&auto=format&fit=crop" // Sliding drawer gift box
+    image: "https://cdn.pacdora.com/preview/dieline-180010.png"
   },
   {
     id: 14,
     name: "Auto lock bottom box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://images.unsplash.com/photo-1512909006721-3d6018887383?q=80&w=400&auto=format&fit=crop" // Auto lock bottom box
+    image: "https://cdn.pacdora.com/preview/dieline-105010.png"
   },
   {
     id: 15,
     name: "FEFCO 0427 roll end tray with locking cover dieline",
     category: "tray",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=400&auto=format&fit=crop" // Roll end tray
+    image: "https://cdn.pacdora.com/preview/dieline-150011.png"
   },
   {
     id: 16,
     name: "Paper shopping bag dieline",
     category: "bags",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=400&auto=format&fit=crop" // Paper shopping bag
+    image: "https://cdn.pacdora.com/preview/dieline-220010.png"
   },
   {
     id: 17,
     name: "Tuck end card game box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=400&auto=format&fit=crop" // Card game box
+    image: "https://cdn.pacdora.com/preview/dieline-100020.png"
   },
   {
     id: 18,
     name: "Food drawer box dieline",
     category: "tray",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=400&auto=format&fit=crop" // Drawer box
+    image: "https://cdn.pacdora.com/preview/dieline-180020.png"
   },
   {
     id: 19,
     name: "Cake box with handle dieline",
     category: "folding",
     formats: ["AI", "PDF", "DXF", "SVG"],
-    image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=400&auto=format&fit=crop" // Handle cake box
+    image: "https://cdn.pacdora.com/preview/dieline-113010.png"
   },
   {
     id: 20,
     name: "Face Cream Open tuck end box dieline",
     category: "folding",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?q=80&w=400&auto=format&fit=crop" // Cosmetic cream box
+    image: "https://cdn.pacdora.com/preview/dieline-102020.png"
   }
 ];
 
@@ -283,20 +283,20 @@ export default function DielinePage({ onBack, onSelectDieline }) {
         const firstWord = term.split(' ')[0].toLowerCase();
         
         let determinedCategory = 'folding';
-        let imageUrl = 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?q=80&w=400'; // cosmetic box
+        let imageUrl = 'https://cdn.pacdora.com/preview/dieline-102680.png'; // cosmetic box
         
         if (firstWord.includes('bag') || term.includes('bag')) {
           determinedCategory = 'bags';
-          imageUrl = 'https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=400';
+          imageUrl = 'https://cdn.pacdora.com/preview/dieline-220010.png';
         } else if (firstWord.includes('mailer') || term.includes('pizza') || term.includes('shoe') || term.includes('flat')) {
           determinedCategory = 'mailer';
-          imageUrl = 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=400';
+          imageUrl = 'https://cdn.pacdora.com/preview/dieline-150010.png';
         } else if (firstWord.includes('shipping') || term.includes('carton') || term.includes('fefco')) {
           determinedCategory = 'fefco';
-          imageUrl = 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?q=80&w=400';
+          imageUrl = 'https://cdn.pacdora.com/preview/dieline-110010.png';
         } else if (firstWord.includes('drawer') || term.includes('gift') || term.includes('rigid') || term.includes('magnetic')) {
           determinedCategory = 'rigid';
-          imageUrl = 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=400';
+          imageUrl = 'https://cdn.pacdora.com/preview/dieline-180010.png';
         }
 
         list.push({
@@ -382,7 +382,7 @@ export default function DielinePage({ onBack, onSelectDieline }) {
                 onClick={() => onSelectDieline?.(dieline)}
                 style={{ cursor: 'pointer' }}
               >
-                {/* Split Thumbnail: Left side shows detailed Dieline (blue/red), Right side shows 3D mockups */}
+                {/* Split Thumbnail: Left side shows detailed Dieline (blue/red), Right side shows Pacdora 3D mockup */}
                 <div className="dieline-card-image split-thumbnail">
                   <div className="thumbnail-2d-side detailed-vector-bg">
                     <MiniDielineSVG dielineName={dieline.name} />
