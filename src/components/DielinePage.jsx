@@ -2,50 +2,41 @@ import React, { useState, useMemo } from 'react';
 import './DielinePage.css';
 
 // Helper component to render a beautiful micro vector schematic of the dieline based on its type
-// Supports two modes:
-// - "detailed": cut lines in blue (#2563eb), fold lines in red (#ef4444)
-// - "simple": outer boundary in solid grey (#6b7280), internal folds in dashed grey
-function MiniDielineSVG({ dielineName, mode = 'detailed' }) {
+// Shows detailed mode: cut lines in blue (#3b82f6) and fold lines in red (#ef4444)
+function MiniDielineSVG({ dielineName }) {
   const name = dielineName.toLowerCase();
   
-  const cutColor = mode === 'detailed' ? '#3b82f6' : '#6b7280';
-  const foldColor = mode === 'detailed' ? '#ef4444' : '#9ca3af';
-  const foldDash = mode === 'detailed' ? 'none' : '2,2';
+  const cutColor = '#3b82f6';
+  const foldColor = '#ef4444';
 
   // 1. PAPER BAG
   if (name.includes('bag')) {
     return (
-      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="0.8">
-        {/* Main panels */}
+      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="1">
         <rect x="15" y="15" width="22" height="50" rx="0.5" stroke={cutColor} />
         <rect x="37" y="15" width="12" height="50" rx="0.5" stroke={cutColor} />
         <rect x="49" y="15" width="22" height="50" rx="0.5" stroke={cutColor} />
         <rect x="71" y="15" width="12" height="50" rx="0.5" stroke={cutColor} />
-        {/* Glue tab */}
         <path d="M 83 20 L 87 23 L 87 57 L 83 60 Z" stroke={cutColor} />
-        {/* Bottom flaps */}
-        <rect x="15" y="65" width="22" height="12" stroke={foldColor} strokeDasharray={foldDash} />
-        <rect x="37" y="65" width="12" height="12" stroke={foldColor} strokeDasharray={foldDash} />
-        <rect x="49" y="65" width="22" height="12" stroke={foldColor} strokeDasharray={foldDash} />
-        <rect x="71" y="65" width="12" height="12" stroke={foldColor} strokeDasharray={foldDash} />
-        {/* Vertical fold separator lines */}
-        <line x1="37" y1="15" x2="37" y2="77" stroke={foldColor} strokeDasharray={foldDash} />
-        <line x1="49" y1="15" x2="49" y2="77" stroke={foldColor} strokeDasharray={foldDash} />
-        <line x1="71" y1="15" x2="71" y2="77" stroke={foldColor} strokeDasharray={foldDash} />
+        <rect x="15" y="65" width="22" height="12" stroke={foldColor} />
+        <rect x="37" y="65" width="12" height="12" stroke={foldColor} />
+        <rect x="49" y="65" width="22" height="12" stroke={foldColor} />
+        <rect x="71" y="65" width="12" height="12" stroke={foldColor} />
+        <line x1="37" y1="15" x2="37" y2="77" stroke={foldColor} />
+        <line x1="49" y1="15" x2="49" y2="77" stroke={foldColor} />
+        <line x1="71" y1="15" x2="71" y2="77" stroke={foldColor} />
       </svg>
     );
   }
 
-  // 2. SLOTTED SHIPPING BOX (RSC / FEFCO 0201)
+  // 2. SLOTTED SHIPPING BOX (RSC)
   if (name.includes('rsc') || name.includes('slotted') || name.includes('fefco 0201') || name.includes('fefco 0300')) {
     return (
-      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="0.8">
-        {/* Main body panels */}
+      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="1">
         <rect x="10" y="30" width="24" height="40" stroke={cutColor} />
         <rect x="34" y="30" width="14" height="40" stroke={cutColor} />
         <rect x="48" y="30" width="24" height="40" stroke={cutColor} />
         <rect x="72" y="30" width="14" height="40" stroke={cutColor} />
-        {/* Top & Bottom flaps */}
         <rect x="10" y="15" width="24" height="15" stroke={cutColor} />
         <rect x="34" y="20" width="14" height="10" stroke={cutColor} />
         <rect x="48" y="15" width="24" height="15" stroke={cutColor} />
@@ -54,13 +45,11 @@ function MiniDielineSVG({ dielineName, mode = 'detailed' }) {
         <rect x="34" y="70" width="14" height="10" stroke={cutColor} />
         <rect x="48" y="70" width="24" height="15" stroke={cutColor} />
         <rect x="72" y="70" width="14" height="10" stroke={cutColor} />
-        {/* Horizontal fold lines */}
-        <line x1="10" y1="30" x2="86" y2="30" stroke={foldColor} strokeDasharray={foldDash} />
-        <line x1="10" y1="70" x2="86" y2="70" stroke={foldColor} strokeDasharray={foldDash} />
-        {/* Vertical fold lines */}
-        <line x1="34" y1="15" x2="34" y2="80" stroke={foldColor} strokeDasharray={foldDash} />
-        <line x1="48" y1="15" x2="48" y2="80" stroke={foldColor} strokeDasharray={foldDash} />
-        <line x1="72" y1="15" x2="72" y2="80" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="10" y1="30" x2="86" y2="30" stroke={foldColor} />
+        <line x1="10" y1="70" x2="86" y2="70" stroke={foldColor} />
+        <line x1="34" y1="15" x2="34" y2="80" stroke={foldColor} />
+        <line x1="48" y1="15" x2="48" y2="80" stroke={foldColor} />
+        <line x1="72" y1="15" x2="72" y2="80" stroke={foldColor} />
       </svg>
     );
   }
@@ -68,71 +57,58 @@ function MiniDielineSVG({ dielineName, mode = 'detailed' }) {
   // 3. DRAWER BOX
   if (name.includes('drawer') || name.includes('slide')) {
     return (
-      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="0.8">
-        {/* Outer Sleeve (left) */}
+      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="1">
         <rect x="8" y="20" width="16" height="45" stroke={cutColor} />
         <rect x="24" y="20" width="8" height="45" stroke={cutColor} />
         <rect x="32" y="20" width="16" height="45" stroke={cutColor} />
         <rect x="48" y="20" width="8" height="45" stroke={cutColor} />
-        <line x1="24" y1="20" x2="24" y2="65" stroke={foldColor} strokeDasharray={foldDash} />
-        <line x1="32" y1="20" x2="32" y2="65" stroke={foldColor} strokeDasharray={foldDash} />
-        <line x1="48" y1="20" x2="48" y2="65" stroke={foldColor} strokeDasharray={foldDash} />
-
-        {/* Inner Tray (right) */}
+        <line x1="24" y1="20" x2="24" y2="65" stroke={foldColor} />
+        <line x1="32" y1="20" x2="32" y2="65" stroke={foldColor} />
+        <line x1="48" y1="20" x2="48" y2="65" stroke={foldColor} />
         <rect x="64" y="28" width="22" height="28" stroke={cutColor} />
         <rect x="64" y="18" width="22" height="10" stroke={cutColor} />
         <rect x="64" y="56" width="22" height="10" stroke={cutColor} />
-        <line x1="64" y1="28" x2="86" y2="28" stroke={foldColor} strokeDasharray={foldDash} />
-        <line x1="64" y1="56" x2="86" y2="56" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="64" y1="28" x2="86" y2="28" stroke={foldColor} />
+        <line x1="64" y1="56" x2="86" y2="56" stroke={foldColor} />
       </svg>
     );
   }
 
-  // 4. MAILER BOX (FEFCO 0427 / Hinged lid)
+  // 4. MAILER BOX
   if (name.includes('mailer') || name.includes('hinged') || name.includes('fefco 0427') || name.includes('fefco 0426') || name.includes('tray')) {
     return (
-      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="0.8">
-        {/* Main base */}
+      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="1">
         <rect x="32" y="32" width="36" height="26" stroke={cutColor} />
-        {/* Hinged lid */}
         <rect x="32" y="14" width="36" height="18" stroke={cutColor} />
-        {/* Side wings */}
         <path d="M 12 32 L 32 32 L 32 58 L 12 58 Z" stroke={cutColor} />
         <path d="M 68 32 L 88 32 L 88 58 L 68 58 Z" stroke={cutColor} />
-        {/* Flaps */}
         <path d="M 32 58 L 68 58 L 63 76 L 37 76 Z" stroke={cutColor} />
-        {/* Internal fold lines */}
-        <line x1="32" y1="32" x2="68" y2="32" stroke={foldColor} strokeDasharray={foldDash} />
-        <line x1="32" y1="58" x2="68" y2="58" stroke={foldColor} strokeDasharray={foldDash} />
-        <line x1="32" y1="14" x2="32" y2="76" stroke={foldColor} strokeDasharray={foldDash} />
-        <line x1="68" y1="14" x2="68" y2="76" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="32" y1="32" x2="68" y2="32" stroke={foldColor} />
+        <line x1="32" y1="58" x2="68" y2="58" stroke={foldColor} />
+        <line x1="32" y1="14" x2="32" y2="76" stroke={foldColor} />
+        <line x1="68" y1="14" x2="68" y2="76" stroke={foldColor} />
       </svg>
     );
   }
 
-  // 5. TUCK END BOX (Default folding carton)
+  // 5. TUCK END BOX
   return (
-    <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="0.8">
-      {/* 4 main walls */}
+    <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="1">
       <rect x="15" y="25" width="16" height="50" stroke={cutColor} />
       <rect x="31" y="25" width="16" height="50" stroke={cutColor} />
       <rect x="47" y="25" width="16" height="50" stroke={cutColor} />
       <rect x="63" y="25" width="16" height="50" stroke={cutColor} />
-      {/* Glue Flap */}
       <rect x="79" y="30" width="6" height="40" stroke={cutColor} />
-      {/* Top Tuck Lid */}
       <rect x="15" y="12" width="16" height="13" stroke={cutColor} />
       <path d="M 15 12 L 20 5 L 26 5 L 31 12" stroke={cutColor} />
-      {/* Bottom Tuck Lid */}
       <rect x="47" y="75" width="16" height="13" stroke={cutColor} />
       <path d="M 47 88 L 52 95 L 58 95 L 63 88" stroke={cutColor} />
-      {/* Internal folds */}
-      <line x1="15" y1="25" x2="79" y2="25" stroke={foldColor} strokeDasharray={foldDash} />
-      <line x1="15" y1="75" x2="79" y2="75" stroke={foldColor} strokeDasharray={foldDash} />
-      <line x1="31" y1="25" x2="31" y2="75" stroke={foldColor} strokeDasharray={foldDash} />
-      <line x1="47" y1="25" x2="47" y2="75" stroke={foldColor} strokeDasharray={foldDash} />
-      <line x1="63" y1="25" x2="63" y2="75" stroke={foldColor} strokeDasharray={foldDash} />
-      <line x1="79" y1="30" x2="79" y2="70" stroke={foldColor} strokeDasharray={foldDash} />
+      <line x1="15" y1="25" x2="79" y2="25" stroke={foldColor} />
+      <line x1="15" y1="75" x2="79" y2="75" stroke={foldColor} />
+      <line x1="31" y1="25" x2="31" y2="75" stroke={foldColor} />
+      <line x1="47" y1="25" x2="47" y2="75" stroke={foldColor} />
+      <line x1="63" y1="25" x2="63" y2="75" stroke={foldColor} />
+      <line x1="79" y1="30" x2="79" y2="70" stroke={foldColor} />
     </svg>
   );
 }
@@ -147,146 +123,147 @@ const DIELINE_CATEGORIES = [
   { id: 'bags', name: 'Paper Bag', count: 1 }
 ];
 
+// Beautiful high-quality 3D folded rendering box images
 const REAL_DIELINE_DATA = [
   {
     id: 1,
     name: "Rollover hinged lid mailer box dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/model/4fa4385f-fd84-4ed7-ae49-221ae0b7c695.png"
+    image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=400&auto=format&fit=crop" // 3D Mailer box
   },
   {
     id: 2,
     name: "Reverse tuck end box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/model/1d34c6ad-4569-42b7-a37a-42c26f0f5b9d.png"
+    image: "https://images.unsplash.com/photo-1512909006721-3d6018887383?q=80&w=400&auto=format&fit=crop" // Tall gift box
   },
   {
     id: 3,
     name: "Tuck end mailer box packaging dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF", "SVG"],
-    image: "https://cdn.pacdora.com/model/2c0d8320-ebdb-47b8-bc71-120008bd12cc.png"
+    image: "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=400&auto=format&fit=crop" // Kraft box
   },
   {
     id: 4,
     name: "FEFCO 0217 carrying handle top",
     category: "fefco",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/admin-materials/e09e3a6c-ceb0-410a-9d9f-6820253457a1.png"
+    image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=400&auto=format&fit=crop" // Handle box
   },
   {
     id: 5,
     name: "Medicine box dieline",
     category: "folding",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/model/bd1c1b79-be4b-4518-8d2b-49a25ed9fd79.png"
+    image: "https://images.unsplash.com/photo-1607619056574-7b8f304b3c83?q=80&w=400&auto=format&fit=crop" // Medicine packet
   },
   {
     id: 6,
     name: "Sweet box dieline",
     category: "folding",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/model/8b8e0b65-e9df-416b-9c2b-1a0e026b9a89.png"
+    image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=400&auto=format&fit=crop" // Chocolate/sweet gift box
   },
   {
     id: 7,
     name: "FEFCO 0201 regular slotted box (RSC) dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF", "SVG"],
-    image: "https://cdn.pacdora.com/admin-materials/c3c5f189-a097-4d47-aa89-06280795a325.png"
+    image: "https://images.unsplash.com/photo-1530587191325-3db32d826c18?q=80&w=400&auto=format&fit=crop" // Brown cardboard shipping box
   },
   {
     id: 8,
     name: "FEFCO 0426 tray with front self locking walls and hinged lid dieline",
     category: "fefco",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/model/db1853f6-49f9-467f-8561-8aa22f7fb5c6.png"
+    image: "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=400&auto=format&fit=crop" // Self locking cover mailer
   },
   {
     id: 9,
     name: "Cosmetic box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/model/b4b39794-caee-4ea0-bd89-e265c71b12cc.png"
+    image: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?q=80&w=400&auto=format&fit=crop" // Cosmetic package
   },
   {
     id: 10,
     name: "Square cosmetics jar box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/model/65ef122a-f96b-4e08-bfb1-ea21051515ef.png"
+    image: "https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=400&auto=format&fit=crop" // Square cosmetic box
   },
   {
     id: 11,
     name: "FEFCO 0300 full telescope side slotted box (FTSSC) dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/admin-materials/be03848b-3e5f-4632-a5be-449e7b23cf49.png"
+    image: "https://images.unsplash.com/photo-1530587191325-3db32d826c18?q=80&w=400&auto=format&fit=crop" // Telescope shipping box
   },
   {
     id: 12,
     name: "Flip top magnetic gift box dieline",
     category: "rigid",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/admin-materials/2d927845-fe88-4ff2-ac7b-8bfd545d02fe.png"
+    image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=400&auto=format&fit=crop" // Rigid flip box
   },
   {
     id: 13,
     name: "Drawer gift box dieline",
     category: "rigid",
     formats: ["AI", "PDF", "DXF", "SVG"],
-    image: "https://cdn.pacdora.com/model/f28eb2cc-1f8e-4a6c-94cc-ae4c0628bd89.png"
+    image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=400&auto=format&fit=crop" // Sliding drawer gift box
   },
   {
     id: 14,
     name: "Auto lock bottom box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/model/e3b6a22f-d890-48e0-bb49-5f280a7bfb21.png"
+    image: "https://images.unsplash.com/photo-1512909006721-3d6018887383?q=80&w=400&auto=format&fit=crop" // Auto lock bottom box
   },
   {
     id: 15,
     name: "FEFCO 0427 roll end tray with locking cover dieline",
     category: "tray",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/model/319ef4f8-ad23-455b-9d4b-ac89a2b53cdc.png"
+    image: "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=400&auto=format&fit=crop" // Roll end tray
   },
   {
     id: 16,
     name: "Paper shopping bag dieline",
     category: "bags",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-220010.png"
+    image: "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=400&auto=format&fit=crop" // Paper shopping bag
   },
   {
     id: 17,
     name: "Tuck end card game box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/model/7cde8eef-a44e-4f05-88f1-eab1e26b1580.png"
+    image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=400&auto=format&fit=crop" // Card game box
   },
   {
     id: 18,
     name: "Food drawer box dieline",
     category: "tray",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/model/a4b29efc-ff67-46e3-aa00-fe58b9fdfbe0.png"
+    image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=400&auto=format&fit=crop" // Drawer box
   },
   {
     id: 19,
     name: "Cake box with handle dieline",
     category: "folding",
     formats: ["AI", "PDF", "DXF", "SVG"],
-    image: "https://cdn.pacdora.com/admin-materials/20ce9a0f-15cb-42a9-a9a7-96bcaec0bc8b.png"
+    image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=400&auto=format&fit=crop" // Handle cake box
   },
   {
     id: 20,
     name: "Face Cream Open tuck end box dieline",
     category: "folding",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/model/1484c3fc-7efe-409c-980d-084c5caa0191.png"
+    image: "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?q=80&w=400&auto=format&fit=crop" // Cosmetic cream box
   }
 ];
 
@@ -306,20 +283,20 @@ export default function DielinePage({ onBack, onSelectDieline }) {
         const firstWord = term.split(' ')[0].toLowerCase();
         
         let determinedCategory = 'folding';
-        let imageUrl = 'https://cdn.pacdora.com/model/bd1c1b79-be4b-4518-8d2b-49a25ed9fd79.png'; // default medicine
+        let imageUrl = 'https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?q=80&w=400'; // cosmetic box
         
         if (firstWord.includes('bag') || term.includes('bag')) {
           determinedCategory = 'bags';
-          imageUrl = 'https://cdn.pacdora.com/preview/dieline-220010.png';
+          imageUrl = 'https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=400';
         } else if (firstWord.includes('mailer') || term.includes('pizza') || term.includes('shoe') || term.includes('flat')) {
           determinedCategory = 'mailer';
-          imageUrl = 'https://cdn.pacdora.com/model/4fa4385f-fd84-4ed7-ae49-221ae0b7c695.png';
+          imageUrl = 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=400';
         } else if (firstWord.includes('shipping') || term.includes('carton') || term.includes('fefco')) {
           determinedCategory = 'fefco';
-          imageUrl = 'https://cdn.pacdora.com/admin-materials/c3c5f189-a097-4d47-aa89-06280795a325.png';
+          imageUrl = 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?q=80&w=400';
         } else if (firstWord.includes('drawer') || term.includes('gift') || term.includes('rigid') || term.includes('magnetic')) {
           determinedCategory = 'rigid';
-          imageUrl = 'https://cdn.pacdora.com/admin-materials/2d927845-fe88-4ff2-ac7b-8bfd545d02fe.png';
+          imageUrl = 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=400';
         }
 
         list.push({
@@ -405,13 +382,13 @@ export default function DielinePage({ onBack, onSelectDieline }) {
                 onClick={() => onSelectDieline?.(dieline)}
                 style={{ cursor: 'pointer' }}
               >
-                {/* Split Thumbnail: Left side shows detailed Dieline (blue/red), Right side shows simple structural schematic */}
+                {/* Split Thumbnail: Left side shows detailed Dieline (blue/red), Right side shows 3D mockups */}
                 <div className="dieline-card-image split-thumbnail">
                   <div className="thumbnail-2d-side detailed-vector-bg">
-                    <MiniDielineSVG dielineName={dieline.name} mode="detailed" />
+                    <MiniDielineSVG dielineName={dieline.name} />
                   </div>
-                  <div className="thumbnail-2d-side simple-vector-bg">
-                    <MiniDielineSVG dielineName={dieline.name} mode="simple" />
+                  <div className="thumbnail-3d-side">
+                    <img src={dieline.image} alt={dieline.name} />
                   </div>
                   <div className="dieline-card-overlay">
                     <button className="dieline-action-btn">View & Edit</button>

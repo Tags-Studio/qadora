@@ -239,8 +239,8 @@
   border-right: 1px dashed #e2e8f0;
 }
 
-/* Right side: Simple schematic outline on white background */
-.thumbnail-2d-side.simple-vector-bg {
+/* Right side: 3D folded mockup photo */
+.thumbnail-3d-side {
   flex: 1;
   width: 50%;
   height: 100%;
@@ -248,7 +248,16 @@
   align-items: center;
   justify-content: center;
   background: #ffffff;
-  padding: 24px;
+  padding: 8px;
+  overflow: hidden;
+}
+
+.thumbnail-3d-side img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  transition: transform 0.3s ease;
 }
 
 .mini-dieline-vector {
@@ -262,6 +271,10 @@
 .dieline-card:hover .mini-dieline-vector {
   transform: scale(1.05);
   opacity: 1;
+}
+
+.dieline-card:hover .thumbnail-3d-side img {
+  transform: scale(1.06);
 }
 
 .dieline-card-overlay {
