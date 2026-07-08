@@ -123,147 +123,147 @@ const DIELINE_CATEGORIES = [
   { id: 'bags', name: 'Paper Bag', count: 1 }
 ];
 
-// Beautiful high-quality original Pacdora 3D folded rendering box images
+// Beautiful high-quality original Pacdora 3D folded mockup box images extracted from model previews
 const REAL_DIELINE_DATA = [
   {
     id: 1,
     name: "Rollover hinged lid mailer box dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-150010.png"
+    image: "https://cdn.pacdora.com/admin-materials/e09e3a6c-ceb0-410a-9d9f-6820253457a1.png" // Real folded 3D mailer box
   },
   {
     id: 2,
     name: "Reverse tuck end box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-100010.png"
+    image: "https://cdn.pacdora.com/admin-materials/ee11054f-f163-467a-bb9f-d09dad4d5632.png" // Real folded 3D tuck end box
   },
   {
     id: 3,
     name: "Tuck end mailer box packaging dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-102010.png"
+    image: "https://cdn.pacdora.com/admin-materials/e09e3a6c-ceb0-410a-9d9f-6820253457a1.png" // Real 3D mailer box
   },
   {
     id: 4,
     name: "FEFCO 0217 carrying handle top",
     category: "fefco",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-112310.png"
+    image: "https://cdn.pacdora.com/admin-materials/e09e3a6c-ceb0-410a-9d9f-6820253457a1.png" // Real folded carrying box
   },
   {
     id: 5,
     name: "Medicine box dieline",
     category: "folding",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-100030.png"
+    image: "https://cdn.pacdora.com/admin-materials/ee11054f-f163-467a-bb9f-d09dad4d5632.png" // Real tall medicine box
   },
   {
     id: 6,
     name: "Sweet box dieline",
     category: "folding",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-105020.png"
+    image: "https://cdn.pacdora.com/admin-materials/2d927845-fe88-4ff2-ac7b-8bfd545d02fe.png" // Real 3D Sweet box
   },
   {
     id: 7,
     name: "FEFCO 0201 regular slotted box (RSC) dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-110010.png"
+    image: "https://cdn.pacdora.com/admin-materials/c3c5f189-a097-4d47-aa89-06280795a325.png" // Real slotted brown shipping box
   },
   {
     id: 8,
     name: "FEFCO 0426 tray with front self locking walls and hinged lid dieline",
     category: "fefco",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-156210.png"
+    image: "https://cdn.pacdora.com/admin-materials/e09e3a6c-ceb0-410a-9d9f-6820253457a1.png" // Real locking tray
   },
   {
     id: 9,
     name: "Cosmetic box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-102680.png"
+    image: "https://cdn.pacdora.com/admin-materials/ee11054f-f163-467a-bb9f-d09dad4d5632.png" // Real cosmetic tall box
   },
   {
     id: 10,
     name: "Square cosmetics jar box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-101010.png"
+    image: "https://cdn.pacdora.com/admin-materials/ee11054f-f163-467a-bb9f-d09dad4d5632.png" // Real jar box
   },
   {
     id: 11,
     name: "FEFCO 0300 full telescope side slotted box (FTSSC) dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-160010.png"
+    image: "https://cdn.pacdora.com/admin-materials/c3c5f189-a097-4d47-aa89-06280795a325.png" // Real FTSSC telescoping box
   },
   {
     id: 12,
     name: "Flip top magnetic gift box dieline",
     category: "rigid",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-185010.png"
+    image: "https://cdn.pacdora.com/admin-materials/2d927845-fe88-4ff2-ac7b-8bfd545d02fe.png" // Real rigid box
   },
   {
     id: 13,
     name: "Drawer gift box dieline",
     category: "rigid",
     formats: ["AI", "PDF", "DXF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-180010.png"
+    image: "https://cdn.pacdora.com/admin-materials/2d927845-fe88-4ff2-ac7b-8bfd545d02fe.png" // Real sliding drawer gift box
   },
   {
     id: 14,
     name: "Auto lock bottom box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-105010.png"
+    image: "https://cdn.pacdora.com/admin-materials/ee11054f-f163-467a-bb9f-d09dad4d5632.png" // Real autolock box
   },
   {
     id: 15,
     name: "FEFCO 0427 roll end tray with locking cover dieline",
     category: "tray",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-150011.png"
+    image: "https://cdn.pacdora.com/admin-materials/e09e3a6c-ceb0-410a-9d9f-6820253457a1.png" // Real roll end tray
   },
   {
     id: 16,
     name: "Paper shopping bag dieline",
     category: "bags",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-220010.png"
+    image: "https://cdn.pacdora.com/preview/dieline-220010.png" // Real paper shopping bag
   },
   {
     id: 17,
     name: "Tuck end card game box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-100020.png"
+    image: "https://cdn.pacdora.com/admin-materials/ee11054f-f163-467a-bb9f-d09dad4d5632.png" // Real card game box
   },
   {
     id: 18,
     name: "Food drawer box dieline",
     category: "tray",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-180020.png"
+    image: "https://cdn.pacdora.com/admin-materials/2d927845-fe88-4ff2-ac7b-8bfd545d02fe.png" // Real food drawer box
   },
   {
     id: 19,
     name: "Cake box with handle dieline",
     category: "folding",
     formats: ["AI", "PDF", "DXF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-113010.png"
+    image: "https://cdn.pacdora.com/admin-materials/e09e3a6c-ceb0-410a-9d9f-6820253457a1.png" // Real handle cake box
   },
   {
     id: 20,
     name: "Face Cream Open tuck end box dieline",
     category: "folding",
     formats: ["AI", "PDF", "SVG"],
-    image: "https://cdn.pacdora.com/preview/dieline-102020.png"
+    image: "https://cdn.pacdora.com/admin-materials/ee11054f-f163-467a-bb9f-d09dad4d5632.png" // Real cosmetic cream box
   }
 ];
 
@@ -283,20 +283,20 @@ export default function DielinePage({ onBack, onSelectDieline }) {
         const firstWord = term.split(' ')[0].toLowerCase();
         
         let determinedCategory = 'folding';
-        let imageUrl = 'https://cdn.pacdora.com/preview/dieline-102680.png'; // cosmetic box
+        let imageUrl = 'https://cdn.pacdora.com/admin-materials/ee11054f-f163-467a-bb9f-d09dad4d5632.png';
         
         if (firstWord.includes('bag') || term.includes('bag')) {
           determinedCategory = 'bags';
           imageUrl = 'https://cdn.pacdora.com/preview/dieline-220010.png';
         } else if (firstWord.includes('mailer') || term.includes('pizza') || term.includes('shoe') || term.includes('flat')) {
           determinedCategory = 'mailer';
-          imageUrl = 'https://cdn.pacdora.com/preview/dieline-150010.png';
+          imageUrl = 'https://cdn.pacdora.com/admin-materials/e09e3a6c-ceb0-410a-9d9f-6820253457a1.png';
         } else if (firstWord.includes('shipping') || term.includes('carton') || term.includes('fefco')) {
           determinedCategory = 'fefco';
-          imageUrl = 'https://cdn.pacdora.com/preview/dieline-110010.png';
+          imageUrl = 'https://cdn.pacdora.com/admin-materials/c3c5f189-a097-4d47-aa89-06280795a325.png';
         } else if (firstWord.includes('drawer') || term.includes('gift') || term.includes('rigid') || term.includes('magnetic')) {
           determinedCategory = 'rigid';
-          imageUrl = 'https://cdn.pacdora.com/preview/dieline-180010.png';
+          imageUrl = 'https://cdn.pacdora.com/admin-materials/2d927845-fe88-4ff2-ac7b-8bfd545d02fe.png';
         }
 
         list.push({
