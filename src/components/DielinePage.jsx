@@ -3,41 +3,163 @@ import './DielinePage.css';
 
 // Sample dieline data - can be replaced with API call
 const DIELINE_CATEGORIES = [
-  { id: 'all', name: 'All', count: 1928 },
-  { id: 'fefco', name: 'FEFCO Boxes', count: 116 },
-  { id: 'folding', name: 'Folding Boxes', count: 430 },
-  { id: 'tray', name: 'Tray Boxes', count: 120 },
-  { id: 'display', name: 'Display Boxes', count: 187 },
-  { id: 'tuckend', name: 'Tuck End Boxes', count: 282 },
-  { id: 'inserts', name: 'Box Inserts', count: 63 },
-  { id: 'bags', name: 'Paper Bags', count: 28 },
-  { id: 'rigid', name: 'Rigid Boxes', count: 60 },
-  { id: 'window', name: 'Window Boxes', count: 109 },
-  { id: 'lid', name: 'Boxes with Lid', count: 93 },
-  { id: 'storage', name: 'Storage Boxes', count: 44 },
+  { id: 'all', name: 'All', count: 20 },
+  { id: 'fefco', name: 'FEFCO Boxes', count: 5 },
+  { id: 'folding', name: 'Folding Boxes', count: 5 },
+  { id: 'tray', name: 'Tray Boxes', count: 2 },
+  { id: 'tuckend', name: 'Tuck End Boxes', count: 6 },
+  { id: 'rigid', name: 'Rigid Boxes', count: 3 },
+  { id: 'bags', name: 'Paper Bags', count: 1 },
 ];
 
-// Sample dieline templates
-const generateDielineData = () => {
-  const templates = [];
-  const categories = ['fefco', 'folding', 'tray', 'display', 'tuckend', 'inserts', 'bags', 'rigid', 'window', 'lid', 'storage'];
-  
-  for (let i = 1; i <= 50; i++) {
-    templates.push({
-      id: i,
-      name: `Dieline Template ${i}`,
-      category: categories[i % categories.length],
-      formats: ['AI', 'PDF', 'DXF'],
-      image: `https://via.placeholder.com/250x200?text=Template+${i}`,
-    });
+// Authentic dieline templates from Pacdora
+const REAL_DIELINE_DATA = [
+  {
+    id: 1,
+    name: "Rollover hinged lid mailer box dieline",
+    category: "fefco",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/model/4fa4385f-fd84-4ed7-ae49-221ae0b7c695.png"
+  },
+  {
+    id: 2,
+    name: "Reverse tuck end box dieline",
+    category: "tuckend",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/admin-materials/ee11054f-f163-467a-bb9f-d09dad4d5632.png"
+  },
+  {
+    id: 3,
+    name: "Tuck end mailer box packaging dieline",
+    category: "tuckend",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/preview/dieline-102010.png"
+  },
+  {
+    id: 4,
+    name: "FEFCO 0217 carrying handle top - snap lock bottom box dieline",
+    category: "fefco",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/preview/dieline-112310.png"
+  },
+  {
+    id: 5,
+    name: "Medicine box dieline",
+    category: "folding",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/model/bd1c1b79-be4b-4518-8d2b-49a25ed9fd79.png"
+  },
+  {
+    id: 6,
+    name: "Sweet box dieline",
+    category: "folding",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/model/7000ee01-864c-4da3-bb39-ef2a2ffcfaff.png"
+  },
+  {
+    id: 7,
+    name: "FEFCO 0201 regular slotted box (RSC) dieline",
+    category: "fefco",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/admin-materials/c3c5f189-a097-4d47-aa89-06280795a325.png"
+  },
+  {
+    id: 8,
+    name: "FEFCO 0426 tray with front self locking walls and hinged lid dieline",
+    category: "tray",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/preview/dieline-156210.png"
+  },
+  {
+    id: 9,
+    name: "Cosmetic box dieline",
+    category: "folding",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/preview/dieline-102680.png"
+  },
+  {
+    id: 10,
+    name: "Square cosmetics jar box dieline",
+    category: "folding",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/model/2f74ac29-7486-4f57-9045-8298418c00d2.png"
+  },
+  {
+    id: 11,
+    name: "FEFCO 0300 full telescope side slotted box (FTSSC) dieline",
+    category: "fefco",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/preview/dieline-160010.png"
+  },
+  {
+    id: 12,
+    name: "Flip top magnetic gift box dieline",
+    category: "rigid",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/admin-materials/1c405ad1-2668-4d8a-85ed-3226a7bbaf0f.png"
+  },
+  {
+    id: 13,
+    name: "Drawer gift box dieline",
+    category: "rigid",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/admin-materials/2d927845-fe88-4ff2-ac7b-8bfd545d02fe.png"
+  },
+  {
+    id: 14,
+    name: "Auto lock bottom box dieline",
+    category: "tuckend",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/preview/dieline-105010.png"
+  },
+  {
+    id: 15,
+    name: "FEFCO 0427 roll end tray with locking cover dieline",
+    category: "tray",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/preview/dieline-150011.png"
+  },
+  {
+    id: 16,
+    name: "Paper shopping bag dieline",
+    category: "bags",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/preview/dieline-220010.png"
+  },
+  {
+    id: 17,
+    name: "Tuck end card game box dieline",
+    category: "tuckend",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/model/32142576-7b04-4071-8134-aaacb49ccf62.png"
+  },
+  {
+    id: 18,
+    name: "Food drawer box dieline",
+    category: "rigid",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/preview/dieline-128030.png"
+  },
+  {
+    id: 19,
+    name: "Cake box with handle dieline",
+    category: "folding",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/model/b7906593-3067-4849-8aff-bbe95a776442.png"
+  },
+  {
+    id: 20,
+    name: "Face Cream Open tuck end box dieline",
+    category: "tuckend",
+    formats: ["AI", "PDF", "DXF"],
+    image: "https://cdn.pacdora.com/model/1484c3fc-7efe-409c-980d-084c5caa0191.png"
   }
-  return templates;
-};
+];
 
 export default function DielinePage({ onBack }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const allDielines = useMemo(() => generateDielineData(), []);
+  const allDielines = useMemo(() => REAL_DIELINE_DATA, []);
 
   const filteredDielines = useMemo(() => {
     return allDielines.filter(dieline => {
