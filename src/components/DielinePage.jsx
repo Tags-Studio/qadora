@@ -2,25 +2,36 @@ import React, { useState, useMemo } from 'react';
 import './DielinePage.css';
 
 // Helper component to render a beautiful micro vector schematic of the dieline based on its type
-function MiniDielineSVG({ dielineName }) {
+// Supports two modes:
+// - "detailed": cut lines in blue (#2563eb), fold lines in red (#ef4444)
+// - "simple": outer boundary in solid grey (#6b7280), internal folds in dashed grey
+function MiniDielineSVG({ dielineName, mode = 'detailed' }) {
   const name = dielineName.toLowerCase();
   
+  const cutColor = mode === 'detailed' ? '#3b82f6' : '#6b7280';
+  const foldColor = mode === 'detailed' ? '#ef4444' : '#9ca3af';
+  const foldDash = mode === 'detailed' ? 'none' : '2,2';
+
   // 1. PAPER BAG
   if (name.includes('bag')) {
     return (
-      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" stroke="#6b7280" strokeWidth="1">
+      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="0.8">
         {/* Main panels */}
-        <rect x="15" y="15" width="22" height="50" rx="1" />
-        <rect x="37" y="15" width="12" height="50" rx="1" />
-        <rect x="49" y="15" width="22" height="50" rx="1" />
-        <rect x="71" y="15" width="12" height="50" rx="1" />
+        <rect x="15" y="15" width="22" height="50" rx="0.5" stroke={cutColor} />
+        <rect x="37" y="15" width="12" height="50" rx="0.5" stroke={cutColor} />
+        <rect x="49" y="15" width="22" height="50" rx="0.5" stroke={cutColor} />
+        <rect x="71" y="15" width="12" height="50" rx="0.5" stroke={cutColor} />
         {/* Glue tab */}
-        <path d="M 83 20 L 87 23 L 87 57 L 83 60 Z" />
+        <path d="M 83 20 L 87 23 L 87 57 L 83 60 Z" stroke={cutColor} />
         {/* Bottom flaps */}
-        <rect x="15" y="65" width="22" height="12" strokeDasharray="2,2" />
-        <rect x="37" y="65" width="12" height="12" strokeDasharray="2,2" />
-        <rect x="49" y="65" width="22" height="12" strokeDasharray="2,2" />
-        <rect x="71" y="65" width="12" height="12" strokeDasharray="2,2" />
+        <rect x="15" y="65" width="22" height="12" stroke={foldColor} strokeDasharray={foldDash} />
+        <rect x="37" y="65" width="12" height="12" stroke={foldColor} strokeDasharray={foldDash} />
+        <rect x="49" y="65" width="22" height="12" stroke={foldColor} strokeDasharray={foldDash} />
+        <rect x="71" y="65" width="12" height="12" stroke={foldColor} strokeDasharray={foldDash} />
+        {/* Vertical fold separator lines */}
+        <line x1="37" y1="15" x2="37" y2="77" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="49" y1="15" x2="49" y2="77" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="71" y1="15" x2="71" y2="77" stroke={foldColor} strokeDasharray={foldDash} />
       </svg>
     );
   }
@@ -28,21 +39,28 @@ function MiniDielineSVG({ dielineName }) {
   // 2. SLOTTED SHIPPING BOX (RSC / FEFCO 0201)
   if (name.includes('rsc') || name.includes('slotted') || name.includes('fefco 0201') || name.includes('fefco 0300')) {
     return (
-      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" stroke="#6b7280" strokeWidth="1">
+      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="0.8">
         {/* Main body panels */}
-        <rect x="10" y="30" width="24" height="40" />
-        <rect x="34" y="30" width="14" height="40" />
-        <rect x="48" y="30" width="24" height="40" />
-        <rect x="72" y="30" width="14" height="40" />
+        <rect x="10" y="30" width="24" height="40" stroke={cutColor} />
+        <rect x="34" y="30" width="14" height="40" stroke={cutColor} />
+        <rect x="48" y="30" width="24" height="40" stroke={cutColor} />
+        <rect x="72" y="30" width="14" height="40" stroke={cutColor} />
         {/* Top & Bottom flaps */}
-        <rect x="10" y="15" width="24" height="15" strokeDasharray="2,2" />
-        <rect x="34" y="20" width="14" height="10" strokeDasharray="2,2" />
-        <rect x="48" y="15" width="24" height="15" strokeDasharray="2,2" />
-        <rect x="72" y="20" width="14" height="10" strokeDasharray="2,2" />
-        <rect x="10" y="70" width="24" height="15" strokeDasharray="2,2" />
-        <rect x="34" y="70" width="14" height="10" strokeDasharray="2,2" />
-        <rect x="48" y="70" width="24" height="15" strokeDasharray="2,2" />
-        <rect x="72" y="70" width="14" height="10" strokeDasharray="2,2" />
+        <rect x="10" y="15" width="24" height="15" stroke={cutColor} />
+        <rect x="34" y="20" width="14" height="10" stroke={cutColor} />
+        <rect x="48" y="15" width="24" height="15" stroke={cutColor} />
+        <rect x="72" y="20" width="14" height="10" stroke={cutColor} />
+        <rect x="10" y="70" width="24" height="15" stroke={cutColor} />
+        <rect x="34" y="70" width="14" height="10" stroke={cutColor} />
+        <rect x="48" y="70" width="24" height="15" stroke={cutColor} />
+        <rect x="72" y="70" width="14" height="10" stroke={cutColor} />
+        {/* Horizontal fold lines */}
+        <line x1="10" y1="30" x2="86" y2="30" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="10" y1="70" x2="86" y2="70" stroke={foldColor} strokeDasharray={foldDash} />
+        {/* Vertical fold lines */}
+        <line x1="34" y1="15" x2="34" y2="80" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="48" y1="15" x2="48" y2="80" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="72" y1="15" x2="72" y2="80" stroke={foldColor} strokeDasharray={foldDash} />
       </svg>
     );
   }
@@ -50,16 +68,22 @@ function MiniDielineSVG({ dielineName }) {
   // 3. DRAWER BOX
   if (name.includes('drawer') || name.includes('slide')) {
     return (
-      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" stroke="#6b7280" strokeWidth="1">
+      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="0.8">
         {/* Outer Sleeve (left) */}
-        <rect x="10" y="20" width="16" height="45" />
-        <rect x="26" y="20" width="8" height="45" />
-        <rect x="34" y="20" width="16" height="45" />
-        <rect x="50" y="20" width="8" height="45" strokeDasharray="2,2" />
+        <rect x="8" y="20" width="16" height="45" stroke={cutColor} />
+        <rect x="24" y="20" width="8" height="45" stroke={cutColor} />
+        <rect x="32" y="20" width="16" height="45" stroke={cutColor} />
+        <rect x="48" y="20" width="8" height="45" stroke={cutColor} />
+        <line x1="24" y1="20" x2="24" y2="65" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="32" y1="20" x2="32" y2="65" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="48" y1="20" x2="48" y2="65" stroke={foldColor} strokeDasharray={foldDash} />
+
         {/* Inner Tray (right) */}
-        <rect x="68" y="28" width="18" height="28" />
-        <rect x="68" y="18" width="18" height="10" strokeDasharray="2,2" />
-        <rect x="68" y="56" width="18" height="10" strokeDasharray="2,2" />
+        <rect x="64" y="28" width="22" height="28" stroke={cutColor} />
+        <rect x="64" y="18" width="22" height="10" stroke={cutColor} />
+        <rect x="64" y="56" width="22" height="10" stroke={cutColor} />
+        <line x1="64" y1="28" x2="86" y2="28" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="64" y1="56" x2="86" y2="56" stroke={foldColor} strokeDasharray={foldDash} />
       </svg>
     );
   }
@@ -67,36 +91,48 @@ function MiniDielineSVG({ dielineName }) {
   // 4. MAILER BOX (FEFCO 0427 / Hinged lid)
   if (name.includes('mailer') || name.includes('hinged') || name.includes('fefco 0427') || name.includes('fefco 0426') || name.includes('tray')) {
     return (
-      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" stroke="#6b7280" strokeWidth="1">
-        {/* Mailer Box Structure */}
-        <rect x="35" y="35" width="30" height="25" />
-        {/* Hinged Lid */}
-        <rect x="35" y="15" width="30" height="20" />
+      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="0.8">
+        {/* Main base */}
+        <rect x="32" y="32" width="36" height="26" stroke={cutColor} />
+        {/* Hinged lid */}
+        <rect x="32" y="14" width="36" height="18" stroke={cutColor} />
         {/* Side wings */}
-        <path d="M 15 35 L 35 35 L 35 60 L 15 60 Z" />
-        <path d="M 65 35 L 85 35 L 85 60 L 65 60 Z" />
+        <path d="M 12 32 L 32 32 L 32 58 L 12 58 Z" stroke={cutColor} />
+        <path d="M 68 32 L 88 32 L 88 58 L 68 58 Z" stroke={cutColor} />
         {/* Flaps */}
-        <path d="M 35 60 L 65 60 L 60 78 L 40 78 Z" strokeDasharray="2,2" />
+        <path d="M 32 58 L 68 58 L 63 76 L 37 76 Z" stroke={cutColor} />
+        {/* Internal fold lines */}
+        <line x1="32" y1="32" x2="68" y2="32" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="32" y1="58" x2="68" y2="58" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="32" y1="14" x2="32" y2="76" stroke={foldColor} strokeDasharray={foldDash} />
+        <line x1="68" y1="14" x2="68" y2="76" stroke={foldColor} strokeDasharray={foldDash} />
       </svg>
     );
   }
 
   // 5. TUCK END BOX (Default folding carton)
   return (
-    <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" stroke="#6b7280" strokeWidth="1">
+    <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" strokeWidth="0.8">
       {/* 4 main walls */}
-      <rect x="15" y="25" width="16" height="50" />
-      <rect x="31" y="25" width="16" height="50" />
-      <rect x="47" y="25" width="16" height="50" />
-      <rect x="63" y="25" width="16" height="50" />
+      <rect x="15" y="25" width="16" height="50" stroke={cutColor} />
+      <rect x="31" y="25" width="16" height="50" stroke={cutColor} />
+      <rect x="47" y="25" width="16" height="50" stroke={cutColor} />
+      <rect x="63" y="25" width="16" height="50" stroke={cutColor} />
       {/* Glue Flap */}
-      <rect x="79" y="30" width="6" height="40" />
+      <rect x="79" y="30" width="6" height="40" stroke={cutColor} />
       {/* Top Tuck Lid */}
-      <rect x="15" y="12" width="16" height="13" />
-      <path d="M 15 12 L 20 5 L 26 5 L 31 12" strokeDasharray="2,2" />
+      <rect x="15" y="12" width="16" height="13" stroke={cutColor} />
+      <path d="M 15 12 L 20 5 L 26 5 L 31 12" stroke={cutColor} />
       {/* Bottom Tuck Lid */}
-      <rect x="47" y="75" width="16" height="13" />
-      <path d="M 47 88 L 52 95 L 58 95 L 63 88" strokeDasharray="2,2" />
+      <rect x="47" y="75" width="16" height="13" stroke={cutColor} />
+      <path d="M 47 88 L 52 95 L 58 95 L 63 88" stroke={cutColor} />
+      {/* Internal folds */}
+      <line x1="15" y1="25" x2="79" y2="25" stroke={foldColor} strokeDasharray={foldDash} />
+      <line x1="15" y1="75" x2="79" y2="75" stroke={foldColor} strokeDasharray={foldDash} />
+      <line x1="31" y1="25" x2="31" y2="75" stroke={foldColor} strokeDasharray={foldDash} />
+      <line x1="47" y1="25" x2="47" y2="75" stroke={foldColor} strokeDasharray={foldDash} />
+      <line x1="63" y1="25" x2="63" y2="75" stroke={foldColor} strokeDasharray={foldDash} />
+      <line x1="79" y1="30" x2="79" y2="70" stroke={foldColor} strokeDasharray={foldDash} />
     </svg>
   );
 }
@@ -369,13 +405,13 @@ export default function DielinePage({ onBack, onSelectDieline }) {
                 onClick={() => onSelectDieline?.(dieline)}
                 style={{ cursor: 'pointer' }}
               >
-                {/* Split Thumbnail: Left side shows vector Dieline, Right side shows 3D Mockup */}
+                {/* Split Thumbnail: Left side shows detailed Dieline (blue/red), Right side shows simple structural schematic */}
                 <div className="dieline-card-image split-thumbnail">
-                  <div className="thumbnail-2d-side">
-                    <MiniDielineSVG dielineName={dieline.name} />
+                  <div className="thumbnail-2d-side detailed-vector-bg">
+                    <MiniDielineSVG dielineName={dieline.name} mode="detailed" />
                   </div>
-                  <div className="thumbnail-3d-side">
-                    <img src={dieline.image} alt={dieline.name} />
+                  <div className="thumbnail-2d-side simple-vector-bg">
+                    <MiniDielineSVG dielineName={dieline.name} mode="simple" />
                   </div>
                   <div className="dieline-card-overlay">
                     <button className="dieline-action-btn">View & Edit</button>

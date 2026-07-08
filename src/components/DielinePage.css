@@ -222,11 +222,25 @@
   height: 180px;
   overflow: hidden;
   display: flex;
-  background: #fcfcfc;
-  border-bottom: 1px solid #f3f4f6;
+  background: #fdfdfd;
+  border-bottom: 1px solid #f1f1f1;
 }
 
-.thumbnail-2d-side {
+/* Left side: Detailed vector (blue & red cuts) on light grey background */
+.thumbnail-2d-side.detailed-vector-bg {
+  flex: 1;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  padding: 16px;
+  border-right: 1px dashed #e2e8f0;
+}
+
+/* Right side: Simple schematic outline on white background */
+.thumbnail-2d-side.simple-vector-bg {
   flex: 1;
   width: 50%;
   height: 100%;
@@ -234,43 +248,20 @@
   align-items: center;
   justify-content: center;
   background: #ffffff;
-  padding: 12px;
-  border-right: 1px dashed #e5e7eb;
+  padding: 24px;
 }
 
 .mini-dieline-vector {
   width: 90%;
   height: 90%;
-  opacity: 0.85;
+  opacity: 0.9;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.thumbnail-3d-side {
-  flex: 1;
-  width: 50%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f9fafb;
-  padding: 8px;
-}
-
-.thumbnail-3d-side img {
-  max-width: 95%;
-  max-height: 95%;
-  object-fit: contain;
-  transition: transform 0.3s ease;
-}
-
-/* Hover effects */
+/* Hover micro-animations */
 .dieline-card:hover .mini-dieline-vector {
-  transform: scale(1.04);
+  transform: scale(1.05);
   opacity: 1;
-}
-
-.dieline-card:hover .thumbnail-3d-side img {
-  transform: scale(1.05) translateY(-3px);
 }
 
 .dieline-card-overlay {
@@ -279,7 +270,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
