@@ -149,7 +149,12 @@ export default function DielineDetailPage({ dieline, onBack }) {
     const ctx = canvas.getContext('2d');
     const rect = dielineSectionRef.current.getBoundingClientRect();
 
-    ctx.clearRect(0, 0, rect.width, rect.height);
+    if (canvas.width !== Math.floor(rect.width) || canvas.height !== Math.floor(rect.height)) {
+      canvas.width = Math.floor(rect.width);
+      canvas.height = Math.floor(rect.height);
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // Draw Grid
     ctx.fillStyle = '#ffffff';
@@ -538,10 +543,21 @@ export default function DielineDetailPage({ dieline, onBack }) {
     draggingRef.current = false;
   };
 
-  const handleWheel = (e) => {
-    e.preventDefault();
-    setZoom((prev) => Math.max(0.15, Math.min(5, prev * (e.deltaY > 0 ? 0.9 : 1.1))));
-  };
+  // Handle wheel zoom with non-passive event listener to allow e.preventDefault()
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleCanvasWheel = (e) => {
+      e.preventDefault();
+      setZoom((prev) => Math.max(0.15, Math.min(5, prev * (e.deltaY > 0 ? 0.9 : 1.1))));
+    };
+
+    canvas.addEventListener('wheel', handleCanvasWheel, { passive: false });
+    return () => {
+      canvas.removeEventListener('wheel', handleCanvasWheel);
+    };
+  }, []);
 
   // ========== Three.js Cardboard Texture Generator ==========
   const makeCardboardTexture = () => {
@@ -782,7 +798,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
   // Update geometry when dim changes
   useEffect(() => {
     updateThreeGeom();
-  }, [dim, boxType, lidOpen]);
+  }, [dim, boxType, lidOpen, customThickness]);
 
   // ========== SVG Exporter ==========
   const downloadSVG = () => {
@@ -928,7 +944,6 @@ export default function DielineDetailPage({ dieline, onBack }) {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUpOrLeave}
             onMouseLeave={handleMouseUpOrLeave}
-            onWheel={handleWheel}
           ></canvas>
 
           {/* Legend Overlay */}
