@@ -161,9 +161,11 @@
 /* ── Main Layout ── */
 .detail-main-content {
     display: flex;
+    flex-direction: row;
     flex: 1;
     height: calc(100vh - 52px);
     overflow: hidden;
+    direction: ltr;
 }
 
 /* ── Left Sidebar (3D Preview & Downloads) ── */
@@ -174,6 +176,8 @@
     flex-direction: column;
     background: #ffffff;
     border-right: 1px solid var(--border);
+    direction: ltr;
+    text-align: left;
 }
 
 /* ── Center Viewport (2D Canvas) ── */
@@ -182,6 +186,8 @@
     position: relative;
     background: #ffffff;
     overflow: hidden;
+    min-width: 300px;
+    direction: ltr;
 }
 
 .canvas-2d-element {
@@ -202,6 +208,8 @@
     background: #ffffff;
     border-left: 1px solid var(--border);
     overflow: hidden;
+    direction: ltr;
+    text-align: left;
 }
 
 /* Vertical Tab Bar (Left strip of sidebar) */
@@ -266,6 +274,8 @@
     overflow-y: auto;
     padding: 20px;
     background-color: #ffffff;
+    direction: ltr;
+    text-align: left;
 }
 
 /* Section Header (Title + Toggle) */
@@ -996,7 +1006,7 @@
     animation: fadeIn .35s ease-out forwards;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 768px) {
     .detail-main-content {
         flex-direction: column;
         overflow-y: auto;
