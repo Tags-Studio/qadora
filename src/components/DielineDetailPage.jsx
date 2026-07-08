@@ -849,7 +849,125 @@ export default function DielineDetailPage({ dieline, onBack }) {
       </header>
 
       <main className="detail-main-content">
-        {/* ===== LEFT SIDEBAR: Settings ===== */}
+        {/* ===== LEFT SIDEBAR: 3D Preview + Downloads ===== */}
+        <aside className="preview-sidebar fi" style={{ animationDelay: '.15s' }}>
+          {/* 3D Preview Frame */}
+          <div className="three-preview-panel">
+            <div className="three-panel-header">
+              <p className="sec-title">3D Preview</p>
+            </div>
+            <div className="three-canvas-holder">
+              <div ref={threeContainerRef} style={{ width: '100%', height: '100%' }}></div>
+              <div className="three-badge">
+                3D <i className="fas fa-sync-alt"></i>
+              </div>
+            </div>
+            {/* Open/Close Slider */}
+            <div className="lid-slider-container">
+              <span className="lid-slider-lbl">Open</span>
+              <input 
+                type="range" 
+                min="0" 
+                max="100" 
+                value={lidOpen} 
+                onChange={(e) => setLidOpen(parseInt(e.target.value))}
+                className="lid-slider" 
+              />
+              <span className="lid-slider-lbl right">Close</span>
+            </div>
+          </div>
+
+          <div className="sidebar-divider"></div>
+
+          {/* Download Formats list */}
+          <div className="formats-panel-scroll sb">
+            <div className="formats-container">
+              <p className="sec-title">File formats</p>
+              <div className="formats-list">
+                {[
+                  { id: 'AI', name: 'AI dieline', desc: 'Adobe Illustrator', icon: 'fa-pen-nib text-amber-500', class: 'ai' },
+                  { id: 'PDF', name: 'PDF dieline', desc: 'Portable Document', icon: 'fa-file-pdf text-red-500', class: 'pdf' },
+                  { id: 'SVG', name: 'SVG dieline', desc: 'Scalable Vector', icon: 'fa-bezier-curve text-orange-500', class: 'svg' },
+                  { id: 'DXF', name: 'DXF dieline', desc: 'AutoCAD Exchange', icon: 'fa-drafting-compass text-sky-500', class: 'dxf' },
+                  { id: 'CDR', name: 'CDR dieline', desc: 'CorelDRAW', icon: 'fa-palette text-purple-500', class: 'cdr' }
+                ].map((fmt) => (
+                  <div key={fmt.id} className="fmt-row">
+                    <div className="fmt-info-col">
+                      <div className={`fmt-icon-box ${fmt.class}`}>
+                        <i className={`fas ${fmt.icon}`}></i>
+                      </div>
+                      <div>
+                        <p className="fmt-name">{fmt.name}</p>
+                        <p className="fmt-desc">{fmt.desc}</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => fmt.id === 'SVG' ? downloadSVG() : triggerToast(`${fmt.id} dieline downloaded`)}
+                      className="fmt-dl"
+                    >
+                      <i className="fas fa-download"></i>
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div className="divider"></div>
+              <p className="instructions-desc">Click download to save. All formats include cut, fold, and cushion lines.</p>
+            </div>
+          </div>
+        </aside>
+
+        {/* ===== CENTER: 2D Dieline View ===== */}
+        <section ref={dielineSectionRef} className="canvas-viewport fi" style={{ animationDelay: '.08s' }}>
+          <canvas 
+            ref={canvasRef}
+            className="canvas-2d-element"
+            style={{ cursor: draggingRef.current ? 'grabbing' : 'grab' }}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUpOrLeave}
+            onMouseLeave={handleMouseUpOrLeave}
+            onWheel={handleWheel}
+          ></canvas>
+
+          {/* Legend Overlay */}
+          <div className="legend-box">
+            <div className="legend-row">
+              <div className="legend-line" style={{ background: 'var(--cushion)' }}></div>
+              <span className="legend-label">Cushion</span>
+            </div>
+            <div className="legend-row">
+              <div className="legend-line" style={{ background: 'var(--trim)' }}></div>
+              <span className="legend-label">Trim</span>
+            </div>
+            <div className="legend-row">
+              <div className="legend-line dashed"></div>
+              <span className="legend-label">Crease</span>
+            </div>
+          </div>
+
+          {/* Zoom Controls Overlay */}
+          <div className="zoom-controls-overlay">
+            <button onClick={() => setZoom(prev => Math.max(0.15, prev / 1.25))} className="ctrl-btn">
+              <i className="fas fa-minus"></i>
+            </button>
+            <span className="zoom-value-label">{Math.round(zoom * 100)}%</span>
+            <button onClick={() => setZoom(prev => Math.min(5, prev * 1.25))} className="ctrl-btn">
+              <i className="fas fa-plus"></i>
+            </button>
+            <div className="zoom-divider"></div>
+            <button onClick={() => { setZoom(1); panRef.current = { x: 0, y: 0 }; drawDieline(); }} className="ctrl-btn">
+              <i className="fas fa-compress-arrows-alt"></i>
+            </button>
+          </div>
+
+          {/* Material info footer */}
+          <div className="dimensions-status-overlay">
+            <i className="fas fa-layer-group"></i>
+            <span>{selectedMaterial} - flute ({matThickness[selectedMaterial]})</span>
+          </div>
+        </section>
+
+        {/* ===== RIGHT SIDEBAR: Settings ===== */}
         <aside className="settings-sidebar sb fi">
           <div className="settings-container">
             <div className="title-block">
@@ -971,124 +1089,6 @@ export default function DielineDetailPage({ dieline, onBack }) {
                 <i className="fas fa-info-circle info-icon"></i>
                 Dimensions shown are manufacture (die-cut) sizes.
               </p>
-            </div>
-          </div>
-        </aside>
-
-        {/* ===== CENTER: 2D Dieline View ===== */}
-        <section ref={dielineSectionRef} className="canvas-viewport fi" style={{ animationDelay: '.08s' }}>
-          <canvas 
-            ref={canvasRef}
-            className="canvas-2d-element"
-            style={{ cursor: draggingRef.current ? 'grabbing' : 'grab' }}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUpOrLeave}
-            onMouseLeave={handleMouseUpOrLeave}
-            onWheel={handleWheel}
-          ></canvas>
-
-          {/* Legend Overlay */}
-          <div className="legend-box">
-            <div className="legend-row">
-              <div className="legend-line" style={{ background: 'var(--cushion)' }}></div>
-              <span className="legend-label">Cushion</span>
-            </div>
-            <div className="legend-row">
-              <div className="legend-line" style={{ background: 'var(--trim)' }}></div>
-              <span className="legend-label">Trim</span>
-            </div>
-            <div className="legend-row">
-              <div className="legend-line dashed"></div>
-              <span className="legend-label">Crease</span>
-            </div>
-          </div>
-
-          {/* Zoom Controls Overlay */}
-          <div className="zoom-controls-overlay">
-            <button onClick={() => setZoom(prev => Math.max(0.15, prev / 1.25))} className="ctrl-btn">
-              <i className="fas fa-minus"></i>
-            </button>
-            <span className="zoom-value-label">{Math.round(zoom * 100)}%</span>
-            <button onClick={() => setZoom(prev => Math.min(5, prev * 1.25))} className="ctrl-btn">
-              <i className="fas fa-plus"></i>
-            </button>
-            <div className="zoom-divider"></div>
-            <button onClick={() => { setZoom(1); panRef.current = { x: 0, y: 0 }; drawDieline(); }} className="ctrl-btn">
-              <i className="fas fa-compress-arrows-alt"></i>
-            </button>
-          </div>
-
-          {/* Material info footer */}
-          <div className="dimensions-status-overlay">
-            <i className="fas fa-layer-group"></i>
-            <span>{selectedMaterial} - flute ({matThickness[selectedMaterial]})</span>
-          </div>
-        </section>
-
-        {/* ===== RIGHT SIDEBAR: 3D Preview + Downloads ===== */}
-        <aside className="preview-sidebar fi" style={{ animationDelay: '.15s' }}>
-          {/* 3D Preview Frame */}
-          <div className="three-preview-panel">
-            <div className="three-panel-header">
-              <p className="sec-title">3D Preview</p>
-            </div>
-            <div className="three-canvas-holder">
-              <div ref={threeContainerRef} style={{ width: '100%', height: '100%' }}></div>
-              <div className="three-badge">
-                3D <i className="fas fa-sync-alt"></i>
-              </div>
-            </div>
-            {/* Open/Close Slider */}
-            <div className="lid-slider-container">
-              <span className="lid-slider-lbl">Open</span>
-              <input 
-                type="range" 
-                min="0" 
-                max="100" 
-                value={lidOpen} 
-                onChange={(e) => setLidOpen(parseInt(e.target.value))}
-                className="lid-slider" 
-              />
-              <span className="lid-slider-lbl right">Close</span>
-            </div>
-          </div>
-
-          <div className="sidebar-divider"></div>
-
-          {/* Download Formats list */}
-          <div className="formats-panel-scroll sb">
-            <div className="formats-container">
-              <p className="sec-title">File formats</p>
-              <div className="formats-list">
-                {[
-                  { id: 'AI', name: 'AI dieline', desc: 'Adobe Illustrator', icon: 'fa-pen-nib text-amber-500', class: 'ai' },
-                  { id: 'PDF', name: 'PDF dieline', desc: 'Portable Document', icon: 'fa-file-pdf text-red-500', class: 'pdf' },
-                  { id: 'SVG', name: 'SVG dieline', desc: 'Scalable Vector', icon: 'fa-bezier-curve text-orange-500', class: 'svg' },
-                  { id: 'DXF', name: 'DXF dieline', desc: 'AutoCAD Exchange', icon: 'fa-drafting-compass text-sky-500', class: 'dxf' },
-                  { id: 'CDR', name: 'CDR dieline', desc: 'CorelDRAW', icon: 'fa-palette text-purple-500', class: 'cdr' }
-                ].map((fmt) => (
-                  <div key={fmt.id} className="fmt-row">
-                    <div className="fmt-info-col">
-                      <div className={`fmt-icon-box ${fmt.class}`}>
-                        <i className={`fas ${fmt.icon}`}></i>
-                      </div>
-                      <div>
-                        <p className="fmt-name">{fmt.name}</p>
-                        <p className="fmt-desc">{fmt.desc}</p>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={() => fmt.id === 'SVG' ? downloadSVG() : triggerToast(`${fmt.id} dieline downloaded`)}
-                      className="fmt-dl"
-                    >
-                      <i className="fas fa-download"></i>
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <div className="divider"></div>
-              <p className="instructions-desc">Click download to save. All formats include cut, fold, and cushion lines.</p>
             </div>
           </div>
         </aside>
