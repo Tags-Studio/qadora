@@ -4,6 +4,22 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import './DielineDetailPage.css';
 
 export default function DielineDetailPage({ dieline, onBack }) {
+  // Safe validation for dieline parameter to prevent crashes
+  const safeDieline = dieline || { id: 1, name: 'Tuck End Box Dieline', category: 'folding', formats: ['AI', 'PDF', 'DXF'], image: '' };
+
+  // Determine Box Type dynamically based on name
+  const getBoxType = () => {
+    if (!safeDieline.name) return 'box-tuck';
+    const name = safeDieline.name.toLowerCase();
+    if (name.includes('bag')) return 'bag';
+    if (name.includes('drawer') || name.includes('slide')) return 'drawer';
+    if (name.includes('rsc') || name.includes('slotted') || name.includes('fefco 0201') || name.includes('fefco 0300')) return 'box-rsc';
+    if (name.includes('mailer') || name.includes('hinged') || name.includes('fefco 0427') || name.includes('fefco 0426') || name.includes('tray')) return 'box-mailer';
+    return 'box-tuck'; // default
+  };
+
+  const boxType = getBoxType();
+
   // ========== State ==========
   const [dim, setDim] = useState({ L: 315, W: 202, H: 62 });
   const [selectedMaterial, setSelectedMaterial] = useState('E');
@@ -31,18 +47,6 @@ export default function DielineDetailPage({ dieline, onBack }) {
     BC: '6.8mm',
   };
 
-  // Determine Box Type dynamically based on name
-  const getBoxType = () => {
-    const name = dieline.name.toLowerCase();
-    if (name.includes('bag')) return 'bag';
-    if (name.includes('drawer') || name.includes('slide')) return 'drawer';
-    if (name.includes('rsc') || name.includes('slotted') || name.includes('fefco 0201') || name.includes('fefco 0300')) return 'box-rsc';
-    if (name.includes('mailer') || name.includes('hinged') || name.includes('fefco 0427') || name.includes('fefco 0426') || name.includes('tray')) return 'box-mailer';
-    return 'box-tuck'; // default
-  };
-
-  const boxType = getBoxType();
-
   // Adjust default dimensions based on box type for realistic proportion
   useEffect(() => {
     if (boxType === 'bag') {
@@ -56,7 +60,10 @@ export default function DielineDetailPage({ dieline, onBack }) {
     } else { // box-tuck
       setDim({ L: 80, W: 80, H: 180 });
     }
-  }, [dieline]);
+    // Reset panning and zoom on card change
+    panRef.current = { x: 0, y: 0 };
+    setZoom(1);
+  }, [safeDieline, boxType]);
 
   // Three.js variables
   const threeRef = useRef({
@@ -91,21 +98,18 @@ export default function DielineDetailPage({ dieline, onBack }) {
     const { L, W, H } = dim;
     
     if (boxType === 'bag') {
-      // Paper Bag Layout
-      const tW = (L * 2) + (W * 2) + 20; // 20mm glue tab
-      const tH = H + (W * 0.7); // height + bottom flaps
+      const tW = (L * 2) + (W * 2) + 20;
+      const tH = H + (W * 0.7);
       return { tW, tH };
     }
     
     if (boxType === 'box-rsc') {
-      // FEFCO 0201 regular slotted box
-      const tW = (L * 2) + (W * 2) + 20; // panels + glue tab
-      const tH = (W * 0.5) + H + (W * 0.5); // top flap + height + bottom flap
+      const tW = (L * 2) + (W * 2) + 20;
+      const tH = (W * 0.5) + H + (W * 0.5);
       return { tW, tH };
     }
 
     if (boxType === 'drawer') {
-      // Drawer: Sleeve (Outer) + Tray (Inner) laid out next to each other
       const sleeveW = (L * 2) + (H * 2) + 20;
       const trayW = L + (H * 2);
       const tW = sleeveW + 40 + trayW;
@@ -134,11 +138,10 @@ export default function DielineDetailPage({ dieline, onBack }) {
 
   const drawDieline = () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !dielineSectionRef.current) return;
     const ctx = canvas.getContext('2d');
     const rect = dielineSectionRef.current.getBoundingClientRect();
 
-    // Clear and draw grid
     ctx.clearRect(0, 0, rect.width, rect.height);
     
     // Draw Grid
@@ -164,72 +167,58 @@ export default function DielineDetailPage({ dieline, onBack }) {
     ctx.strokeStyle = '#222'; ctx.lineWidth = lw; ctx.fillStyle = '#fcfcf9';
 
     if (boxType === 'bag') {
-      // 1. PAPER BAG DIELINE
       const { L, W, H } = dim;
-      const bH = W * 0.6; // Bottom flap
-      // Draw Panels
+      const bH = W * 0.6;
       ctx.fillRect(0, 0, L, H); ctx.strokeRect(0, 0, L, H);
       ctx.fillRect(L, 0, W, H); ctx.strokeRect(L, 0, W, H);
       ctx.fillRect(L+W, 0, L, H); ctx.strokeRect(L+W, 0, L, H);
       ctx.fillRect(L+W+L, 0, W, H); ctx.strokeRect(L+W+L, 0, W, H);
       
-      // Glue Tab
       ctx.beginPath();
       ctx.moveTo(L+W+L+W, 0); ctx.lineTo(L+W+L+W+20, 10);
       ctx.lineTo(L+W+L+W+20, H-10); ctx.lineTo(L+W+L+W, H);
       ctx.closePath(); ctx.fill(); ctx.stroke();
 
-      // Bottom folding flaps
       ctx.fillRect(0, H, L, bH); ctx.strokeRect(0, H, L, bH);
       ctx.fillRect(L, H, W, bH); ctx.strokeRect(L, H, W, bH);
       ctx.fillRect(L+W, H, L, bH); ctx.strokeRect(L+W, H, L, bH);
       ctx.fillRect(L+W+L, H, W, bH); ctx.strokeRect(L+W+L, H, W, bH);
 
-      // Fold lines (Dashed)
       ctx.strokeStyle = '#888'; ctx.lineWidth = dlw; ctx.setLineDash([5/sc, 3/sc]);
       ctx.beginPath();
-      // vertical folds
       ctx.moveTo(L, 0); ctx.lineTo(L, H+bH);
       ctx.moveTo(L+W, 0); ctx.lineTo(L+W, H+bH);
       ctx.moveTo(L+W+L, 0); ctx.lineTo(L+W+L, H+bH);
       ctx.moveTo(L+W+L+W, 0); ctx.lineTo(L+W+L+W, H);
-      // horizontal folds
       ctx.moveTo(0, H); ctx.lineTo(L+W+L+W, H);
-      // Side gusset diagonals
       ctx.moveTo(L+W/2, 0); ctx.lineTo(L+W/2, H);
       ctx.moveTo(L+W+L+W/2, 0); ctx.lineTo(L+W+L+W/2, H);
       ctx.stroke();
 
     } else if (boxType === 'box-rsc') {
-      // 2. SHIPPING BOX (RSC) DIELINE
       const { L, W, H } = dim;
-      const fH = W * 0.5; // flap height
+      const fH = W * 0.5;
       
-      // Draw 4 main walls
       ctx.fillRect(0, fH, L, H); ctx.strokeRect(0, fH, L, H);
       ctx.fillRect(L, fH, W, H); ctx.strokeRect(L, fH, W, H);
       ctx.fillRect(L+W, fH, L, H); ctx.strokeRect(L+W, fH, L, H);
       ctx.fillRect(L+W+L, fH, W, H); ctx.strokeRect(L+W+L, fH, W, H);
 
-      // Glue Tab
       ctx.beginPath();
       ctx.moveTo(L+W+L+W, fH); ctx.lineTo(L+W+L+W+20, fH+10);
       ctx.lineTo(L+W+L+W+20, fH+H-10); ctx.lineTo(L+W+L+W, fH+H);
       ctx.closePath(); ctx.fill(); ctx.stroke();
 
-      // Top flaps
       ctx.fillRect(0, 0, L, fH); ctx.strokeRect(0, 0, L, fH);
       ctx.fillRect(L, 0, W, fH); ctx.strokeRect(L, 0, W, fH);
       ctx.fillRect(L+W, 0, L, fH); ctx.strokeRect(L+W, 0, L, fH);
       ctx.fillRect(L+W+L, 0, W, fH); ctx.strokeRect(L+W+L, 0, W, fH);
 
-      // Bottom flaps
       ctx.fillRect(0, fH+H, L, fH); ctx.strokeRect(0, fH+H, L, fH);
       ctx.fillRect(L, fH+H, W, fH); ctx.strokeRect(L, fH+H, W, fH);
       ctx.fillRect(L+W, fH+H, L, fH); ctx.strokeRect(L+W, fH+H, L, fH);
       ctx.fillRect(L+W+L, fH+H, W, fH); ctx.strokeRect(L+W+L, fH+H, W, fH);
 
-      // Fold lines (Dashed)
       ctx.strokeStyle = '#888'; ctx.lineWidth = dlw; ctx.setLineDash([5/sc, 3/sc]);
       ctx.beginPath();
       ctx.moveTo(L, 0); ctx.lineTo(L, fH+H+fH);
@@ -241,18 +230,14 @@ export default function DielineDetailPage({ dieline, onBack }) {
       ctx.stroke();
 
     } else if (boxType === 'drawer') {
-      // 3. DRAWER BOX DIELINE
       const { L, W, H } = dim;
-      // Sleeve (left)
       const slW = (L * 2) + (H * 2);
       ctx.fillRect(0, 0, L, W); ctx.strokeRect(0, 0, L, W);
       ctx.fillRect(L, 0, H, W); ctx.strokeRect(L, 0, H, W);
       ctx.fillRect(L+H, 0, L, W); ctx.strokeRect(L+H, 0, L, W);
       ctx.fillRect(L+H+L, 0, H, W); ctx.strokeRect(L+H+L, 0, H, W);
-      // Sleeve glue tab
       ctx.fillRect(slW, 5, 20, W-10); ctx.strokeRect(slW, 5, 20, W-10);
 
-      // Inner Tray (right)
       const trX = slW + 60;
       ctx.fillRect(trX + H, H, L, W); ctx.strokeRect(trX + H, H, L, W);
       ctx.fillRect(trX, H, H, W); ctx.strokeRect(trX, H, H, W);
@@ -260,15 +245,12 @@ export default function DielineDetailPage({ dieline, onBack }) {
       ctx.fillRect(trX + H, 0, L, H); ctx.strokeRect(trX + H, 0, L, H);
       ctx.fillRect(trX + H, H + W, L, H); ctx.strokeRect(trX + H, H + W, L, H);
 
-      // Fold lines (Dashed)
       ctx.strokeStyle = '#888'; ctx.lineWidth = dlw; ctx.setLineDash([5/sc, 3/sc]);
       ctx.beginPath();
-      // Sleeve folds
       ctx.moveTo(L, 0); ctx.lineTo(L, W);
       ctx.moveTo(L+H, 0); ctx.lineTo(L+H, W);
       ctx.moveTo(L+H+L, 0); ctx.lineTo(L+H+L, W);
       ctx.moveTo(slW, 0); ctx.lineTo(slW, W);
-      // Tray folds
       ctx.moveTo(trX + H, H); ctx.lineTo(trX + H, H + W);
       ctx.moveTo(trX + H + L, H); ctx.lineTo(trX + H + L, H + W);
       ctx.moveTo(trX + H, H); ctx.lineTo(trX + H + L, H);
@@ -276,32 +258,24 @@ export default function DielineDetailPage({ dieline, onBack }) {
       ctx.stroke();
 
     } else if (boxType === 'box-tuck') {
-      // 4. FOLDING CARTON (TUCK END BOX) DIELINE
       const { L, W, H } = dim;
       const topFlap = W * 0.8;
       
-      // Draw 4 main walls
       ctx.fillRect(0, topFlap, L, H); ctx.strokeRect(0, topFlap, L, H);
       ctx.fillRect(L, topFlap, W, H); ctx.strokeRect(L, topFlap, W, H);
       ctx.fillRect(L+W, topFlap, L, H); ctx.strokeRect(L+W, topFlap, L, H);
       ctx.fillRect(L+W+L, topFlap, W, H); ctx.strokeRect(L+W+L, topFlap, W, H);
-
-      // Glue Tab
       ctx.fillRect(L+W+L+W, topFlap + 10, 15, H - 20); ctx.strokeRect(L+W+L+W, topFlap + 10, 15, H - 20);
 
-      // Top Lid & Tuck
       ctx.fillRect(0, topFlap * 0.3, L, topFlap * 0.7); ctx.strokeRect(0, topFlap * 0.3, L, topFlap * 0.7);
       ctx.fillRect(0, 0, L, topFlap * 0.3); ctx.strokeRect(0, 0, L, topFlap * 0.3);
 
-      // Bottom Lid & Tuck
       ctx.fillRect(L+W, topFlap+H, L, topFlap * 0.7); ctx.strokeRect(L+W, topFlap+H, L, topFlap * 0.7);
       ctx.fillRect(L+W, topFlap+H+topFlap*0.7, L, topFlap * 0.3); ctx.strokeRect(L+W, topFlap+H+topFlap*0.7, L, topFlap * 0.3);
 
-      // Dust flaps
       ctx.fillRect(L, topFlap * 0.3, W, topFlap * 0.7); ctx.strokeRect(L, topFlap * 0.3, W, topFlap * 0.7);
       ctx.fillRect(L+W+L, topFlap * 0.3, W, topFlap * 0.7); ctx.strokeRect(L+W+L, topFlap * 0.3, W, topFlap * 0.7);
 
-      // Fold lines (Dashed)
       ctx.strokeStyle = '#888'; ctx.lineWidth = dlw; ctx.setLineDash([5/sc, 3/sc]);
       ctx.beginPath();
       ctx.moveTo(L, topFlap); ctx.lineTo(L, topFlap + H);
@@ -318,52 +292,49 @@ export default function DielineDetailPage({ dieline, onBack }) {
       const { glW, duH, liH, tuH, boH, dI, gI, xG, xS1, xF, xB, xS2, yTu, yLi, yDuT, mY, yBo } = g;
       const { L, W, H } = dim;
 
-      fillRect(xS1, mY, W, H, '#ffffff');
-      fillRect(xF, mY, L, H, '#fefefe');
-      fillRect(xB, mY, L, H, '#fefefe');
-      fillRect(xS2, mY, W, H, '#ffffff');
-      fillRect(xB, yLi, L, liH, '#f8f8f4');
+      ctx.fillRect(xS1, mY, W, H); ctx.strokeRect(xS1, mY, W, H);
+      ctx.fillRect(xF, mY, L, H); ctx.strokeRect(xF, mY, L, H);
+      ctx.fillRect(xB, mY, L, H); ctx.strokeRect(xB, mY, L, H);
+      ctx.fillRect(xS2, mY, W, H); ctx.strokeRect(xS2, mY, W, H);
+      ctx.fillRect(xB, yLi, L, liH); ctx.strokeRect(xB, yLi, L, liH);
 
       ctx.beginPath();
       ctx.moveTo(xB, yLi);
       ctx.lineTo(xB + L, yLi);
       ctx.lineTo(xB + L, yLi * 0.38);
       ctx.quadraticCurveTo(xB + L / 2, yTu - tuH * 0.15, xB, yLi * 0.38);
-      ctx.closePath();
-      ctx.fillStyle = '#f5f5f0'; ctx.fill();
-
-      fillTrap(xS1 + dI, yDuT, xS1 + W - dI, yDuT, xS1 + W, mY, xS1, mY, '#f5f5f2');
-      fillTrap(xS2 + dI, yDuT, xS2 + W - dI, yDuT, xS2 + W, mY, xS2, mY, '#f5f5f2');
-      fillTrap(xS1, yBo, xS1 + W, yBo, xS1 + W - dI, yBo + boH, xS1 + dI, yBo + boH, '#f5f5f2');
-      fillTrap(xS2, yBo, xS2 + W, yBo, xS2 + W - dI, yBo + boH, xS2 + dI, yBo + boH, '#f5f5f2');
-      fillRect(xF, yBo, L, boH, '#f8f8f4');
-      fillTrap(xG, mY, xG + glW, mY + gI, xG + glW, mY + H - gI, xG, mY + H, '#f0f0ec');
-
-      // Stroke Cut lines
-      strokeRect(xS1, mY, W, H);
-      strokeRect(xF, mY, L, H);
-      strokeRect(xB, mY, L, H);
-      strokeRect(xS2, mY, W, H);
-      strokeRect(xB, yLi, L, liH);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
 
       ctx.beginPath();
-      ctx.moveTo(xB, yLi);
-      ctx.lineTo(xB + L, yLi);
-      ctx.lineTo(xB + L, yLi * 0.38);
-      ctx.quadraticCurveTo(xB + L / 2, yTu - tuH * 0.15, xB, yLi * 0.38);
-      ctx.closePath();
-      ctx.stroke();
+      ctx.moveTo(xS1 + dI, yDuT); ctx.lineTo(xS1 + W - dI, yDuT);
+      ctx.lineTo(xS1 + W, mY); ctx.lineTo(xS1, mY);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
 
-      strokeTrap(xS1 + dI, yDuT, xS1 + W - dI, yDuT, xS1 + W, mY);
-      strokeTrap(xS2 + dI, yDuT, xS2 + W - dI, yDuT, xS2 + W, mY);
-      strokeTrap(xS1, yBo, xS1 + W, yBo, xS1 + W - dI, yBo + boH, xS1 + dI, yBo + boH);
-      strokeTrap(xS2, yBo, xS2 + W, yBo, xS2 + W - dI, yBo + boH, xS2 + dI, yBo + boH);
-      strokeRect(xF, yBo, L, boH);
-      strokeTrap(xG, mY, xG + glW, mY + gI, xG + glW, mY + H - gI, xG, mY + H);
+      ctx.beginPath();
+      ctx.moveTo(xS2 + dI, yDuT); ctx.lineTo(xS2 + W - dI, yDuT);
+      ctx.lineTo(xS2 + W, mY); ctx.lineTo(xS2, mY);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
 
-      // Stroke Fold lines
+      ctx.beginPath();
+      ctx.moveTo(xS1, yBo); ctx.lineTo(xS1 + W, yBo);
+      ctx.lineTo(xS1 + W - dI, yBo + boH); ctx.lineTo(xS1 + dI, yBo + boH);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(xS2, yBo); ctx.lineTo(xS2 + W, yBo);
+      ctx.lineTo(xS2 + W - dI, yBo + boH); ctx.lineTo(xS2 + dI, yBo + boH);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+
+      ctx.fillRect(xF, yBo, L, boH); ctx.strokeRect(xF, yBo, L, boH);
+      
+      ctx.beginPath();
+      ctx.moveTo(xG, mY); ctx.lineTo(xG + glW, mY + gI);
+      ctx.lineTo(xG + glW, mY + H - gI); ctx.lineTo(xG, mY + H);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+
       ctx.strokeStyle = '#888'; ctx.lineWidth = dlw;
       ctx.setLineDash([5 / sc, 3 / sc]);
+      const foldLine = (x1, y1, x2, y2) => { ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); };
       foldLine(xS1, mY, xS1, mY + H);
       foldLine(xF, mY, xF, mY + H);
       foldLine(xB, mY, xB, mY + H);
@@ -401,14 +372,13 @@ export default function DielineDetailPage({ dieline, onBack }) {
       arrowLine(-off, 0, -off, H, `${H} mm`, -off - 14 / sc, H / 2);
     } else if (boxType === 'box-rsc') {
       const { L, W, H } = dim;
-      arrowLine(0, (W*0.5) + H + (W*0.5) + off, L, (W*0.5) + H + (W*0.5) + off, `${L} mm`, L / 2, (W*0.5) + H + (W*0.5) + off + 11 / sc);
-      arrowLine(-off, W*0.5, -off, W*0.5 + H, `${H} mm`, -off - 14 / sc, W*0.5 + H / 2);
+      arrowLine(0, (W * 0.5) + H + (W * 0.5) + off, L, (W * 0.5) + H + (W * 0.5) + off, `${L} mm`, L / 2, (W * 0.5) + H + (W * 0.5) + off + 11 / sc);
+      arrowLine(-off, W * 0.5, -off, W * 0.5 + H, `${H} mm`, -off - 14 / sc, W * 0.5 + H / 2);
     } else if (boxType === 'drawer') {
       const { L, W, H } = dim;
       arrowLine(0, W + off, L, W + off, `${L} mm`, L / 2, W + off + 11 / sc);
       arrowLine(L + off, 0, L + off, W, `${W} mm`, L + off + 14 / sc, W / 2);
     } else {
-      // mailer and tuck default
       const { L, W, H } = dim;
       const startX = boxType === 'box-tuck' ? 0 : g.xF;
       const startY = boxType === 'box-tuck' ? W * 0.8 : g.mY;
@@ -492,9 +462,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
     };
 
     if (boxType === 'bag') {
-      // 3D Bag Geometry (Thin box shape)
-      addPanel(new THREE.BoxGeometry(l, h, w * 0.3), new THREE.Vector3(0, h/2, 0));
-      // Handles (Simple loops)
+      addPanel(new THREE.BoxGeometry(l, h, w * 0.3), new THREE.Vector3(0, h / 2, 0));
       const handleGeo = new THREE.TorusGeometry(l * 0.25, 0.015, 8, 24, Math.PI);
       const handleMat = new THREE.MeshBasicMaterial({ color: 0xc4b7a6 });
       const handle1 = new THREE.Mesh(handleGeo, handleMat);
@@ -505,37 +473,51 @@ export default function DielineDetailPage({ dieline, onBack }) {
       three.boxGrp.add(handle2);
 
     } else if (boxType === 'drawer') {
-      // 3D Drawer Geometry (Sleeve + sliding tray)
-      // Sleeve (Outer)
-      addPanel(new THREE.PlaneGeometry(l, w), new THREE.Vector3(0, h, 0), { x: -Math.PI/2 }, matS);
-      addPanel(new THREE.PlaneGeometry(l, w), new THREE.Vector3(0, 0, 0), { x: Math.PI/2 }, matS);
-      addPanel(new THREE.PlaneGeometry(w, h), new THREE.Vector3(-l/2, h/2, 0), { y: -Math.PI/2 }, matS);
-      addPanel(new THREE.PlaneGeometry(w, h), new THREE.Vector3(l/2, h/2, 0), { y: Math.PI/2 }, matS);
+      addPanel(new THREE.PlaneGeometry(l, w), new THREE.Vector3(0, h, 0), { x: -Math.PI / 2 }, matS);
+      addPanel(new THREE.PlaneGeometry(l, w), new THREE.Vector3(0, 0, 0), { x: Math.PI / 2 }, matS);
+      addPanel(new THREE.PlaneGeometry(w, h), new THREE.Vector3(-l / 2, h / 2, 0), { y: -Math.PI / 2 }, matS);
+      addPanel(new THREE.PlaneGeometry(w, h), new THREE.Vector3(l / 2, h / 2, 0), { y: Math.PI / 2 }, matS);
       
-      // Inner Tray (Slightly smaller, offset to show sliding effect)
       const trGrp = new THREE.Group();
-      trGrp.position.set(l * 0.35, 0.01, 0); // Slide open animation offset
+      trGrp.position.set(l * 0.35, 0.01, 0);
       const tl = l * 0.96; const tw = w * 0.96; const th = h * 0.94;
-      
-      // Tray walls
       const tMesh = new THREE.Mesh(new THREE.BoxGeometry(tl, th, tw), mat);
-      tMesh.position.set(0, th/2, 0);
+      tMesh.position.set(0, th / 2, 0);
       trGrp.add(tMesh);
       three.boxGrp.add(trGrp);
 
     } else if (boxType === 'box-rsc') {
-      // 3D Shipping Box (RSC)
-      addPanel(new THREE.BoxGeometry(l, h, w), new THREE.Vector3(0, h/2, 0));
+      addPanel(new THREE.BoxGeometry(l, h, w), new THREE.Vector3(0, h / 2, 0));
 
-    } else {
-      // Standard Tuck Box or Mailer Box (Mailer folding lid)
+    } else if (boxType === 'box-tuck') {
+      // 3D Tuck End Box (Tall folding carton)
       addPanel(new THREE.PlaneGeometry(l, h), new THREE.Vector3(0, h / 2, w / 2), null);
       addPanel(new THREE.PlaneGeometry(l, h), new THREE.Vector3(0, h / 2, -w / 2), { y: Math.PI });
       addPanel(new THREE.PlaneGeometry(w, h), new THREE.Vector3(-l / 2, h / 2, 0), { y: -Math.PI / 2 }, matS);
       addPanel(new THREE.PlaneGeometry(w, h), new THREE.Vector3(l / 2, h / 2, 0), { y: Math.PI / 2 }, matS);
       addPanel(new THREE.PlaneGeometry(l, w), new THREE.Vector3(0, 0, 0), { x: -Math.PI / 2 }, matS);
 
-      // Lid group
+      // Top Lid (Opens up)
+      const topLidGrp = new THREE.Group();
+      topLidGrp.position.set(0, h, w / 2);
+      const lidMesh = new THREE.Mesh(new THREE.PlaneGeometry(l, w), mat);
+      lidMesh.position.set(0, 0, -w / 2);
+      lidMesh.rotation.x = -Math.PI / 2;
+      topLidGrp.add(lidMesh);
+      topLidGrp.rotation.x = 0.5; // Open angle
+      three.boxGrp.add(topLidGrp);
+
+      // Bottom Lid
+      addPanel(new THREE.PlaneGeometry(l, w), new THREE.Vector3(0, 0, 0), { x: Math.PI / 2 }, matS);
+
+    } else {
+      // Mailer Box (Default)
+      addPanel(new THREE.PlaneGeometry(l, h), new THREE.Vector3(0, h / 2, w / 2), null);
+      addPanel(new THREE.PlaneGeometry(l, h), new THREE.Vector3(0, h / 2, -w / 2), { y: Math.PI });
+      addPanel(new THREE.PlaneGeometry(w, h), new THREE.Vector3(-l / 2, h / 2, 0), { y: -Math.PI / 2 }, matS);
+      addPanel(new THREE.PlaneGeometry(w, h), new THREE.Vector3(l / 2, h / 2, 0), { y: Math.PI / 2 }, matS);
+      addPanel(new THREE.PlaneGeometry(l, w), new THREE.Vector3(0, 0, 0), { x: -Math.PI / 2 }, matS);
+
       const lidGrp = new THREE.Group();
       lidGrp.position.set(0, h, -w / 2);
       const lidMat = new THREE.MeshStandardMaterial({ color: 0xf2eee6, side: THREE.DoubleSide, roughness: 0.85, metalness: 0 });
@@ -636,9 +618,9 @@ export default function DielineDetailPage({ dieline, onBack }) {
       window.removeEventListener('resize', handleResize);
       ro.disconnect();
     };
-  }, []);
+  }, [safeDieline, boxType]); // Re-initialize 3D context when dieline or boxType changes
 
-  // Update geometry when dim or boxType changes
+  // Update geometry when dim changes
   useEffect(() => {
     updateThreeGeom();
   }, [dim, boxType]);
@@ -648,7 +630,6 @@ export default function DielineDetailPage({ dieline, onBack }) {
     const g = getGeom();
     let s = `<svg xmlns="http://www.w3.org/2000/svg" width="${g.tW}" height="${g.tH}" viewBox="0 0 ${g.tW} ${g.tH}">`;
     s += `<rect x="0" y="0" width="${g.tW}" height="${g.tH}" fill="#fff"/>`;
-    // Draw simple dieline based on type for SVG file export
     const { L, W, H } = dim;
     if (boxType === 'bag') {
       s += `<rect x="0" y="0" width="${L}" height="${H}" fill="none" stroke="#222" stroke-width="1"/>`;
@@ -668,7 +649,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
     const blob = new Blob([s], { type: 'image/svg+xml' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `${dieline.name.toLowerCase().replace(/\s+/g, '-')}.${boxType}.svg`;
+    a.download = `${safeDieline.name.toLowerCase().replace(/\s+/g, '-')}.${boxType}.svg`;
     a.click();
     URL.revokeObjectURL(a.href);
     triggerToast('SVG dieline downloaded');
@@ -701,7 +682,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
           <div className="settings-container">
             <div className="title-block">
               <p className="subtitle">Customizable {boxType.toUpperCase()}</p>
-              <h1 className="main-title">{dieline.name}</h1>
+              <h1 className="main-title">{safeDieline.name}</h1>
             </div>
 
             {/* Custom Size Inputs */}
