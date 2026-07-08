@@ -1,0 +1,371 @@
+/* ══════════════════════════════════════════════════════
+   HOME PAGE — Landing & Sections Overview
+   ══════════════════════════════════════════════════════ */
+
+.home-page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 40px 20px;
+}
+
+/* ── Header ── */
+.home-header {
+  margin-bottom: 60px;
+  text-align: center;
+  animation: slideDown 0.5s ease-out;
+}
+
+.header-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.logo-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+}
+
+.logo-icon-main {
+  color: var(--accent);
+  font-size: 32px;
+}
+
+.header-title {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.accent-text {
+  color: var(--accent);
+  position: relative;
+}
+
+/* ── Cards Container ── */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+  padding: 0 20px;
+}
+
+/* ── Section Cards ── */
+.section-card {
+  position: relative;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  padding: 32px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 380px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.section-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Card Color Variants ── */
+.card-purple {
+  background: linear-gradient(135deg, #e9d5ff 0%, #f3e8ff 100%);
+  border-color: #c4b5fd;
+  color: #1e1b4b;
+}
+
+.card-purple .card-title {
+  color: #1e1b4b;
+}
+
+.card-purple .card-arrow {
+  background: rgba(30, 27, 75, 0.1);
+  color: #1e1b4b;
+}
+
+.card-purple .image-item {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.card-teal {
+  background: linear-gradient(135deg, #ccfbf1 0%, #d1fae5 100%);
+  border-color: #99f6e4;
+  color: #134e4a;
+}
+
+.card-teal .card-title {
+  color: #134e4a;
+}
+
+.card-teal .card-arrow {
+  background: rgba(19, 78, 74, 0.1);
+  color: #134e4a;
+}
+
+.card-teal .image-item {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.card-blue {
+  background: linear-gradient(135deg, #bfdbfe 0%, #dbeafe 100%);
+  border-color: #93c5fd;
+  color: #0c2d6b;
+}
+
+.card-blue .card-title {
+  color: #0c2d6b;
+}
+
+.card-blue .card-arrow {
+  background: rgba(12, 45, 107, 0.1);
+  color: #0c2d6b;
+}
+
+.badge-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.badge {
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.badge-ai {
+  background: rgba(255, 165, 0, 0.2);
+  color: #ff8c00;
+  border: 1px solid #ffa500;
+}
+
+.badge-pdf {
+  background: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.badge-dxf {
+  background: rgba(40, 40, 40, 0.2);
+  color: #0c2d6b;
+  border: 1px solid #0c2d6b;
+}
+
+/* ── Card Header ── */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  flex: 1;
+}
+
+.card-arrow {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  margin-right: -16px;
+}
+
+.section-card:hover .card-arrow {
+  transform: scale(1.15) translateX(-4px);
+}
+
+/* ── Card Content ── */
+.card-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.image-item {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  transition: all 0.2s ease;
+}
+
+.image-item:hover {
+  transform: scale(1.1);
+}
+
+/* ── Card Overlay ── */
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.section-card:hover .card-overlay {
+  opacity: 1;
+}
+
+.overlay-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+/* ── Footer ── */
+.home-footer {
+  margin-top: 60px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* ══════════════════════════════════════════════════════
+   ANIMATIONS
+   ══════════════════════════════════════════════════════ */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .cards-container {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .header-title {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-page {
+    padding: 30px 16px;
+  }
+
+  .home-header {
+    margin-bottom: 40px;
+  }
+
+  .header-title {
+    font-size: 28px;
+  }
+
+  .cards-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0;
+  }
+
+  .section-card {
+    min-height: 300px;
+    padding: 24px;
+  }
+
+  .logo-main {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .logo-icon-main {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-page {
+    padding: 20px 12px;
+  }
+
+  .header-title {
+    font-size: 22px;
+  }
+
+  .card-title {
+    font-size: 18px;
+  }
+
+  .section-card {
+    padding: 16px;
+    min-height: 280px;
+  }
+
+  .card-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .image-grid {
+    gap: 12px;
+  }
+
+  .image-item {
+    font-size: 32px;
+  }
+}

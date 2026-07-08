@@ -59,6 +59,11 @@ html, body, #root {
   overflow: hidden;
 }
 
+.app-layout.home-view {
+  justify-content: center;
+  align-items: center;
+}
+
 .viewport {
   flex: 1;
   position: relative;
@@ -650,4 +655,35 @@ html, body, #root {
   .viewport {
     height: 55vh;
   }
+}
+
+/* ══════════════════════════════════════════════════════
+   BACK HOME BUTTON
+   ══════════════════════════════════════════════════════ */
+
+.back-home-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-md);
+  color: #1a0e08;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all var(--transition);
+  box-shadow: var(--shadow-md);
+}
+
+.back-home-btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,107,53,0.45);
 }
