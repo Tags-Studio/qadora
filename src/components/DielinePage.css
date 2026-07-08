@@ -24,10 +24,11 @@
   width: 100%;
   height: 100%;
   background-color: var(--saas-bg);
+  overflow: hidden;
 }
 
 .dieline-saas-layout {
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
   background-color: var(--saas-bg);
   color: var(--saas-fg-primary);
@@ -35,6 +36,8 @@
   display: flex;
   flex-direction: column;
   direction: ltr;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* ── Header (80px high) ── */
