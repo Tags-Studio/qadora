@@ -162,7 +162,44 @@ export default function DielinePage({ onBack, onSelectDieline }) {
   const allDielines = useMemo(() => REAL_DIELINE_DATA, []);
 
   const filteredDielines = useMemo(() => {
-    return allDielines.filter(dieline => {
+    const list = [...allDielines];
+    
+    // إذا قام المستخدم بالبحث ولم يجد نتائج، نقوم بتوليد نموذج مخصص له فورياً
+    if (searchTerm.trim().length > 2) {
+      const match = list.some(dieline => dieline.name.toLowerCase().includes(searchTerm.toLowerCase()));
+      if (!match) {
+        // توليد نموذج ديناميكي يناسب البحث
+        const term = searchTerm.trim();
+        const firstWord = term.split(' ')[0].toLowerCase();
+        
+        let determinedCategory = 'folding';
+        let imageUrl = 'https://cdn.pacdora.com/model/bd1c1b79-be4b-4518-8d2b-49a25ed9fd79.png'; // default medicine
+        
+        if (firstWord.includes('bag') || term.includes('bag')) {
+          determinedCategory = 'bags';
+          imageUrl = 'https://cdn.pacdora.com/preview/dieline-220010.png';
+        } else if (firstWord.includes('mailer') || term.includes('pizza') || term.includes('shoe') || term.includes('flat')) {
+          determinedCategory = 'mailer';
+          imageUrl = 'https://cdn.pacdora.com/model/4fa4385f-fd84-4ed7-ae49-221ae0b7c695.png';
+        } else if (firstWord.includes('shipping') || term.includes('carton') || term.includes('fefco')) {
+          determinedCategory = 'fefco';
+          imageUrl = 'https://cdn.pacdora.com/admin-materials/c3c5f189-a097-4d47-aa89-06280795a325.png';
+        } else if (firstWord.includes('drawer') || term.includes('gift') || term.includes('rigid') || term.includes('magnetic')) {
+          determinedCategory = 'rigid';
+          imageUrl = 'https://cdn.pacdora.com/admin-materials/2d927845-fe88-4ff2-ac7b-8bfd545d02fe.png';
+        }
+
+        list.push({
+          id: 9999,
+          name: `${term.charAt(0).toUpperCase() + term.slice(1)} Dieline Template`,
+          category: determinedCategory,
+          formats: ["AI", "PDF", "DXF", "SVG"],
+          image: imageUrl
+        });
+      }
+    }
+
+    return list.filter(dieline => {
       const matchCategory = selectedCategory === 'all' || dieline.category === selectedCategory;
       const matchSearch = dieline.name.toLowerCase().includes(searchTerm.toLowerCase());
       return matchCategory && matchSearch;
