@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import HomePage from './components/HomePage';
+import DielinePage from './components/DielinePage';
 import Canvas3D from './components/Editor/Canvas3D';
 import ControlPanel from './components/Editor/ControlPanel';
 import './App.css';
@@ -20,6 +21,18 @@ export default function App() {
     return (
       <div className="app-layout home-view">
         <HomePage onNavigate={handleNavigate} />
+      </div>
+    );
+  }
+
+  // Dieline view
+  if (currentView === 'dieline') {
+    return (
+      <div className="app-layout dieline-view">
+        <button className="back-home-btn" onClick={handleBackHome} title="Back to Home">
+          ← Home
+        </button>
+        <DielinePage onBack={handleBackHome} />
       </div>
     );
   }

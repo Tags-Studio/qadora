@@ -1,0 +1,440 @@
+/* ══════════════════════════════════════════════════════
+   DIELINE PAGE
+   ══════════════════════════════════════════════════════ */
+
+.dieline-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+  overflow: hidden;
+}
+
+/* ──────────────────────────────────────────────────────
+   HEADER
+   ────────────────────────────────────────────────────── */
+
+.dieline-header {
+  padding: 40px 60px;
+  background: linear-gradient(135deg, #fff 0%, #fafafa 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  max-height: 35%;
+}
+
+.dieline-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dieline-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a0e08;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.arrow-icon {
+  color: var(--accent);
+  font-size: 28px;
+}
+
+.dieline-description {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+  max-width: 600px;
+}
+
+.dieline-search {
+  position: relative;
+}
+
+.dieline-search-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 12px 16px 12px 40px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 14px;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.dieline-search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.dieline-search::before {
+  content: '🔍';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+}
+
+/* ──────────────────────────────────────────────────────
+   CONTAINER & LAYOUT
+   ────────────────────────────────────────────────────── */
+
+.dieline-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ──────────────────────────────────────────────────────
+   SIDEBAR
+   ────────────────────────────────────────────────────── */
+
+.dieline-sidebar {
+  width: 280px;
+  background: #fff;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.dieline-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filter-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a0e08;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-family: inherit;
+  gap: 8px;
+}
+
+.category-button:hover {
+  background: #f5f5f5;
+  border-color: #eee;
+}
+
+.category-button.active {
+  background: linear-gradient(135deg, #f0f8ff 0%, #e8f4ff 100%);
+  border-color: var(--accent);
+}
+
+.category-name {
+  font-size: 13px;
+  color: #1a0e08;
+  font-weight: 500;
+  flex: 1;
+}
+
+.category-button.active .category-name {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.category-count {
+  font-size: 12px;
+  color: #999;
+  font-weight: 500;
+}
+
+.category-button.active .category-count {
+  color: var(--accent);
+}
+
+/* ──────────────────────────────────────────────────────
+   MAIN CONTENT AREA
+   ────────────────────────────────────────────────────── */
+
+.dieline-main {
+  flex: 1;
+  padding: 40px 60px;
+  overflow-y: auto;
+  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+}
+
+.dieline-results-header {
+  margin-bottom: 32px;
+}
+
+.results-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a0e08;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.3px;
+}
+
+.results-count {
+  font-size: 14px;
+  color: #999;
+  margin: 0;
+}
+
+/* ──────────────────────────────────────────────────────
+   DIELINE GRID
+   ────────────────────────────────────────────────────── */
+
+.dieline-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.dieline-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+.dieline-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: var(--accent);
+}
+
+.dieline-card-image {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.dieline-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.dieline-card:hover .dieline-card-image img {
+  transform: scale(1.05);
+}
+
+.dieline-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.dieline-card:hover .dieline-card-overlay {
+  opacity: 1;
+}
+
+.dieline-action-btn {
+  padding: 10px 20px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dieline-action-btn:hover {
+  background: var(--accent-hover);
+  transform: scale(1.05);
+}
+
+.dieline-card-content {
+  padding: 16px;
+}
+
+.dieline-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a0e08;
+  margin: 0 0 12px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+}
+
+.dieline-formats {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.format-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe8cc 100%);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 107, 53, 0.2);
+}
+
+/* ──────────────────────────────────────────────────────
+   NO RESULTS
+   ────────────────────────────────────────────────────── */
+
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 16px;
+}
+
+/* ──────────────────────────────────────────────────────
+   SCROLLBAR STYLING
+   ────────────────────────────────────────────────────── */
+
+.dieline-sidebar::-webkit-scrollbar,
+.dieline-main::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dieline-sidebar::-webkit-scrollbar-track,
+.dieline-main::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+.dieline-sidebar::-webkit-scrollbar-thumb,
+.dieline-main::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.dieline-sidebar::-webkit-scrollbar-thumb:hover,
+.dieline-main::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* ──────────────────────────────────────────────────────
+   RESPONSIVE DESIGN
+   ────────────────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .dieline-header {
+    padding: 30px 40px;
+  }
+
+  .dieline-main {
+    padding: 30px 40px;
+  }
+
+  .dieline-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dieline-container {
+    flex-direction: column;
+  }
+
+  .dieline-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    max-height: 200px;
+    padding: 16px;
+  }
+
+  .filter-categories {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .dieline-header {
+    padding: 20px;
+  }
+
+  .dieline-title {
+    font-size: 24px;
+  }
+
+  .dieline-main {
+    padding: 20px;
+  }
+
+  .dieline-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dieline-page {
+    height: auto;
+  }
+
+  .dieline-header {
+    padding: 16px;
+    max-height: none;
+  }
+
+  .dieline-title {
+    font-size: 20px;
+  }
+
+  .dieline-search-input {
+    max-width: 100%;
+  }
+
+  .dieline-main {
+    padding: 16px;
+  }
+
+  .dieline-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .dieline-card-image {
+    height: 120px;
+  }
+}

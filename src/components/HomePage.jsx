@@ -24,7 +24,7 @@ export default function HomePage({ onNavigate }) {
     {
       id: 'dieline',
       title: 'Dieline Template Maker',
-      description: 'Create professional dieline templates',
+      description: 'Browse 3,000+ Free Dieline Templates',
       color: 'blue',
       icon: '📄',
       badges: ['AI', 'PDF', 'DXF'],
