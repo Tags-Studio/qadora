@@ -1,14 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import './DielineDetailPage.css';
 
 export default function DielineDetailPage({ dieline, onBack }) {
-  // Safe validation for dieline parameter to prevent crashes
-  const safeDieline = dieline || { id: 1, name: 'Tuck End Box Dieline', category: 'folding', formats: ['AI', 'PDF', 'DXF'], image: '' };
+  // Safe validation for dieline parameter
+  const safeDieline = useMemo(() => {
+    return dieline || { 
+      id: 1, 
+      name: 'Tuck End Box Dieline', 
+      category: 'folding', 
+      formats: ['AI', 'PDF', 'DXF', 'SVG'], 
+      image: '' 
+    };
+  }, [dieline]);
 
   // Determine Box Type dynamically based on name
-  const getBoxType = () => {
+  const boxType = useMemo(() => {
     if (!safeDieline.name) return 'box-tuck';
     const name = safeDieline.name.toLowerCase();
     if (name.includes('bag')) return 'bag';
@@ -16,15 +24,14 @@ export default function DielineDetailPage({ dieline, onBack }) {
     if (name.includes('rsc') || name.includes('slotted') || name.includes('fefco 0201') || name.includes('fefco 0300')) return 'box-rsc';
     if (name.includes('mailer') || name.includes('hinged') || name.includes('fefco 0427') || name.includes('fefco 0426') || name.includes('tray')) return 'box-mailer';
     return 'box-tuck'; // default
-  };
-
-  const boxType = getBoxType();
+  }, [safeDieline.name]);
 
   // ========== State ==========
   const [dim, setDim] = useState({ L: 315, W: 202, H: 62 });
   const [selectedMaterial, setSelectedMaterial] = useState('E');
   const [sizeMode, setSizeMode] = useState('manufacture');
   const [zoom, setZoom] = useState(1);
+  const [lidOpen, setLidOpen] = useState(15); // slider 0 to 100
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
 
@@ -33,11 +40,12 @@ export default function DielineDetailPage({ dieline, onBack }) {
   const threeContainerRef = useRef(null);
   const dielineSectionRef = useRef(null);
 
-  // Dragging State
+  // Dragging State for 2D Canvas
   const panRef = useRef({ x: 0, y: 0 });
   const draggingRef = useRef(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
 
+  // Thickness Mapping
   const matThickness = {
     F: '0.8mm',
     E: '1.5mm',
@@ -45,6 +53,15 @@ export default function DielineDetailPage({ dieline, onBack }) {
     C: '3.8mm',
     EB: '4.5mm',
     BC: '6.8mm',
+  };
+
+  const thickValues = {
+    F: 0.8,
+    E: 1.5,
+    B: 3.0,
+    C: 3.8,
+    EB: 4.5,
+    BC: 6.8
   };
 
   // Adjust default dimensions based on box type for realistic proportion
@@ -63,9 +80,10 @@ export default function DielineDetailPage({ dieline, onBack }) {
     // Reset panning and zoom on card change
     panRef.current = { x: 0, y: 0 };
     setZoom(1);
+    setLidOpen(15);
   }, [safeDieline, boxType]);
 
-  // Three.js variables
+  // Three.js references
   const threeRef = useRef({
     scene: null,
     camera: null,
@@ -74,17 +92,6 @@ export default function DielineDetailPage({ dieline, onBack }) {
     boxGrp: null,
     initialized: false,
   });
-
-  // Load Font Awesome dynamically
-  useEffect(() => {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css';
-    document.head.appendChild(link);
-    return () => {
-      document.head.removeChild(link);
-    };
-  }, []);
 
   // ========== Toast Handler ==========
   const triggerToast = (msg) => {
@@ -99,7 +106,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
     
     if (boxType === 'bag') {
       const tW = (L * 2) + (W * 2) + 20;
-      const tH = H + (W * 0.7);
+      const tH = H + (W * 0.6);
       return { tW, tH };
     }
     
@@ -118,22 +125,20 @@ export default function DielineDetailPage({ dieline, onBack }) {
     }
 
     // Default Mailer/Tuck Box Geometry
-    const glW = Math.round(W * 0.2);
-    const duH = Math.round(W * 0.4);
-    const liH = H;
-    const tuH = Math.round(W * 0.14);
-    const boH = duH;
-    const dI = Math.round(W * 0.08);
-    const gI = Math.round(glW * 0.3);
+    const gW = Math.round(W * 0.18);
+    const dH = Math.round(W * 0.38);
+    const tH_tab = Math.round(W * 0.12);
+    const dI = Math.round(W * 0.07);
+    const gI = Math.round(gW * 0.25);
 
-    const xG = 0, xS1 = glW, xF = glW + W, xB = glW + W + L, xS2 = glW + W + L + L;
-    const tW = glW + W + L + L + W;
-    const topH = Math.max(duH, liH + tuH);
-    const yTu = 0, yLi = tuH, yDuT = topH - duH;
-    const mY = topH, yBo = mY + H;
-    const tH = yBo + boH;
+    const xG = 0, xS1 = gW, xF = gW + W, xB = gW + W + L, xS2 = gW + W + L + L;
+    const tW = gW + W + L + L + W;
+    const yT = 0, yL = tH_tab, yLE = tH_tab + H, yDT = tH_tab + H, yDTE = tH_tab + H + dH;
+    const tH2 = tH_tab + H + dH;
+    const yM = tH2, yME = tH2 + H, yDB = yME, yDBE = yME + dH, yB = yDBE, yBE = yDBE + H, yTB = yBE, yTBE = yBE + tH_tab;
+    const totalH = yTBE;
 
-    return { glW, duH, liH, tuH, boH, dI, gI, xG, xS1, xF, xB, xS2, tW, yTu, yLi, yDuT, mY, yBo, tH, topH };
+    return { gW, dH, tH: totalH, dI, gI, xG, xS1, xF, xB, xS2, tW, yT, yL, yLE, yDT, yDTE, tH2, yM, yME, yDB, yDBE, yB, yBE, yTB, yTBE, totalH };
   };
 
   const drawDieline = () => {
@@ -147,7 +152,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
     // Draw Grid
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, rect.width, rect.height);
-    ctx.strokeStyle = '#f3f4f6';
+    ctx.strokeStyle = '#f1f5f9';
     ctx.lineWidth = 0.5;
     for (let x = 0; x < rect.width; x += 20) {
       ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, rect.height); ctx.stroke();
@@ -159,12 +164,12 @@ export default function DielineDetailPage({ dieline, onBack }) {
     const g = getGeom();
     ctx.save();
     ctx.translate(rect.width / 2 + panRef.current.x, rect.height / 2 + panRef.current.y);
-    const sc = Math.min(rect.width * 0.88 / g.tW, rect.height * 0.88 / g.tH) * zoom;
+    const sc = Math.min(rect.width * 0.86 / g.tW, rect.height * 0.86 / g.tH) * zoom;
     ctx.scale(sc, sc);
     ctx.translate(-g.tW / 2, -g.tH / 2);
 
-    const lw = 1.2 / sc, dlw = 0.7 / sc;
-    ctx.strokeStyle = '#222'; ctx.lineWidth = lw; ctx.fillStyle = '#fcfcf9';
+    const lw = 1.3 / sc, dlw = 0.75 / sc, as = 4 / sc, fs = Math.max(9, 10.5 / sc), off = 20 / sc;
+    ctx.fillStyle = '#fafbfc';
 
     if (boxType === 'bag') {
       const { L, W, H } = dim;
@@ -184,7 +189,19 @@ export default function DielineDetailPage({ dieline, onBack }) {
       ctx.fillRect(L+W, H, L, bH); ctx.strokeRect(L+W, H, L, bH);
       ctx.fillRect(L+W+L, H, W, bH); ctx.strokeRect(L+W+L, H, W, bH);
 
-      ctx.strokeStyle = '#888'; ctx.lineWidth = dlw; ctx.setLineDash([5/sc, 3/sc]);
+      // Cut Lines
+      ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = lw;
+      ctx.strokeRect(0, 0, L, H);
+      ctx.strokeRect(L, 0, W, H);
+      ctx.strokeRect(L+W, 0, L, H);
+      ctx.strokeRect(L+W+L, 0, W, H);
+      ctx.strokeRect(0, H, L, bH);
+      ctx.strokeRect(L, H, W, bH);
+      ctx.strokeRect(L+W, H, L, bH);
+      ctx.strokeRect(L+W+L, H, W, bH);
+
+      // Fold Lines (Crease)
+      ctx.strokeStyle = '#ef4444'; ctx.lineWidth = dlw; ctx.setLineDash([5/sc, 3/sc]);
       ctx.beginPath();
       ctx.moveTo(L, 0); ctx.lineTo(L, H+bH);
       ctx.moveTo(L+W, 0); ctx.lineTo(L+W, H+bH);
@@ -219,7 +236,23 @@ export default function DielineDetailPage({ dieline, onBack }) {
       ctx.fillRect(L+W, fH+H, L, fH); ctx.strokeRect(L+W, fH+H, L, fH);
       ctx.fillRect(L+W+L, fH+H, W, fH); ctx.strokeRect(L+W+L, fH+H, W, fH);
 
-      ctx.strokeStyle = '#888'; ctx.lineWidth = dlw; ctx.setLineDash([5/sc, 3/sc]);
+      // Cut Lines
+      ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = lw;
+      ctx.strokeRect(0, fH, L, H);
+      ctx.strokeRect(L, fH, W, H);
+      ctx.strokeRect(L+W, fH, L, H);
+      ctx.strokeRect(L+W+L, fH, W, H);
+      ctx.strokeRect(0, 0, L, fH);
+      ctx.strokeRect(L, 0, W, fH);
+      ctx.strokeRect(L+W, 0, L, fH);
+      ctx.strokeRect(L+W+L, 0, W, fH);
+      ctx.strokeRect(0, fH+H, L, fH);
+      ctx.strokeRect(L, fH+H, W, fH);
+      ctx.strokeRect(L+W, fH+H, L, fH);
+      ctx.strokeRect(L+W+L, fH+H, W, fH);
+
+      // Fold Lines
+      ctx.strokeStyle = '#ef4444'; ctx.lineWidth = dlw; ctx.setLineDash([5/sc, 3/sc]);
       ctx.beginPath();
       ctx.moveTo(L, 0); ctx.lineTo(L, fH+H+fH);
       ctx.moveTo(L+W, 0); ctx.lineTo(L+W, fH+H+fH);
@@ -245,7 +278,20 @@ export default function DielineDetailPage({ dieline, onBack }) {
       ctx.fillRect(trX + H, 0, L, H); ctx.strokeRect(trX + H, 0, L, H);
       ctx.fillRect(trX + H, H + W, L, H); ctx.strokeRect(trX + H, H + W, L, H);
 
-      ctx.strokeStyle = '#888'; ctx.lineWidth = dlw; ctx.setLineDash([5/sc, 3/sc]);
+      // Cut Lines
+      ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = lw;
+      ctx.strokeRect(0, 0, L, W);
+      ctx.strokeRect(L, 0, H, W);
+      ctx.strokeRect(L+H, 0, L, W);
+      ctx.strokeRect(L+H+L, 0, H, W);
+      ctx.strokeRect(trX + H, H, L, W);
+      ctx.strokeRect(trX, H, H, W);
+      ctx.strokeRect(trX + H + L, H, H, W);
+      ctx.strokeRect(trX + H, 0, L, H);
+      ctx.strokeRect(trX + H, H + W, L, H);
+
+      // Fold Lines
+      ctx.strokeStyle = '#ef4444'; ctx.lineWidth = dlw; ctx.setLineDash([5/sc, 3/sc]);
       ctx.beginPath();
       ctx.moveTo(L, 0); ctx.lineTo(L, W);
       ctx.moveTo(L+H, 0); ctx.lineTo(L+H, W);
@@ -276,7 +322,21 @@ export default function DielineDetailPage({ dieline, onBack }) {
       ctx.fillRect(L, topFlap * 0.3, W, topFlap * 0.7); ctx.strokeRect(L, topFlap * 0.3, W, topFlap * 0.7);
       ctx.fillRect(L+W+L, topFlap * 0.3, W, topFlap * 0.7); ctx.strokeRect(L+W+L, topFlap * 0.3, W, topFlap * 0.7);
 
-      ctx.strokeStyle = '#888'; ctx.lineWidth = dlw; ctx.setLineDash([5/sc, 3/sc]);
+      // Cut Lines
+      ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = lw;
+      ctx.strokeRect(0, topFlap, L, H);
+      ctx.strokeRect(L, topFlap, W, H);
+      ctx.strokeRect(L+W, topFlap, L, H);
+      ctx.strokeRect(L+W+L, topFlap, W, H);
+      ctx.strokeRect(0, topFlap * 0.3, L, topFlap * 0.7);
+      ctx.strokeRect(0, 0, L, topFlap * 0.3);
+      ctx.strokeRect(L+W, topFlap+H, L, topFlap * 0.7);
+      ctx.strokeRect(L+W, topFlap+H+topFlap*0.7, L, topFlap * 0.3);
+      ctx.strokeRect(L, topFlap * 0.3, W, topFlap * 0.7);
+      ctx.strokeRect(L+W+L, topFlap * 0.3, W, topFlap * 0.7);
+
+      // Fold Lines
+      ctx.strokeStyle = '#ef4444'; ctx.lineWidth = dlw; ctx.setLineDash([5/sc, 3/sc]);
       ctx.beginPath();
       ctx.moveTo(L, topFlap); ctx.lineTo(L, topFlap + H);
       ctx.moveTo(L+W, topFlap); ctx.lineTo(L+W, topFlap + H);
@@ -332,7 +392,17 @@ export default function DielineDetailPage({ dieline, onBack }) {
       ctx.lineTo(xG + glW, mY + H - gI); ctx.lineTo(xG, mY + H);
       ctx.closePath(); ctx.fill(); ctx.stroke();
 
-      ctx.strokeStyle = '#888'; ctx.lineWidth = dlw;
+      // Cut Lines
+      ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = lw;
+      ctx.strokeRect(xS1, mY, W, H);
+      ctx.strokeRect(xF, mY, L, H);
+      ctx.strokeRect(xB, mY, L, H);
+      ctx.strokeRect(xS2, mY, W, H);
+      ctx.strokeRect(xB, yLi, L, liH);
+      ctx.strokeRect(xF, yBo, L, boH);
+
+      // Fold Lines
+      ctx.strokeStyle = '#ef4444'; ctx.lineWidth = dlw;
       ctx.setLineDash([5 / sc, 3 / sc]);
       const foldLine = (x1, y1, x2, y2) => { ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); };
       foldLine(xS1, mY, xS1, mY + H);
@@ -342,14 +412,13 @@ export default function DielineDetailPage({ dieline, onBack }) {
       foldLine(xS1, mY, xS2 + W, mY);
       foldLine(xS1, mY + H, xS2 + W, mY + H);
       foldLine(xB, yLi, xB + L, yLi);
-      ctx.setLineDash([]);
     }
 
-    // Draw dimension annotations (L, W, H)
-    const as = 4 / sc, fs = Math.max(9, 10.5 / sc), off = 16 / sc;
-    ctx.font = `600 ${fs}px 'DM Sans', sans-serif`;
+    // Draw dimension annotations (L, W, H) in Green
+    ctx.setLineDash([]);
+    ctx.font = `600 ${fs}px 'Inter', sans-serif`;
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.strokeStyle = '#059669'; ctx.lineWidth = 0.8 / sc;
+    ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 0.8 / sc;
 
     const arrowLine = (x1, y1, x2, y2, label, lx, ly) => {
       ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
@@ -363,27 +432,68 @@ export default function DielineDetailPage({ dieline, onBack }) {
       });
       const tw = ctx.measureText(label).width + 6 / sc;
       ctx.fillStyle = '#fff'; ctx.fillRect(lx - tw / 2, ly - fs / 2 - 1 / sc, tw, fs + 2 / sc);
-      ctx.fillStyle = '#059669'; ctx.fillText(label, lx, ly);
+      ctx.fillStyle = '#22c55e'; ctx.fillText(label, lx, ly);
     };
 
     if (boxType === 'bag') {
       const { L, W, H } = dim;
-      arrowLine(0, H + W * 0.6 + off, L, H + W * 0.6 + off, `${L} mm`, L / 2, H + W * 0.6 + off + 11 / sc);
-      arrowLine(-off, 0, -off, H, `${H} mm`, -off - 14 / sc, H / 2);
+      arrowLine(0, H + W * 0.6 + off, L, H + W * 0.6 + off, `${L} mm`, L / 2, H + W * 0.6 + off + 12 / sc);
+      arrowLine(-off, 0, -off, H, `${H} mm`, -off - 16 / sc, H / 2);
     } else if (boxType === 'box-rsc') {
       const { L, W, H } = dim;
-      arrowLine(0, (W * 0.5) + H + (W * 0.5) + off, L, (W * 0.5) + H + (W * 0.5) + off, `${L} mm`, L / 2, (W * 0.5) + H + (W * 0.5) + off + 11 / sc);
-      arrowLine(-off, W * 0.5, -off, W * 0.5 + H, `${H} mm`, -off - 14 / sc, W * 0.5 + H / 2);
+      arrowLine(0, (W * 0.5) + H + (W * 0.5) + off, L, (W * 0.5) + H + (W * 0.5) + off, `${L} mm`, L / 2, (W * 0.5) + H + (W * 0.5) + off + 12 / sc);
+      arrowLine(-off, W * 0.5, -off, W * 0.5 + H, `${H} mm`, -off - 16 / sc, W * 0.5 + H / 2);
     } else if (boxType === 'drawer') {
       const { L, W, H } = dim;
-      arrowLine(0, W + off, L, W + off, `${L} mm`, L / 2, W + off + 11 / sc);
-      arrowLine(L + off, 0, L + off, W, `${W} mm`, L + off + 14 / sc, W / 2);
+      arrowLine(0, W + off, L, W + off, `${L} mm`, L / 2, W + off + 12 / sc);
+      arrowLine(L + off, 0, L + off, W, `${W} mm`, L + off + 16 / sc, W / 2);
     } else {
       const { L, W, H } = dim;
       const startX = boxType === 'box-tuck' ? 0 : g.xF;
       const startY = boxType === 'box-tuck' ? W * 0.8 : g.mY;
-      arrowLine(startX, startY + H + off, startX + L, startY + H + off, `${L} mm`, startX + L / 2, startY + H + off + 11 / sc);
-      arrowLine(startX - off, startY, startX - off, startY + H, `${H} mm`, startX - off - 14 / sc, startY + H / 2);
+      arrowLine(startX, startY + H + off, startX + L, startY + H + off, `${L} mm`, startX + L / 2, startY + H + off + 12 / sc);
+      arrowLine(startX - off, startY, startX - off, startY + H, `${H} mm`, startX - off - 16 / sc, startY + H / 2);
+    }
+
+    // Draw segment labels (SIDE, FRONT, BACK, LID, etc.) in light slate
+    ctx.font = `500 ${Math.max(7, 8.5/sc)}px 'Inter', sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#cbd5e1';
+    
+    if (boxType === 'bag') {
+      const { L, W, H } = dim;
+      ctx.fillText('FRONT', L/2, H/2);
+      ctx.fillText('SIDE', L + W/2, H/2);
+      ctx.fillText('BACK', L + W + L/2, H/2);
+      ctx.fillText('SIDE', L + W + L + W/2, H/2);
+    } else if (boxType === 'box-rsc') {
+      const { L, W, H } = dim;
+      const fH = W * 0.5;
+      ctx.fillText('FRONT', L/2, fH + H/2);
+      ctx.fillText('SIDE', L + W/2, fH + H/2);
+      ctx.fillText('BACK', L + W + L/2, fH + H/2);
+      ctx.fillText('SIDE', L + W + L + W/2, fH + H/2);
+    } else if (boxType === 'drawer') {
+      const { L, W, H } = dim;
+      ctx.fillText('SLEEVE TOP', L/2, W/2);
+      ctx.fillText('SLEEVE SIDE', L + H/2, W/2);
+      ctx.fillText('SLEEVE BTM', L + H + L/2, W/2);
+      ctx.fillText('TRAY INNER', L*2 + H*2 + 60 + H + L/2, H + W/2);
+    } else if (boxType === 'box-tuck') {
+      const { L, W, H } = dim;
+      const topFlap = W * 0.8;
+      ctx.fillText('FRONT', L/2, topFlap + H/2);
+      ctx.fillText('SIDE', L + W/2, topFlap + H/2);
+      ctx.fillText('BACK', L + W + L/2, topFlap + H/2);
+      ctx.fillText('SIDE', L + W + L + W/2, topFlap + H/2);
+      ctx.fillText('LID', L/2, topFlap - topFlap*0.35);
+    } else {
+      const { L, W, H } = dim;
+      ctx.fillText('SIDE', g.xS1 + W / 2, g.yM + H / 2);
+      ctx.fillText('FRONT', g.xF + L / 2, g.yM + H / 2);
+      ctx.fillText('BACK', g.xB + L / 2, g.yM + H / 2);
+      ctx.fillText('SIDE', g.xS2 + W / 2, g.yM + H / 2);
+      ctx.fillText('LID', g.xB + L / 2, g.yL + H / 2);
     }
 
     ctx.restore();
@@ -431,7 +541,43 @@ export default function DielineDetailPage({ dieline, onBack }) {
     setZoom((prev) => Math.max(0.15, Math.min(5, prev * (e.deltaY > 0 ? 0.9 : 1.1))));
   };
 
-  // ========== Three.js initialization and updates ==========
+  // ========== Three.js Cardboard Texture Generator ==========
+  const makeCardboardTexture = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+    
+    // Fill Base Kraft Color
+    ctx.fillStyle = '#c4a67d';
+    ctx.fillRect(0, 0, 512, 512);
+    
+    // Noise/Fibers
+    for (let i = 0; i < 35000; i++) {
+      const x = Math.random() * 512;
+      const y = Math.random() * 512;
+      const brightness = Math.random() * 24 - 12;
+      ctx.fillStyle = `rgba(${140 + brightness}, ${110 + brightness}, ${75 + brightness}, 0.12)`;
+      ctx.fillRect(x, y, 1.5, 1.5);
+    }
+    
+    // Corrugated paper lines
+    ctx.strokeStyle = 'rgba(150,120,80,0.06)';
+    ctx.lineWidth = 1;
+    for (let y = 0; y < 512; y += 6) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(512, y);
+      ctx.stroke();
+    }
+    
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    return texture;
+  };
+
+  // ========== Three.js Update Geometry ==========
   const updateThreeGeom = () => {
     const three = threeRef.current;
     if (!three.initialized || !three.scene) return;
@@ -444,9 +590,10 @@ export default function DielineDetailPage({ dieline, onBack }) {
     const w = dim.W * scale;
     const h = dim.H * scale;
 
-    const mat = new THREE.MeshStandardMaterial({ color: 0xf7f3ec, side: THREE.DoubleSide, roughness: 0.85, metalness: 0 });
-    const matS = new THREE.MeshStandardMaterial({ color: 0xf0ece4, side: THREE.DoubleSide, roughness: 0.9, metalness: 0 });
-    const edgeM = new THREE.LineBasicMaterial({ color: 0x999999 });
+    const tex = makeCardboardTexture();
+    const mat = new THREE.MeshStandardMaterial({ map: tex, side: THREE.DoubleSide, roughness: 0.92, metalness: 0 });
+    const matS = new THREE.MeshStandardMaterial({ map: tex, side: THREE.DoubleSide, roughness: 0.95, metalness: 0, color: new THREE.Color(0xf0e8d8) });
+    const edgeM = new THREE.LineBasicMaterial({ color: 0x8a7a60 });
 
     const addPanel = (geo, pos, rot, m) => {
       const mesh = new THREE.Mesh(geo, m || mat);
@@ -473,16 +620,21 @@ export default function DielineDetailPage({ dieline, onBack }) {
       three.boxGrp.add(handle2);
 
     } else if (boxType === 'drawer') {
+      // Outer sleeve
       addPanel(new THREE.PlaneGeometry(l, w), new THREE.Vector3(0, h, 0), { x: -Math.PI / 2 }, matS);
       addPanel(new THREE.PlaneGeometry(l, w), new THREE.Vector3(0, 0, 0), { x: Math.PI / 2 }, matS);
       addPanel(new THREE.PlaneGeometry(w, h), new THREE.Vector3(-l / 2, h / 2, 0), { y: -Math.PI / 2 }, matS);
       addPanel(new THREE.PlaneGeometry(w, h), new THREE.Vector3(l / 2, h / 2, 0), { y: Math.PI / 2 }, matS);
       
+      // Pull-out inner tray (moves based on lidOpen slider)
       const trGrp = new THREE.Group();
-      trGrp.position.set(l * 0.35, 0.01, 0);
+      const openRatio = 1 - (lidOpen / 100); // 0 means closed, 100 means open
+      trGrp.position.set(l * 0.35 * openRatio, 0.01, 0);
+      
       const tl = l * 0.96; const tw = w * 0.96; const th = h * 0.94;
       const tMesh = new THREE.Mesh(new THREE.BoxGeometry(tl, th, tw), mat);
       tMesh.position.set(0, th / 2, 0);
+      tMesh.castShadow = true;
       trGrp.add(tMesh);
       three.boxGrp.add(trGrp);
 
@@ -497,14 +649,18 @@ export default function DielineDetailPage({ dieline, onBack }) {
       addPanel(new THREE.PlaneGeometry(w, h), new THREE.Vector3(l / 2, h / 2, 0), { y: Math.PI / 2 }, matS);
       addPanel(new THREE.PlaneGeometry(l, w), new THREE.Vector3(0, 0, 0), { x: -Math.PI / 2 }, matS);
 
-      // Top Lid (Opens up)
+      // Top Lid (Opens based on lidOpen)
       const topLidGrp = new THREE.Group();
       topLidGrp.position.set(0, h, w / 2);
       const lidMesh = new THREE.Mesh(new THREE.PlaneGeometry(l, w), mat);
       lidMesh.position.set(0, 0, -w / 2);
       lidMesh.rotation.x = -Math.PI / 2;
+      lidMesh.castShadow = true;
       topLidGrp.add(lidMesh);
-      topLidGrp.rotation.x = 0.5; // Open angle
+      
+      // Calculate angle: 0 means closed, 100 means open
+      const openAngle = (1 - (lidOpen / 100)) * (Math.PI / 2);
+      topLidGrp.rotation.x = openAngle;
       three.boxGrp.add(topLidGrp);
 
       // Bottom Lid
@@ -520,7 +676,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
 
       const lidGrp = new THREE.Group();
       lidGrp.position.set(0, h, -w / 2);
-      const lidMat = new THREE.MeshStandardMaterial({ color: 0xf2eee6, side: THREE.DoubleSide, roughness: 0.85, metalness: 0 });
+      const lidMat = new THREE.MeshStandardMaterial({ map: tex, side: THREE.DoubleSide, roughness: 0.9, metalness: 0, color: new THREE.Color(0xf5edd8) });
       const lidMesh = new THREE.Mesh(new THREE.PlaneGeometry(l, w), lidMat);
       lidMesh.position.set(0, 0, w / 2);
       lidMesh.rotation.x = -Math.PI / 2;
@@ -531,22 +687,25 @@ export default function DielineDetailPage({ dieline, onBack }) {
       lidEdge.position.copy(lidMesh.position); lidEdge.rotation.copy(lidMesh.rotation);
       lidGrp.add(lidEdge);
 
-      const tuck = new THREE.Mesh(new THREE.PlaneGeometry(l, w * 0.08), lidMat);
-      tuck.position.set(0, -w * 0.04, w);
+      const tuck = new THREE.Mesh(new THREE.PlaneGeometry(l, w * 0.06), lidMat);
+      tuck.position.set(0, -w * 0.03, w);
       tuck.castShadow = true;
       lidGrp.add(tuck);
-      lidGrp.rotation.x = -0.5;
+      
+      // Calculate angle: 0 means closed, 100 means open (0% = open, 100% = closed in slider logic)
+      lidGrp.rotation.x = -1.3 * (1 - (lidOpen / 100));
       three.boxGrp.add(lidGrp);
     }
 
     three.scene.add(three.boxGrp);
 
     const md = Math.max(l, w, h);
-    three.camera.position.set(md * 1.2, md * 1.0, md * 1.2);
+    three.camera.position.set(md * 1.1, md * 0.75, md * 1.1);
     three.controls.target.set(0, h * 0.4, 0);
     three.controls.update();
   };
 
+  // ========== Three.js Init ==========
   useEffect(() => {
     const container = threeContainerRef.current;
     if (!container) return;
@@ -554,11 +713,10 @@ export default function DielineDetailPage({ dieline, onBack }) {
     const three = threeRef.current;
     const rect = container.getBoundingClientRect();
 
-    // Setup scene, camera, renderer
     three.scene = new THREE.Scene();
-    three.scene.background = new THREE.Color(0xf5f5f5);
+    three.scene.background = new THREE.Color(0xf8fafc); // Matches var(--surface)
 
-    three.camera = new THREE.PerspectiveCamera(35, rect.width / rect.height, 0.1, 100);
+    three.camera = new THREE.PerspectiveCamera(32, rect.width / rect.height, 0.1, 100);
     three.renderer = new THREE.WebGLRenderer({ antialias: true });
     three.renderer.setPixelRatio(window.devicePixelRatio);
     three.renderer.setSize(rect.width, rect.height);
@@ -568,18 +726,17 @@ export default function DielineDetailPage({ dieline, onBack }) {
     container.appendChild(three.renderer.domElement);
 
     // Lights
-    three.scene.add(new THREE.AmbientLight(0xffffff, 0.65));
-    const dl = new THREE.DirectionalLight(0xffffff, 0.85);
+    three.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const dl = new THREE.DirectionalLight(0xffffff, 0.9);
     dl.position.set(4, 6, 4); dl.castShadow = true;
     dl.shadow.mapSize.set(512, 512);
     three.scene.add(dl);
-    three.scene.add(new THREE.DirectionalLight(0xe8eeff, 0.3).translateX(-3).translateY(2));
+    three.scene.add(new THREE.DirectionalLight(0xe8eeff, 0.25).translateX(-3).translateY(2));
 
-    // Floor and grid
-    const fl = new THREE.Mesh(new THREE.PlaneGeometry(15, 15), new THREE.ShadowMaterial({ opacity: 0.06 }));
+    // Floor (Shadow receiver only)
+    const fl = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.ShadowMaterial({ opacity: 0.05 }));
     fl.rotation.x = -Math.PI / 2; fl.position.y = -0.01; fl.receiveShadow = true;
     three.scene.add(fl);
-    three.scene.add(new THREE.GridHelper(8, 16, 0xe0e0e0, 0xf0f0f0));
 
     // Controls
     three.controls = new OrbitControls(three.camera, three.renderer.domElement);
@@ -618,32 +775,35 @@ export default function DielineDetailPage({ dieline, onBack }) {
       window.removeEventListener('resize', handleResize);
       ro.disconnect();
     };
-  }, [safeDieline, boxType]); // Re-initialize 3D context when dieline or boxType changes
+  }, [safeDieline, boxType]);
 
   // Update geometry when dim changes
   useEffect(() => {
     updateThreeGeom();
-  }, [dim, boxType]);
+  }, [dim, boxType, lidOpen]);
 
   // ========== SVG Exporter ==========
   const downloadSVG = () => {
     const g = getGeom();
-    let s = `<svg xmlns="http://www.w3.org/2000/svg" width="${g.tW}" height="${g.tH}" viewBox="0 0 ${g.tW} ${g.tH}">`;
-    s += `<rect x="0" y="0" width="${g.tW}" height="${g.tH}" fill="#fff"/>`;
+    let s = `<svg xmlns="http://www.w3.org/2000/svg" width="${g.tW}" height="${g.totalH || g.tH}" viewBox="0 0 ${g.tW} ${g.totalH || g.tH}"><rect width="${g.tW}" height="${g.totalH || g.tH}" fill="#fff"/>`;
+    
     const { L, W, H } = dim;
     if (boxType === 'bag') {
-      s += `<rect x="0" y="0" width="${L}" height="${H}" fill="none" stroke="#222" stroke-width="1"/>`;
-      s += `<rect x="${L}" y="0" width="${W}" height="${H}" fill="none" stroke="#222" stroke-width="1"/>`;
-      s += `<rect x="${L+W}" y="0" width="${L}" height="${H}" fill="none" stroke="#222" stroke-width="1"/>`;
-      s += `<rect x="${L+W+L}" y="0" width="${W}" height="${H}" fill="none" stroke="#222" stroke-width="1"/>`;
+      s += `<rect x="0" y="0" width="${L}" height="${H}" fill="none" stroke="#3b82f6" stroke-width="1"/>`;
+      s += `<rect x="${L}" y="0" width="${W}" height="${H}" fill="none" stroke="#3b82f6" stroke-width="1"/>`;
+      s += `<rect x="${L+W}" y="0" width="${L}" height="${H}" fill="none" stroke="#3b82f6" stroke-width="1"/>`;
+      s += `<rect x="${L+W+L}" y="0" width="${W}" height="${H}" fill="none" stroke="#3b82f6" stroke-width="1"/>`;
     } else if (boxType === 'box-rsc') {
       const fH = W * 0.5;
-      s += `<rect x="0" y="${fH}" width="${L}" height="${H}" fill="none" stroke="#222" stroke-width="1"/>`;
-      s += `<rect x="${L}" y="${fH}" width="${W}" height="${H}" fill="none" stroke="#222" stroke-width="1"/>`;
-      s += `<rect x="${L+W}" y="${fH}" width="${L}" height="${H}" fill="none" stroke="#222" stroke-width="1"/>`;
-      s += `<rect x="${L+W+L}" y="${fH}" width="${W}" height="${H}" fill="none" stroke="#222" stroke-width="1"/>`;
+      s += `<rect x="0" y="${fH}" width="${L}" height="${H}" fill="none" stroke="#3b82f6" stroke-width="1"/>`;
+      s += `<rect x="${L}" y="${fH}" width="${W}" height="${H}" fill="none" stroke="#3b82f6" stroke-width="1"/>`;
+      s += `<rect x="${L+W}" y="${fH}" width="${L}" height="${H}" fill="none" stroke="#3b82f6" stroke-width="1"/>`;
+      s += `<rect x="${L+W+L}" y="${fH}" width="${W}" height="${H}" fill="none" stroke="#3b82f6" stroke-width="1"/>`;
+    } else if (boxType === 'drawer') {
+      s += `<rect x="0" y="0" width="${L}" height="${W}" fill="none" stroke="#3b82f6" stroke-width="1"/>`;
     } else {
-      s += `<rect x="0" y="0" width="${L}" height="${H}" fill="none" stroke="#222" stroke-width="1"/>`;
+      // Mailer
+      s += `<rect x="${g.xS1}" y="${g.yM}" width="${W}" height="${H}" fill="none" stroke="#3b82f6" stroke-width="1"/>`;
     }
     s += `</svg>`;
     const blob = new Blob([s], { type: 'image/svg+xml' });
@@ -655,78 +815,90 @@ export default function DielineDetailPage({ dieline, onBack }) {
     triggerToast('SVG dieline downloaded');
   };
 
+  // ========== Calculated Values ==========
+  const t = thickValues[selectedMaterial];
+  const structureVal = `${dim.L} × ${dim.W} × ${dim.H} mm`;
+  const innerVal = `${(dim.L - 2 * t).toFixed(1)} × ${(dim.W - 2 * t).toFixed(1)} × ${(dim.H - 2 * t).toFixed(1)} mm`;
+  const outerVal = `${(dim.L + t).toFixed(1)} × ${(dim.W + 2 * t).toFixed(1)} × ${(dim.H + t).toFixed(1)} mm`;
+
   return (
     <div className="dieline-detail-layout">
-      {/* Header */}
+      {/* Header — Dieline.lib Theme */}
       <header className="detail-header">
-        <button onClick={onBack} className="logo-btn">
-          PACDORA
-        </button>
+        <a href="javascript:void(0)" onClick={onBack} className="logo-btn">
+          <div className="logo-icon-box">
+            <i className="fas fa-cube"></i>
+          </div>
+          <span className="logo-text">Dieline.lib</span>
+        </a>
         <nav className="header-nav">
-          <a href="#" className="nav-item">Dielines</a>
+          <a href="javascript:void(0)" onClick={onBack} className="nav-item active">Dieline Templates</a>
           <a href="#" className="nav-item">3D Viewer</a>
           <a href="#" className="nav-item">Resources</a>
           <a href="#" className="nav-item">Pricing</a>
         </nav>
         <div className="header-actions">
-          <a href="#" className="action-link">Sign In</a>
-          <a href="#" className="action-btn">Get Started</a>
+          <button className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition" style={{ background: 'transparent', border: 'none', cursor: 'pointer' }} aria-label="Search">
+            <i className="fas fa-search text-[13px] text-slate-400"></i>
+          </button>
+          <div className="hidden sm:flex items-center gap-2.5 ml-1.5 pl-3" style={{ borderLeft: '1px solid rgba(255,255,255,.08)' }}>
+            <a href="#" className="action-link">Sign In</a>
+            <a href="#" className="action-btn-primary">Get Started</a>
+          </div>
         </div>
       </header>
 
-      {/* 3-Column Layout */}
       <main className="detail-main-content">
-        
-        {/* ===== LEFT PANEL: Settings ===== */}
-        <aside className="settings-sidebar sidebar-scroll">
+        {/* ===== LEFT SIDEBAR: Settings ===== */}
+        <aside className="settings-sidebar sb fi">
           <div className="settings-container">
             <div className="title-block">
-              <p className="subtitle">Customizable {boxType.toUpperCase()}</p>
+              <div className="badge-row">
+                <span className="badge-green">{boxType.toUpperCase()}</span>
+                <span className="badge-grey">Mailer</span>
+              </div>
               <h1 className="main-title">{safeDieline.name}</h1>
             </div>
 
-            {/* Custom Size Inputs */}
+            {/* Dimension Inputs */}
             <div className="settings-group">
-              <p className="group-title">Custom size</p>
-              <div className="inputs-stack">
-                <div className="input-field-row">
-                  <label className="input-lbl">Length (L)</label>
+              <p className="sec-title">Custom size</p>
+              <div className="space-y-2 inputs-stack">
+                <div>
+                  <label className="input-lbl">Length</label>
                   <div className="dim-field">
-                    <input
-                      type="number"
-                      value={dim.L}
-                      min="30"
-                      max="800"
-                      onChange={(e) => setDim((prev) => ({ ...prev, L: Math.max(30, parseInt(e.target.value) || 0) }))}
-                      aria-label="Length"
+                    <input 
+                      type="number" 
+                      value={dim.L} 
+                      min="30" 
+                      max="800" 
+                      onChange={(e) => setDim(prev => ({ ...prev, L: Math.max(30, parseInt(e.target.value) || 0) }))}
                     />
                     <span className="unit">mm</span>
                   </div>
                 </div>
-                <div className="input-field-row">
-                  <label className="input-lbl">Width (W)</label>
+                <div>
+                  <label className="input-lbl">Width</label>
                   <div className="dim-field">
-                    <input
-                      type="number"
-                      value={dim.W}
-                      min="20"
-                      max="500"
-                      onChange={(e) => setDim((prev) => ({ ...prev, W: Math.max(20, parseInt(e.target.value) || 0) }))}
-                      aria-label="Width"
+                    <input 
+                      type="number" 
+                      value={dim.W} 
+                      min="20" 
+                      max="500" 
+                      onChange={(e) => setDim(prev => ({ ...prev, W: Math.max(20, parseInt(e.target.value) || 0) }))}
                     />
                     <span className="unit">mm</span>
                   </div>
                 </div>
-                <div className="input-field-row">
-                  <label className="input-lbl">Height / Depth (H)</label>
+                <div>
+                  <label className="input-lbl">Height</label>
                   <div className="dim-field">
-                    <input
-                      type="number"
-                      value={dim.H}
-                      min="10"
-                      max="400"
-                      onChange={(e) => setDim((prev) => ({ ...prev, H: Math.max(10, parseInt(e.target.value) || 0) }))}
-                      aria-label="Height"
+                    <input 
+                      type="number" 
+                      value={dim.H} 
+                      min="10" 
+                      max="400" 
+                      onChange={(e) => setDim(prev => ({ ...prev, H: Math.max(10, parseInt(e.target.value) || 0) }))}
                     />
                     <span className="unit">mm</span>
                   </div>
@@ -734,18 +906,18 @@ export default function DielineDetailPage({ dieline, onBack }) {
               </div>
             </div>
 
-            {/* Choose Material flutes */}
+            {/* Material Selection */}
             <div className="settings-group">
-              <p className="group-title">Choose material</p>
+              <p className="sec-title">Choose material</p>
               <div className="flute-grid">
-                {Object.keys(matThickness).map((flute) => (
-                  <div
+                {Object.keys(thickValues).map(flute => (
+                  <div 
                     key={flute}
                     onClick={() => setSelectedMaterial(flute)}
-                    className={`mat-option ${selectedMaterial === flute ? 'active' : ''}`}
+                    className={`mat-opt ${selectedMaterial === flute ? 'on' : ''}`}
                   >
                     {flute} - flute<br />
-                    <span className="flute-thickness">{matThickness[flute]}</span>
+                    <span className="text-[9px] opacity-50">{matThickness[flute]}</span>
                   </div>
                 ))}
               </div>
@@ -753,17 +925,17 @@ export default function DielineDetailPage({ dieline, onBack }) {
 
             {/* Size Mode */}
             <div className="settings-group">
-              <p className="group-title">Size mode</p>
-              <div className="radio-group">
-                <div
-                  className={`size-radio ${sizeMode === 'manufacture' ? 'active' : ''}`}
+              <p className="sec-title">Size mode</p>
+              <div className="space-y-1.5 radio-group">
+                <div 
+                  className={`sz-rad ${sizeMode === 'manufacture' ? 'on' : ''}`}
                   onClick={() => setSizeMode('manufacture')}
                 >
                   <div className="dot"></div>
                   <span>Manufacture dimensions</span>
                 </div>
-                <div
-                  className={`size-radio ${sizeMode === 'inner' ? 'active' : ''}`}
+                <div 
+                  className={`sz-rad ${sizeMode === 'inner' ? 'on' : ''}`}
                   onClick={() => setSizeMode('inner')}
                 >
                   <div className="dot"></div>
@@ -772,22 +944,40 @@ export default function DielineDetailPage({ dieline, onBack }) {
               </div>
             </div>
 
-            {/* Info Box */}
+            <div className="divider"></div>
+
+            {/* Calculated Dimensions */}
+            <div className="settings-group">
+              <p className="sec-title">Dimensions</p>
+              <div className="space-y-2 dimensions-info-box">
+                <div className="dimension-row">
+                  <span className="lbl">Structure</span>
+                  <span className="val">{structureVal}</span>
+                </div>
+                <div className="dimension-row">
+                  <span className="lbl">Inner</span>
+                  <span className="val">{innerVal}</span>
+                </div>
+                <div className="dimension-row">
+                  <span className="lbl">Outer</span>
+                  <span className="val">{outerVal}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Info Badge Card */}
             <div className="info-badge-box">
               <p className="info-desc">
                 <i className="fas fa-info-circle info-icon"></i>
-                Dimensions shown are manufacture (die-cut) sizes. Inner dimensions may vary based on material thickness.
+                Dimensions shown are manufacture (die-cut) sizes.
               </p>
             </div>
           </div>
         </aside>
 
-        {/* ===== CENTER: 2D Dieline ===== */}
-        <section
-          ref={dielineSectionRef}
-          className="canvas-viewport"
-        >
-          <canvas
+        {/* ===== CENTER: 2D Dieline View ===== */}
+        <section ref={dielineSectionRef} className="canvas-viewport fi" style={{ animationDelay: '.08s' }}>
+          <canvas 
             ref={canvasRef}
             className="canvas-2d-element"
             style={{ cursor: draggingRef.current ? 'grabbing' : 'grab' }}
@@ -798,98 +988,107 @@ export default function DielineDetailPage({ dieline, onBack }) {
             onWheel={handleWheel}
           ></canvas>
 
-          {/* Zoom Controls */}
+          {/* Legend Overlay */}
+          <div className="legend-box">
+            <div className="legend-row">
+              <div className="legend-line" style={{ background: 'var(--cushion)' }}></div>
+              <span className="legend-label">Cushion</span>
+            </div>
+            <div className="legend-row">
+              <div className="legend-line" style={{ background: 'var(--trim)' }}></div>
+              <span className="legend-label">Trim</span>
+            </div>
+            <div className="legend-row">
+              <div className="legend-line dashed"></div>
+              <span className="legend-label">Crease</span>
+            </div>
+          </div>
+
+          {/* Zoom Controls Overlay */}
           <div className="zoom-controls-overlay">
-            <button
-              onClick={() => setZoom((prev) => Math.max(0.15, prev / 1.25))}
-              className="zoom-btn"
-              aria-label="Zoom out"
-            >
+            <button onClick={() => setZoom(prev => Math.max(0.15, prev / 1.25))} className="ctrl-btn">
               <i className="fas fa-minus"></i>
             </button>
-            <span className="zoom-value-label">
-              {Math.round(zoom * 100)}%
-            </span>
-            <button
-              onClick={() => setZoom((prev) => Math.min(5, prev * 1.25))}
-              className="zoom-btn"
-              aria-label="Zoom in"
-            >
+            <span className="zoom-value-label">{Math.round(zoom * 100)}%</span>
+            <button onClick={() => setZoom(prev => Math.min(5, prev * 1.25))} className="ctrl-btn">
               <i className="fas fa-plus"></i>
             </button>
             <div className="zoom-divider"></div>
-            <button
-              onClick={() => { setZoom(1); panRef.current = { x: 0, y: 0 }; drawDieline(); }}
-              className="zoom-btn"
-              aria-label="Reset"
-            >
+            <button onClick={() => { setZoom(1); panRef.current = { x: 0, y: 0 }; drawDieline(); }} className="ctrl-btn">
               <i className="fas fa-compress-arrows-alt"></i>
             </button>
           </div>
 
-          {/* Dimension Info */}
+          {/* Material info footer */}
           <div className="dimensions-status-overlay">
-            <span>
-              <i className="fas fa-ruler-combined"></i>
-              <span>{dim.L} × {dim.W} × {dim.H} mm</span>
-            </span>
-            <span>
-              <i className="fas fa-layer-group"></i>
-              {selectedMaterial} - flute ({matThickness[selectedMaterial]})
-            </span>
+            <i className="fas fa-layer-group"></i>
+            <span>{selectedMaterial} - flute ({matThickness[selectedMaterial]})</span>
           </div>
         </section>
 
-        {/* ===== RIGHT PANEL: 3D + Downloads ===== */}
-        <aside className="preview-sidebar">
-          {/* 3D Preview */}
+        {/* ===== RIGHT SIDEBAR: 3D Preview + Downloads ===== */}
+        <aside className="preview-sidebar fi" style={{ animationDelay: '.15s' }}>
+          {/* 3D Preview Frame */}
           <div className="three-preview-panel">
             <div className="three-panel-header">
-              <p className="three-title">3D Preview</p>
-              <p className="three-hint">Drag to rotate</p>
+              <p className="sec-title">3D Preview</p>
             </div>
-            <div ref={threeContainerRef} className="three-canvas-holder"></div>
+            <div className="three-canvas-holder">
+              <div ref={threeContainerRef} style={{ width: '100%', height: '100%' }}></div>
+              <div className="three-badge">
+                3D <i className="fas fa-sync-alt"></i>
+              </div>
+            </div>
+            {/* Open/Close Slider */}
+            <div className="lid-slider-container">
+              <span className="lid-slider-lbl">Open</span>
+              <input 
+                type="range" 
+                min="0" 
+                max="100" 
+                value={lidOpen} 
+                onChange={(e) => setLidOpen(parseInt(e.target.value))}
+                className="lid-slider" 
+              />
+              <span className="lid-slider-lbl right">Close</span>
+            </div>
           </div>
 
           <div className="sidebar-divider"></div>
 
-          {/* File Formats */}
-          <div className="formats-panel-scroll sidebar-scroll">
+          {/* Download Formats list */}
+          <div className="formats-panel-scroll sb">
             <div className="formats-container">
-              <p className="formats-title">File formats</p>
+              <p className="sec-title">File formats</p>
               <div className="formats-list">
                 {[
-                  { id: 'AI', name: 'AI dieline', desc: 'Adobe Illustrator', icon: 'fa-pen-nib text-amber-500' },
-                  { id: 'PDF', name: 'PDF dieline', desc: 'Portable Document', icon: 'fa-file-pdf text-red-500' },
-                  { id: 'SVG', name: 'SVG dieline', desc: 'Scalable Vector', icon: 'fa-bezier-curve text-orange-500' },
-                  { id: 'DXF', name: 'DXF dieline', desc: 'AutoCAD Exchange', icon: 'fa-drafting-compass text-sky-500' },
-                  { id: 'CDR', name: 'CDR dieline', desc: 'CorelDRAW', icon: 'fa-palette text-purple-500' }
+                  { id: 'AI', name: 'AI dieline', desc: 'Adobe Illustrator', icon: 'fa-pen-nib text-amber-500', class: 'ai' },
+                  { id: 'PDF', name: 'PDF dieline', desc: 'Portable Document', icon: 'fa-file-pdf text-red-500', class: 'pdf' },
+                  { id: 'SVG', name: 'SVG dieline', desc: 'Scalable Vector', icon: 'fa-bezier-curve text-orange-500', class: 'svg' },
+                  { id: 'DXF', name: 'DXF dieline', desc: 'AutoCAD Exchange', icon: 'fa-drafting-compass text-sky-500', class: 'dxf' },
+                  { id: 'CDR', name: 'CDR dieline', desc: 'CorelDRAW', icon: 'fa-palette text-purple-500', class: 'cdr' }
                 ].map((fmt) => (
                   <div key={fmt.id} className="fmt-row">
                     <div className="fmt-info-col">
-                      <i className={`fas ${fmt.icon} fmt-icon-type`}></i>
+                      <div className={`fmt-icon-box ${fmt.class}`}>
+                        <i className={`fas ${fmt.icon}`}></i>
+                      </div>
                       <div>
                         <p className="fmt-name">{fmt.name}</p>
                         <p className="fmt-desc">{fmt.desc}</p>
                       </div>
                     </div>
-                    <button
+                    <button 
                       onClick={() => fmt.id === 'SVG' ? downloadSVG() : triggerToast(`${fmt.id} dieline downloaded`)}
                       className="fmt-dl"
-                      aria-label={`Download ${fmt.id}`}
                     >
                       <i className="fas fa-download"></i>
                     </button>
                   </div>
                 ))}
               </div>
-
-              {/* Instructions */}
-              <div className="instructions-box">
-                <p className="instructions-desc">
-                  Click the download button next to your preferred format. The dieline file will be saved to your device, ready to use in your design software. All files include cut lines, fold lines, and bleed marks.
-                </p>
-              </div>
+              <div className="divider"></div>
+              <p className="instructions-desc">Click download to save. All formats include cut, fold, and cushion lines.</p>
             </div>
           </div>
         </aside>
@@ -897,7 +1096,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
 
       {/* Toast Alert */}
       <div className={`toast ${showToast ? 'show' : ''}`}>
-        <i className="fas fa-check-circle toast-check-icon"></i>
+        <i className="fas fa-check-circle"></i>
         <span>{toastMsg}</span>
       </div>
     </div>
