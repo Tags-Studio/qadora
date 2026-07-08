@@ -1,18 +1,116 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import './DielinePage.css';
 
-// Sample dieline data - can be replaced with API call
+// Helper component to render a beautiful micro vector schematic of the dieline based on its type
+function MiniDielineSVG({ dielineName }) {
+  const name = dielineName.toLowerCase();
+  
+  // 1. PAPER BAG
+  if (name.includes('bag')) {
+    return (
+      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" stroke="#6b7280" strokeWidth="1">
+        {/* Main panels */}
+        <rect x="15" y="15" width="22" height="50" rx="1" />
+        <rect x="37" y="15" width="12" height="50" rx="1" />
+        <rect x="49" y="15" width="22" height="50" rx="1" />
+        <rect x="71" y="15" width="12" height="50" rx="1" />
+        {/* Glue tab */}
+        <path d="M 83 20 L 87 23 L 87 57 L 83 60 Z" />
+        {/* Bottom flaps */}
+        <rect x="15" y="65" width="22" height="12" strokeDasharray="2,2" />
+        <rect x="37" y="65" width="12" height="12" strokeDasharray="2,2" />
+        <rect x="49" y="65" width="22" height="12" strokeDasharray="2,2" />
+        <rect x="71" y="65" width="12" height="12" strokeDasharray="2,2" />
+      </svg>
+    );
+  }
+
+  // 2. SLOTTED SHIPPING BOX (RSC / FEFCO 0201)
+  if (name.includes('rsc') || name.includes('slotted') || name.includes('fefco 0201') || name.includes('fefco 0300')) {
+    return (
+      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" stroke="#6b7280" strokeWidth="1">
+        {/* Main body panels */}
+        <rect x="10" y="30" width="24" height="40" />
+        <rect x="34" y="30" width="14" height="40" />
+        <rect x="48" y="30" width="24" height="40" />
+        <rect x="72" y="30" width="14" height="40" />
+        {/* Top & Bottom flaps */}
+        <rect x="10" y="15" width="24" height="15" strokeDasharray="2,2" />
+        <rect x="34" y="20" width="14" height="10" strokeDasharray="2,2" />
+        <rect x="48" y="15" width="24" height="15" strokeDasharray="2,2" />
+        <rect x="72" y="20" width="14" height="10" strokeDasharray="2,2" />
+        <rect x="10" y="70" width="24" height="15" strokeDasharray="2,2" />
+        <rect x="34" y="70" width="14" height="10" strokeDasharray="2,2" />
+        <rect x="48" y="70" width="24" height="15" strokeDasharray="2,2" />
+        <rect x="72" y="70" width="14" height="10" strokeDasharray="2,2" />
+      </svg>
+    );
+  }
+
+  // 3. DRAWER BOX
+  if (name.includes('drawer') || name.includes('slide')) {
+    return (
+      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" stroke="#6b7280" strokeWidth="1">
+        {/* Outer Sleeve (left) */}
+        <rect x="10" y="20" width="16" height="45" />
+        <rect x="26" y="20" width="8" height="45" />
+        <rect x="34" y="20" width="16" height="45" />
+        <rect x="50" y="20" width="8" height="45" strokeDasharray="2,2" />
+        {/* Inner Tray (right) */}
+        <rect x="68" y="28" width="18" height="28" />
+        <rect x="68" y="18" width="18" height="10" strokeDasharray="2,2" />
+        <rect x="68" y="56" width="18" height="10" strokeDasharray="2,2" />
+      </svg>
+    );
+  }
+
+  // 4. MAILER BOX (FEFCO 0427 / Hinged lid)
+  if (name.includes('mailer') || name.includes('hinged') || name.includes('fefco 0427') || name.includes('fefco 0426') || name.includes('tray')) {
+    return (
+      <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" stroke="#6b7280" strokeWidth="1">
+        {/* Mailer Box Structure */}
+        <rect x="35" y="35" width="30" height="25" />
+        {/* Hinged Lid */}
+        <rect x="35" y="15" width="30" height="20" />
+        {/* Side wings */}
+        <path d="M 15 35 L 35 35 L 35 60 L 15 60 Z" />
+        <path d="M 65 35 L 85 35 L 85 60 L 65 60 Z" />
+        {/* Flaps */}
+        <path d="M 35 60 L 65 60 L 60 78 L 40 78 Z" strokeDasharray="2,2" />
+      </svg>
+    );
+  }
+
+  // 5. TUCK END BOX (Default folding carton)
+  return (
+    <svg className="mini-dieline-vector" viewBox="0 0 100 100" fill="none" stroke="#6b7280" strokeWidth="1">
+      {/* 4 main walls */}
+      <rect x="15" y="25" width="16" height="50" />
+      <rect x="31" y="25" width="16" height="50" />
+      <rect x="47" y="25" width="16" height="50" />
+      <rect x="63" y="25" width="16" height="50" />
+      {/* Glue Flap */}
+      <rect x="79" y="30" width="6" height="40" />
+      {/* Top Tuck Lid */}
+      <rect x="15" y="12" width="16" height="13" />
+      <path d="M 15 12 L 20 5 L 26 5 L 31 12" strokeDasharray="2,2" />
+      {/* Bottom Tuck Lid */}
+      <rect x="47" y="75" width="16" height="13" />
+      <path d="M 47 88 L 52 95 L 58 95 L 63 88" strokeDasharray="2,2" />
+    </svg>
+  );
+}
+
 const DIELINE_CATEGORIES = [
-  { id: 'all', name: 'All', count: 20 },
-  { id: 'fefco', name: 'FEFCO Boxes', count: 5 },
-  { id: 'folding', name: 'Folding Boxes', count: 5 },
-  { id: 'tray', name: 'Tray Boxes', count: 2 },
-  { id: 'tuckend', name: 'Tuck End Boxes', count: 6 },
-  { id: 'rigid', name: 'Rigid Boxes', count: 3 },
-  { id: 'bags', name: 'Paper Bags', count: 1 },
+  { id: 'all', name: 'All Dielines', count: 20 },
+  { id: 'fefco', name: 'FEFCO', count: 6 },
+  { id: 'tuckend', name: 'Tuck End Box', count: 5 },
+  { id: 'folding', name: 'Folding Carton', count: 4 },
+  { id: 'tray', name: 'Tray & Box', count: 2 },
+  { id: 'rigid', name: 'Rigid Box', count: 2 },
+  { id: 'bags', name: 'Paper Bag', count: 1 }
 ];
 
-// Authentic dieline templates from Pacdora
 const REAL_DIELINE_DATA = [
   {
     id: 1,
@@ -25,22 +123,22 @@ const REAL_DIELINE_DATA = [
     id: 2,
     name: "Reverse tuck end box dieline",
     category: "tuckend",
-    formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/admin-materials/ee11054f-f163-467a-bb9f-d09dad4d5632.png"
+    formats: ["AI", "PDF", "SVG"],
+    image: "https://cdn.pacdora.com/model/1d34c6ad-4569-42b7-a37a-42c26f0f5b9d.png"
   },
   {
     id: 3,
     name: "Tuck end mailer box packaging dieline",
-    category: "tuckend",
-    formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-102010.png"
+    category: "fefco",
+    formats: ["AI", "PDF", "DXF", "SVG"],
+    image: "https://cdn.pacdora.com/model/2c0d8320-ebdb-47b8-bc71-120008bd12cc.png"
   },
   {
     id: 4,
-    name: "FEFCO 0217 carrying handle top - snap lock bottom box dieline",
+    name: "FEFCO 0217 carrying handle top",
     category: "fefco",
-    formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-112310.png"
+    formats: ["AI", "PDF", "SVG"],
+    image: "https://cdn.pacdora.com/admin-materials/e09e3a6c-ceb0-410a-9d9f-6820253457a1.png"
   },
   {
     id: 5,
@@ -53,77 +151,77 @@ const REAL_DIELINE_DATA = [
     id: 6,
     name: "Sweet box dieline",
     category: "folding",
-    formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/model/7000ee01-864c-4da3-bb39-ef2a2ffcfaff.png"
+    formats: ["AI", "PDF", "SVG"],
+    image: "https://cdn.pacdora.com/model/8b8e0b65-e9df-416b-9c2b-1a0e026b9a89.png"
   },
   {
     id: 7,
     name: "FEFCO 0201 regular slotted box (RSC) dieline",
     category: "fefco",
-    formats: ["AI", "PDF", "DXF"],
+    formats: ["AI", "PDF", "DXF", "SVG"],
     image: "https://cdn.pacdora.com/admin-materials/c3c5f189-a097-4d47-aa89-06280795a325.png"
   },
   {
     id: 8,
     name: "FEFCO 0426 tray with front self locking walls and hinged lid dieline",
-    category: "tray",
-    formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-156210.png"
+    category: "fefco",
+    formats: ["AI", "PDF", "SVG"],
+    image: "https://cdn.pacdora.com/model/db1853f6-49f9-467f-8561-8aa22f7fb5c6.png"
   },
   {
     id: 9,
     name: "Cosmetic box dieline",
-    category: "folding",
+    category: "tuckend",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-102680.png"
+    image: "https://cdn.pacdora.com/model/b4b39794-caee-4ea0-bd89-e265c71b12cc.png"
   },
   {
     id: 10,
     name: "Square cosmetics jar box dieline",
-    category: "folding",
-    formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/model/2f74ac29-7486-4f57-9045-8298418c00d2.png"
+    category: "tuckend",
+    formats: ["AI", "PDF", "SVG"],
+    image: "https://cdn.pacdora.com/model/65ef122a-f96b-4e08-bfb1-ea21051515ef.png"
   },
   {
     id: 11,
     name: "FEFCO 0300 full telescope side slotted box (FTSSC) dieline",
     category: "fefco",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-160010.png"
+    image: "https://cdn.pacdora.com/admin-materials/be03848b-3e5f-4632-a5be-449e7b23cf49.png"
   },
   {
     id: 12,
     name: "Flip top magnetic gift box dieline",
     category: "rigid",
-    formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/admin-materials/1c405ad1-2668-4d8a-85ed-3226a7bbaf0f.png"
+    formats: ["AI", "PDF", "SVG"],
+    image: "https://cdn.pacdora.com/admin-materials/2d927845-fe88-4ff2-ac7b-8bfd545d02fe.png"
   },
   {
     id: 13,
     name: "Drawer gift box dieline",
     category: "rigid",
-    formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/admin-materials/2d927845-fe88-4ff2-ac7b-8bfd545d02fe.png"
+    formats: ["AI", "PDF", "DXF", "SVG"],
+    image: "https://cdn.pacdora.com/model/f28eb2cc-1f8e-4a6c-94cc-ae4c0628bd89.png"
   },
   {
     id: 14,
     name: "Auto lock bottom box dieline",
     category: "tuckend",
-    formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-105010.png"
+    formats: ["AI", "PDF", "SVG"],
+    image: "https://cdn.pacdora.com/model/e3b6a22f-d890-48e0-bb49-5f280a7bfb21.png"
   },
   {
     id: 15,
     name: "FEFCO 0427 roll end tray with locking cover dieline",
     category: "tray",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-150011.png"
+    image: "https://cdn.pacdora.com/model/319ef4f8-ad23-455b-9d4b-ac89a2b53cdc.png"
   },
   {
     id: 16,
     name: "Paper shopping bag dieline",
     category: "bags",
-    formats: ["AI", "PDF", "DXF"],
+    formats: ["AI", "PDF", "SVG"],
     image: "https://cdn.pacdora.com/preview/dieline-220010.png"
   },
   {
@@ -131,27 +229,27 @@ const REAL_DIELINE_DATA = [
     name: "Tuck end card game box dieline",
     category: "tuckend",
     formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/model/32142576-7b04-4071-8134-aaacb49ccf62.png"
+    image: "https://cdn.pacdora.com/model/7cde8eef-a44e-4f05-88f1-eab1e26b1580.png"
   },
   {
     id: 18,
     name: "Food drawer box dieline",
-    category: "rigid",
-    formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/preview/dieline-128030.png"
+    category: "tray",
+    formats: ["AI", "PDF", "SVG"],
+    image: "https://cdn.pacdora.com/model/a4b29efc-ff67-46e3-aa00-fe58b9fdfbe0.png"
   },
   {
     id: 19,
     name: "Cake box with handle dieline",
     category: "folding",
-    formats: ["AI", "PDF", "DXF"],
-    image: "https://cdn.pacdora.com/model/b7906593-3067-4849-8aff-bbe95a776442.png"
+    formats: ["AI", "PDF", "DXF", "SVG"],
+    image: "https://cdn.pacdora.com/admin-materials/20ce9a0f-15cb-42a9-a9a7-96bcaec0bc8b.png"
   },
   {
     id: 20,
     name: "Face Cream Open tuck end box dieline",
-    category: "tuckend",
-    formats: ["AI", "PDF", "DXF"],
+    category: "folding",
+    formats: ["AI", "PDF", "SVG"],
     image: "https://cdn.pacdora.com/model/1484c3fc-7efe-409c-980d-084c5caa0191.png"
   }
 ];
@@ -164,11 +262,10 @@ export default function DielinePage({ onBack, onSelectDieline }) {
   const filteredDielines = useMemo(() => {
     const list = [...allDielines];
     
-    // إذا قام المستخدم بالبحث ولم يجد نتائج، نقوم بتوليد نموذج مخصص له فورياً
+    // Generative template search fallback
     if (searchTerm.trim().length > 2) {
       const match = list.some(dieline => dieline.name.toLowerCase().includes(searchTerm.toLowerCase()));
       if (!match) {
-        // توليد نموذج ديناميكي يناسب البحث
         const term = searchTerm.trim();
         const firstWord = term.split(' ')[0].toLowerCase();
         
@@ -272,8 +369,14 @@ export default function DielinePage({ onBack, onSelectDieline }) {
                 onClick={() => onSelectDieline?.(dieline)}
                 style={{ cursor: 'pointer' }}
               >
-                <div className="dieline-card-image">
-                  <img src={dieline.image} alt={dieline.name} />
+                {/* Split Thumbnail: Left side shows vector Dieline, Right side shows 3D Mockup */}
+                <div className="dieline-card-image split-thumbnail">
+                  <div className="thumbnail-2d-side">
+                    <MiniDielineSVG dielineName={dieline.name} />
+                  </div>
+                  <div className="thumbnail-3d-side">
+                    <img src={dieline.image} alt={dieline.name} />
+                  </div>
                   <div className="dieline-card-overlay">
                     <button className="dieline-action-btn">View & Edit</button>
                   </div>

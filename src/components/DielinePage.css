@@ -2,6 +2,10 @@
    DIELINE PAGE
    ══════════════════════════════════════════════════════ */
 
+:root {
+  --accent: #22c55e;
+}
+
 .dieline-page {
   display: flex;
   flex-direction: column;
@@ -11,10 +15,7 @@
   overflow: hidden;
 }
 
-/* ──────────────────────────────────────────────────────
-   HEADER
-   ────────────────────────────────────────────────────── */
-
+/* ── Header ── */
 .dieline-header {
   padding: 40px 60px;
   background: linear-gradient(135deg, #fff 0%, #fafafa 100%);
@@ -71,7 +72,7 @@
 .dieline-search-input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
 }
 
 .dieline-search::before {
@@ -83,20 +84,14 @@
   font-size: 16px;
 }
 
-/* ──────────────────────────────────────────────────────
-   CONTAINER & LAYOUT
-   ────────────────────────────────────────────────────── */
-
+/* ── Container & Layout ── */
 .dieline-container {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
-/* ──────────────────────────────────────────────────────
-   SIDEBAR
-   ────────────────────────────────────────────────────── */
-
+/* ── Sidebar ── */
 .dieline-sidebar {
   width: 280px;
   background: #fff;
@@ -128,55 +123,49 @@
 
 .category-button {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 12px 14px;
-  border: 1px solid transparent;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border: none;
   border-radius: 8px;
   background: transparent;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
-  font-family: inherit;
-  gap: 8px;
 }
 
 .category-button:hover {
-  background: #f5f5f5;
-  border-color: #eee;
+  background: #fdfaf8;
+  color: var(--accent);
 }
 
 .category-button.active {
-  background: linear-gradient(135deg, #f0f8ff 0%, #e8f4ff 100%);
-  border-color: var(--accent);
-}
-
-.category-name {
-  font-size: 13px;
-  color: #1a0e08;
-  font-weight: 500;
-  flex: 1;
-}
-
-.category-button.active .category-name {
+  background: #f0fdf4;
   color: var(--accent);
   font-weight: 600;
 }
 
+.category-name {
+  flex: 1;
+}
+
 .category-count {
   font-size: 12px;
-  color: #999;
-  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: #f0f0f0;
+  color: #888;
 }
 
 .category-button.active .category-count {
+  background: #dcfce7;
   color: var(--accent);
 }
 
-/* ──────────────────────────────────────────────────────
-   MAIN CONTENT AREA
-   ────────────────────────────────────────────────────── */
-
+/* ── Dieline Main ── */
 .dieline-main {
   flex: 1;
   padding: 40px 60px;
@@ -202,13 +191,10 @@
   margin: 0;
 }
 
-/* ──────────────────────────────────────────────────────
-   DIELINE GRID
-   ────────────────────────────────────────────────────── */
-
+/* ── Dieline Grid ── */
 .dieline-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
   margin-bottom: 40px;
 }
@@ -229,23 +215,62 @@
   border-color: var(--accent);
 }
 
-.dieline-card-image {
+/* ── Split Thumbnail View ── */
+.dieline-card-image.split-thumbnail {
   position: relative;
   width: 100%;
   height: 180px;
   overflow: hidden;
-  background: #f5f5f5;
+  display: flex;
+  background: #fcfcfc;
+  border-bottom: 1px solid #f3f4f6;
 }
 
-.dieline-card-image img {
-  width: 100%;
+.thumbnail-2d-side {
+  flex: 1;
+  width: 50%;
   height: 100%;
-  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  padding: 12px;
+  border-right: 1px dashed #e5e7eb;
+}
+
+.mini-dieline-vector {
+  width: 90%;
+  height: 90%;
+  opacity: 0.85;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.thumbnail-3d-side {
+  flex: 1;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+  padding: 8px;
+}
+
+.thumbnail-3d-side img {
+  max-width: 95%;
+  max-height: 95%;
+  object-fit: contain;
   transition: transform 0.3s ease;
 }
 
-.dieline-card:hover .dieline-card-image img {
-  transform: scale(1.05);
+/* Hover effects */
+.dieline-card:hover .mini-dieline-vector {
+  transform: scale(1.04);
+  opacity: 1;
+}
+
+.dieline-card:hover .thumbnail-3d-side img {
+  transform: scale(1.05) translateY(-3px);
 }
 
 .dieline-card-overlay {
@@ -259,7 +284,8 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
+  z-index: 10;
 }
 
 .dieline-card:hover .dieline-card-overlay {
@@ -267,20 +293,19 @@
 }
 
 .dieline-action-btn {
-  padding: 10px 20px;
   background: var(--accent);
   color: #fff;
   border: none;
-  border-radius: 6px;
-  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .dieline-action-btn:hover {
-  background: var(--accent-hover);
-  transform: scale(1.05);
+  background: #16a34a;
 }
 
 .dieline-card-content {
@@ -292,149 +317,30 @@
   font-weight: 600;
   color: #1a0e08;
   margin: 0 0 12px 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   line-height: 1.4;
+  height: 40px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .dieline-formats {
   display: flex;
   gap: 6px;
-  flex-wrap: wrap;
 }
 
 .format-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  background: linear-gradient(135deg, #fff3e0 0%, #ffe8cc 100%);
-  color: var(--accent);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
+  padding: 2px 6px;
   border-radius: 4px;
-  border: 1px solid rgba(255, 107, 53, 0.2);
+  background: #f0f0f0;
+  color: #666;
 }
-
-/* ──────────────────────────────────────────────────────
-   NO RESULTS
-   ────────────────────────────────────────────────────── */
 
 .no-results {
   text-align: center;
-  padding: 60px 20px;
+  padding: 60px 0;
   color: #999;
-  font-size: 16px;
-}
-
-/* ──────────────────────────────────────────────────────
-   SCROLLBAR STYLING
-   ────────────────────────────────────────────────────── */
-
-.dieline-sidebar::-webkit-scrollbar,
-.dieline-main::-webkit-scrollbar {
-  width: 8px;
-}
-
-.dieline-sidebar::-webkit-scrollbar-track,
-.dieline-main::-webkit-scrollbar-track {
-  background: #f0f0f0;
-}
-
-.dieline-sidebar::-webkit-scrollbar-thumb,
-.dieline-main::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 4px;
-}
-
-.dieline-sidebar::-webkit-scrollbar-thumb:hover,
-.dieline-main::-webkit-scrollbar-thumb:hover {
-  background: #999;
-}
-
-/* ──────────────────────────────────────────────────────
-   RESPONSIVE DESIGN
-   ────────────────────────────────────────────────────── */
-
-@media (max-width: 1024px) {
-  .dieline-header {
-    padding: 30px 40px;
-  }
-
-  .dieline-main {
-    padding: 30px 40px;
-  }
-
-  .dieline-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  .dieline-container {
-    flex-direction: column;
-  }
-
-  .dieline-sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    max-height: 200px;
-    padding: 16px;
-  }
-
-  .filter-categories {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-
-  .dieline-header {
-    padding: 20px;
-  }
-
-  .dieline-title {
-    font-size: 24px;
-  }
-
-  .dieline-main {
-    padding: 20px;
-  }
-
-  .dieline-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .dieline-page {
-    height: auto;
-  }
-
-  .dieline-header {
-    padding: 16px;
-    max-height: none;
-  }
-
-  .dieline-title {
-    font-size: 20px;
-  }
-
-  .dieline-search-input {
-    max-width: 100%;
-  }
-
-  .dieline-main {
-    padding: 16px;
-  }
-
-  .dieline-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  .dieline-card-image {
-    height: 120px;
-  }
 }
