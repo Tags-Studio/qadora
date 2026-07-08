@@ -156,7 +156,7 @@ const REAL_DIELINE_DATA = [
   }
 ];
 
-export default function DielinePage({ onBack }) {
+export default function DielinePage({ onBack, onSelectDieline }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const allDielines = useMemo(() => REAL_DIELINE_DATA, []);
@@ -229,7 +229,12 @@ export default function DielinePage({ onBack }) {
           {/* Grid of Dielines */}
           <div className="dieline-grid">
             {filteredDielines.map((dieline) => (
-              <div key={dieline.id} className="dieline-card">
+              <div
+                key={dieline.id}
+                className="dieline-card"
+                onClick={() => onSelectDieline?.(dieline)}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className="dieline-card-image">
                   <img src={dieline.image} alt={dieline.name} />
                   <div className="dieline-card-overlay">
