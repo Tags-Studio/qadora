@@ -63,7 +63,12 @@ function shapeToPath(shape) {
 }
 
 export default function DielineDetailPage({ dieline, onBack }) {
-  const preset = useMemo(() => deriveDefaults(dieline), [dieline?.id]);
+  const preset = useMemo(() => {
+    const d = deriveDefaults(dieline);
+    // Prefer the REAL pacdora dimensions when we resolved them for this card.
+    if (dieline?.L) { d.L = dieline.L; d.W = dieline.W; d.H = dieline.H; }
+    return d;
+  }, [dieline?.id]);
 
   const [unit, setUnit] = useState('mm');
   const [sizeMode, setSizeMode] = useState('manufacture');
@@ -191,8 +196,13 @@ export default function DielineDetailPage({ dieline, onBack }) {
           if (!three.current) return;
           obj.group.add(loaded);
           realObjRef.current = loaded;
-          const size = frameObject(loaded);
-          if (size) { setL(Math.round(size.x)); setH(Math.round(size.y)); setW(Math.round(size.z)); }
+          frameObject(loaded);
+          // Keep the authoritative pacdora dimensions if we have them; otherwise
+          // fall back to the model bounding box.
+          if (!dieline?.L) {
+            const size = new THREE.Box3().setFromObject(loaded).getSize(new THREE.Vector3());
+            if (size) { setL(Math.round(size.x)); setH(Math.round(size.y)); setW(Math.round(size.z)); }
+          }
         });
       } catch (e) { /* fall through to parametric on next deps */ }
     } else if (status === 'fallback') {
