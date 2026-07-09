@@ -483,22 +483,15 @@ export default function DielineDetailPage({ dieline, onBack }) {
                 {isReal ? (
                   <>
                     {/* Bleed outline (green) — dilated cut paths */}
-                    <defs>
-                      <filter id="bleedDilateReal" x="-30%" y="-30%" width="160%" height="160%">
-                        <feMorphology operator="dilate" radius={BLEED} in="SourceGraphic" result="dil" />
-                        <feComposite in="dil" in2="SourceGraphic" operator="out" result="ring" />
-                        <feFlood floodColor="var(--bleed)" result="col" />
-                        <feComposite in="col" in2="ring" operator="in" result="bleed" />
-                      </filter>
-                    </defs>
                     {/* Apply dim scale to real paths */}
                     <g transform={`translate(${real2D.vb.x},${real2D.vb.y}) scale(${dim2D.x},${dim2D.y}) translate(${-real2D.vb.x},${-real2D.vb.y})`}>
-                      {/* Bleed ring */}
-                      <g filter="url(#bleedDilateReal)">
-                        {real2D.cutPaths.map((d, i) => (
-                          <path key={`b-${i}`} d={d} fill="none" stroke="#000" strokeWidth={0.1} />
-                        ))}
-                      </g>
+                      {/* Bleed — thin green line at 3mm outside trim (double-stroke method) */}
+                      {real2D.cutPaths.map((d, i) => (
+                        <path key={`bw-${i}`} d={d} fill="none" stroke="var(--bleed)" strokeWidth={(BLEED * 2 + 1.3) / (svgScale * Math.max(dim2D.x, dim2D.y))} />
+                      ))}
+                      {real2D.cutPaths.map((d, i) => (
+                        <path key={`bc-${i}`} d={d} fill="none" stroke="var(--bg)" strokeWidth={(BLEED * 2 - 0.1) / (svgScale * Math.max(dim2D.x, dim2D.y))} />
+                      ))}
                       {/* Crease lines (red, dashed) */}
                       {real2D.creasePaths.map((d, i) => (
                         <path key={`cr-${i}`} d={d} fill="none" stroke="var(--crease)" strokeWidth={0.9 / (svgScale * Math.max(dim2D.x, dim2D.y))} strokeDasharray={`${4 / (svgScale * Math.max(dim2D.x, dim2D.y))},${3 / (svgScale * Math.max(dim2D.x, dim2D.y))}`} />
@@ -513,8 +506,9 @@ export default function DielineDetailPage({ dieline, onBack }) {
                   <>
                     <defs>
                       <filter id="bleedDilate" x="-30%" y="-30%" width="160%" height="160%">
-                        <feMorphology operator="dilate" radius={BLEED} in="SourceGraphic" result="dil" />
-                        <feComposite in="dil" in2="SourceGraphic" operator="out" result="ring" />
+                        <feMorphology operator="dilate" radius={BLEED + 0.65} in="SourceGraphic" result="dil1" />
+                        <feMorphology operator="dilate" radius={BLEED - 0.65} in="SourceGraphic" result="dil2" />
+                        <feComposite in="dil1" in2="dil2" operator="out" result="ring" />
                         <feFlood floodColor="var(--bleed)" result="col" />
                         <feComposite in="col" in2="ring" operator="in" result="bleed" />
                       </filter>
