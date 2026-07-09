@@ -28,6 +28,7 @@
   top: 0;
   left: 0;
   z-index: 1000;
+  direction: ltr; /* Force LTR for the studio regardless of global RTL */
 }
 
 .dieline-studio-root h1,
