@@ -410,3 +410,23 @@
   .ds-left-panel { width: 240px; }
   .ds-dims-readout { display: none; }
 }
+
+/* ============ v5.0 real pacdora geometry ============ */
+.ds-real-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px;
+  background: rgba(76,175,80,0.15); color: #6fcf74; margin-left: 8px;
+}
+.ds-real-chip i { font-size: 10px; }
+.ds-approx-chip {
+  font-size: 11px; padding: 3px 10px; border-radius: 6px;
+  background: var(--card2); color: var(--muted); margin-left: 8px;
+}
+.ds-loading {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  z-index: 20; display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--fg2);
+  background: rgba(12,10,8,0.85); padding: 12px 20px; border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.ds-loading i { color: var(--accent); }
