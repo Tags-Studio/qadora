@@ -1,22 +1,60 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { BOX_TYPES, GENERATORS } from '../utils/dielineGenerators';
+import pacdoraDielines from '../data/pacdora_dielines.json';
 import './DielineDetailPage.css';
 
 export default function DielineDetailPage({ dieline, onBack }) {
   // Try to match the selected dieline to our implemented types
+  const allImplementedBoxes = BOX_TYPES.flatMap(c => c.items);
   let initialType = 'mailer';
-  const allBoxes = BOX_TYPES.flatMap(c => c.items);
   
   if (dieline && dieline.name) {
-    const matched = allBoxes.find(b => 
+    const matched = allImplementedBoxes.find(b => 
       b.name.toLowerCase().includes(dieline.name.toLowerCase()) || 
       dieline.name.toLowerCase().includes(b.name.toLowerCase())
     );
     if (matched && matched.impl) initialType = matched.id;
   }
 
+  // Generate Sidebar Items from Pacdora Database (1928 items)
+  const sidebarGroups = useMemo(() => {
+    const catMap = {
+      mailer: 'Mailer Boxes',
+      tuckend: 'Tuck End Boxes',
+      gable: 'Gable & Handle',
+      sleeve: 'Sleeve Boxes',
+      tray: 'Tray & Display',
+      autolock: 'Auto Lock Bottom',
+      window: 'Window Cut',
+      twopiece: 'Two-Piece Boxes',
+      pillow: 'Pillow Boxes',
+      hanger: 'Hanger Boxes',
+      hexagonal: 'Hexagonal Tubes',
+    };
+    
+    const groups = {};
+    pacdoraDielines.forEach(item => {
+      const cat = catMap[item.category] || 'Other Boxes';
+      if (!groups[cat]) groups[cat] = [];
+      
+      const matchedImpl = allImplementedBoxes.find(b => 
+        b.name.toLowerCase().includes(item.name.toLowerCase()) || 
+        item.name.toLowerCase().includes(b.name.toLowerCase())
+      );
+
+      groups[cat].push({
+        id: matchedImpl ? matchedImpl.id : `pacdora-${item.id}`,
+        name: item.name,
+        impl: matchedImpl ? matchedImpl.impl : false,
+        icon: matchedImpl ? matchedImpl.icon : 'fa-box',
+        originalId: item.id
+      });
+    });
+
+    return Object.entries(groups).map(([cat, items]) => ({ cat, items }));
+  }, [allImplementedBoxes]);
   // --- State ---
   const [currentType, setCurrentType] = useState(initialType);
   const [activeTab, setActiveTab] = useState('dieline'); // 'dieline' or 'preview'
@@ -43,7 +81,8 @@ export default function DielineDetailPage({ dieline, onBack }) {
   const miniSceneRef = useRef(null);
   const fullSceneRef = useRef(null);
 
-  const typeInfo = allBoxes.find(t => t.id === currentType) || allBoxes[0];
+  const allSidebarItems = sidebarGroups.flatMap(g => g.items);
+  const typeInfo = allSidebarItems.find(t => t.id === currentType) || allSidebarItems[0];
   const BLEED = 3;
 
   // --- 2D Dieline Logic ---
@@ -295,12 +334,12 @@ export default function DielineDetailPage({ dieline, onBack }) {
       <div className="flex h-[calc(100vh-56px)]">
         {/* Sidebar */}
         <nav className="ds-sidebar">
-          {BOX_TYPES.map((cat, idx) => (
+          {sidebarGroups.map((group, idx) => (
             <div key={idx}>
-              <div className="ds-sidebar-cat">{cat.cat}</div>
-              {cat.items.map(item => (
+              <div className="ds-sidebar-cat">{group.cat}</div>
+              {group.items.map(item => (
                 <div 
-                  key={item.id} 
+                  key={item.id + '-' + item.originalId} 
                   className={`ds-sidebar-item ${item.id === currentType ? 'active' : ''} ${!item.impl ? 'locked' : ''}`}
                   onClick={() => handleTypeSelect(item.id, item.impl)}
                 >
