@@ -1,20 +1,21 @@
 :root {
-  --bg: #0c0a08;
-  --bg2: #12100c;
-  --card: #181410;
-  --card2: #1e1a14;
-  --border: #2a2319;
-  --border2: #3a3228;
-  --fg: #f0ebe3;
-  --fg2: #d4cdc2;
-  --muted: #8a7d6c;
+  --bg: #ffffff;
+  --bg2: #f7f7f8;
+  --card: #ffffff;
+  --card2: #f0f0f2;
+  --border: #e2e2e6;
+  --border2: #d0d0d6;
+  --fg: #1a1a1f;
+  --fg2: #4a4a52;
+  --muted: #8a8a92;
   --accent: #d4913b;
   --accent2: #e8a849;
-  --accent-dim: #5a3d18;
-  --cut: #4a9eff;
-  --crease: #ff5252;
+  --accent-dim: #f5e6d0;
+  --cut: #2b6cff;
+  --crease: #ff3b3b;
   --score: #ffa726;
-  --bleed: #4caf50;
+  --bleed: #2eae3a;
+  --bg3d: #ececef;
 }
 
 .dieline-studio-root {
@@ -132,7 +133,7 @@
   flex: 1;
   position: relative;
   background: var(--bg);
-  background-image: radial-gradient(circle, var(--border) 0.5px, transparent 0.5px);
+  background-image: radial-gradient(circle, #d8d8dc 0.5px, transparent 0.5px);
   background-size: 20px 20px;
   overflow: hidden;
   cursor: grab;
@@ -372,7 +373,7 @@
   width: 100%;
   height: 280px;
   min-height: 200px;
-  background: #0a0908;
+  background: var(--bg3d);
   border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
@@ -394,7 +395,7 @@
   height: 220px;
   border-radius: 10px;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 40%, #1a1612 0%, #0a0908 100%);
+  background: radial-gradient(circle at 50% 40%, #f0f0f2 0%, #ececef 100%);
   border: 1px solid var(--border);
 }
 .ds-3d-badge {
@@ -456,7 +457,66 @@
   position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
   z-index: 20; display: flex; align-items: center; gap: 10px;
   font-size: 13px; color: var(--fg2);
-  background: rgba(12,10,8,0.85); padding: 12px 20px; border-radius: 10px;
+  background: rgba(255,255,255,0.9); padding: 12px 20px; border-radius: 10px;
   border: 1px solid var(--border);
 }
 .ds-loading i { color: var(--accent); }
+
+
+/* ============ Seek bar (fold animation) ============ */
+.ds-seekbar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 4px 4px;
+}
+.ds-seekbar-wrap .ds-seek-label {
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+  min-width: 28px;
+}
+.ds-seekbar {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border2);
+  outline: none;
+  cursor: pointer;
+}
+.ds-seekbar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--card);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.ds-seekbar::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--card);
+}
+.ds-seek-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+.ds-seek-icon:hover {
+  background: var(--card2);
+  color: var(--accent);
+}

@@ -149,6 +149,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
   const [W, setW] = useState(preset.W);
   const [H, setH] = useState(preset.H);
   const [T, setT] = useState(preset.T);
+  const [foldProgress, setFoldProgress] = useState(1); // 0 = flat, 1 = folded
 
   // Real pacdora geometry state
   const [status, setStatus] = useState('idle'); // idle | loading | real | fallback
@@ -170,6 +171,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
   const canvasRef = useRef(null);
   const three = useRef(null);
   const realObjRef = useRef(null);
+  const origRotations = useRef([]); // [{node, origRotation}] for fold animation
 
   const gen = GENERATORS[preset.type] || GENERATORS['straight-tuck'];
   const paramData = useMemo(() => gen(L, W, H, T), [gen, L, W, H, T]);
@@ -291,6 +293,16 @@ export default function DielineDetailPage({ dieline, onBack }) {
           if (!three.current) return;
           obj.group.add(loaded);
           realObjRef.current = loaded;
+          // Store original rotations for fold animation
+          origRotations.current = [];
+          loaded.traverse((child) => {
+            if (child.userData && child.userData.rotate) {
+              origRotations.current.push({
+                node: child,
+                orig: { x: child.userData.rotate.x, y: child.userData.rotate.y, z: child.userData.rotate.z },
+              });
+            }
+          });
           const size = frameObject(loaded);
           orig3DSize.current = size ? { x: size.x, y: size.y, z: size.z } : null;
           // Apply current dim scale
@@ -328,6 +340,16 @@ export default function DielineDetailPage({ dieline, onBack }) {
     obj.cam.near = maxDim / 100; obj.cam.far = maxDim * 100; obj.cam.updateProjectionMatrix();
     obj.controls.target.set(0, 0, 0); obj.controls.update();
   }, [dimScale, status]);
+
+  // Fold animation: interpolate rotations based on foldProgress
+  useEffect(() => {
+    if (status !== 'real' || !realObjRef.current) return;
+    for (const { node, orig } of origRotations.current) {
+      node.rotation.x = orig.x * foldProgress;
+      node.rotation.y = orig.y * foldProgress;
+      node.rotation.z = orig.z * foldProgress;
+    }
+  }, [foldProgress, status]);
 
   // Rebuild parametric 3D when dims change (fallback mode only)
   useEffect(() => {
@@ -485,13 +507,21 @@ export default function DielineDetailPage({ dieline, onBack }) {
                     {/* Bleed outline (green) — dilated cut paths */}
                     {/* Apply dim scale to real paths */}
                     <g transform={`translate(${real2D.vb.x},${real2D.vb.y}) scale(${dim2D.x},${dim2D.y}) translate(${-real2D.vb.x},${-real2D.vb.y})`}>
-                      {/* Bleed — thin green line at 3mm outside trim (double-stroke method) */}
-                      {real2D.cutPaths.map((d, i) => (
-                        <path key={`bw-${i}`} d={d} fill="none" stroke="var(--bleed)" strokeWidth={(BLEED * 2 + 1.3) / (svgScale * Math.max(dim2D.x, dim2D.y))} />
-                      ))}
-                      {real2D.cutPaths.map((d, i) => (
-                        <path key={`bc-${i}`} d={d} fill="none" stroke="var(--bg)" strokeWidth={(BLEED * 2 - 0.1) / (svgScale * Math.max(dim2D.x, dim2D.y))} />
-                      ))}
+                      {/* Bleed — thin green ring at 3mm outside trim (dilation filter) */}
+                      <defs>
+                        <filter id="bleedDilateReal" x="-30%" y="-30%" width="160%" height="160%">
+                          <feMorphology operator="dilate" radius={BLEED + 0.4} in="SourceGraphic" result="dil1" />
+                          <feMorphology operator="dilate" radius={BLEED - 0.4} in="SourceGraphic" result="dil2" />
+                          <feComposite in="dil1" in2="dil2" operator="out" result="ring" />
+                          <feFlood floodColor="var(--bleed)" result="col" />
+                          <feComposite in="col" in2="ring" operator="in" result="bleed" />
+                        </filter>
+                      </defs>
+                      <g filter="url(#bleedDilateReal)">
+                        {real2D.cutPaths.map((d, i) => (
+                          <path key={`b-${i}`} d={d} fill="none" stroke="#000" strokeWidth={0.1} />
+                        ))}
+                      </g>
                       {/* Crease lines (red, dashed) */}
                       {real2D.creasePaths.map((d, i) => (
                         <path key={`cr-${i}`} d={d} fill="none" stroke="var(--crease)" strokeWidth={0.9 / (svgScale * Math.max(dim2D.x, dim2D.y))} strokeDasharray={`${4 / (svgScale * Math.max(dim2D.x, dim2D.y))},${3 / (svgScale * Math.max(dim2D.x, dim2D.y))}`} />
@@ -506,8 +536,8 @@ export default function DielineDetailPage({ dieline, onBack }) {
                   <>
                     <defs>
                       <filter id="bleedDilate" x="-30%" y="-30%" width="160%" height="160%">
-                        <feMorphology operator="dilate" radius={BLEED + 0.65} in="SourceGraphic" result="dil1" />
-                        <feMorphology operator="dilate" radius={BLEED - 0.65} in="SourceGraphic" result="dil2" />
+                        <feMorphology operator="dilate" radius={BLEED + 0.4} in="SourceGraphic" result="dil1" />
+                        <feMorphology operator="dilate" radius={BLEED - 0.4} in="SourceGraphic" result="dil2" />
                         <feComposite in="dil1" in2="dil2" operator="out" result="ring" />
                         <feFlood floodColor="var(--bleed)" result="col" />
                         <feComposite in="col" in2="ring" operator="in" result="bleed" />
@@ -546,6 +576,25 @@ export default function DielineDetailPage({ dieline, onBack }) {
               <span>{isReal ? 'Real 3D model' : 'Parametric 3D'}</span>
             </div>
           </div>
+          {isReal && (
+            <div className="ds-seekbar-wrap">
+              <span className="ds-seek-icon" onClick={() => setFoldProgress(0)} title="Unfold (flat)">
+                <i className="fas fa-expand-arrows-alt"></i>
+              </span>
+              <input
+                type="range"
+                className="ds-seekbar"
+                min={0}
+                max={1}
+                step={0.01}
+                value={foldProgress}
+                onChange={(e) => setFoldProgress(+e.target.value)}
+              />
+              <span className="ds-seek-icon" onClick={() => setFoldProgress(1)} title="Fold (closed)">
+                <i className="fas fa-compress-arrows-alt"></i>
+              </span>
+            </div>
+          )}
 
           <div className="ds-ctrl-label mt-3">File formats</div>
           <div className="ds-format-grid2">
