@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import {
-  BOX_TYPES, GENERATORS, CATEGORY_TO_TYPE, TYPE_TO_SHAPE,
+  BOX_TYPES, GENERATORS, CATEGORY_TO_TYPE, TYPE_TO_SHAPE, deriveDefaults,
 } from '../utils/dielineGenerators';
 import './DielineDetailPage.css';
 
@@ -19,23 +19,26 @@ const BLEED = 3;
 const MM_PER_IN = 25.4;
 
 export default function DielineDetailPage({ dieline, onBack }) {
-  // Resolve the starting box type from the dieline's pacdora category.
-  const initialType = CATEGORY_TO_TYPE[dieline?.category] || 'straight-tuck';
+  // Derive a STABLE per-card design (type + dimensions) from the card data.
+  const preset = useMemo(() => deriveDefaults(dieline), [dieline?.id]);
 
-  const [currentType, setCurrentType] = useState(initialType);
+  const [currentType, setCurrentType] = useState(preset.type);
   const [unit, setUnit] = useState('mm');
   const [sizeMode, setSizeMode] = useState('manufacture'); // manufacture | inner | outer
   const [material, setMaterial] = useState(MATERIALS[0]);
 
-  // Dimensions (manufacture / nominal) in mm
-  const [L, setL] = useState(200);
-  const [W, setW] = useState(150);
-  const [H, setH] = useState(100);
-  const [T, setT] = useState(1.5);
+  // Dimensions (manufacture / nominal) in mm — seeded per card.
+  const [L, setL] = useState(preset.L);
+  const [W, setW] = useState(preset.W);
+  const [H, setH] = useState(preset.H);
+  const [T, setT] = useState(preset.T);
   const [openClose, setOpenClose] = useState(1); // 1 = closed, 0 = open (fold factor)
 
-  useEffect(() => { setCurrentType(CATEGORY_TO_TYPE[dieline?.category] || 'straight-tuck'); }, [dieline?.id]);
-  useEffect(() => { setT(material.t); }, [material]);
+  // Re-apply the derived preset whenever a new card is opened.
+  useEffect(() => {
+    setCurrentType(preset.type);
+    setL(preset.L); setW(preset.W); setH(preset.H); setT(preset.T);
+  }, [preset]);
 
   // SVG pan / zoom
   const [svgScale, setSvgScale] = useState(1);
@@ -280,7 +283,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
           {/* Material */}
           <div className="ds-ctrl-group">
             <div className="ds-ctrl-label">Choose material</div>
-            <select className="ds-select" value={material.id} onChange={(e) => setMaterial(MATERIALS.find((m) => m.id === e.target.value))}>
+            <select className="ds-select" value={material.id} onChange={(e) => { const m = MATERIALS.find((x) => x.id === e.target.value); setMaterial(m); setT(m.t); }}>
               {MATERIALS.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
             </select>
           </div>

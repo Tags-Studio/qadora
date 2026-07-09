@@ -476,6 +476,109 @@ export const CATEGORY_TO_TYPE = {
   hanger: 'hanger',
 };
 
+// ============================================================================
+//  Per-card parameter derivation
+//  The pacdora dataset has no explicit dimensions, so we derive a STABLE
+//  (deterministic) set of L/W/H/T + a refined box-type for every card, seeded
+//  by its id + name. Same card => same design every time; different cards =>
+//  different proportions (and often a different sub-type).
+// ============================================================================
+
+// Small deterministic string hash (FNV-1a style) -> unsigned 32-bit
+function hashStr(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+// Seeded pseudo-random generator (mulberry32)
+function seeded(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Refine the box-type from keywords in the card name (falls back to category).
+export function refineType(dieline) {
+  const n = (dieline?.name || '').toLowerCase();
+  const has = (...ks) => ks.some((k) => n.includes(k));
+  if (has('reverse tuck')) return 'reverse-tuck';
+  if (has('straight tuck')) return 'straight-tuck';
+  if (has('window', 'clear pvc', 'display window')) return 'window';
+  if (has('hang', 'hook', 'euro slot', 'euro-slot')) return 'hanger';
+  if (has('auto lock', 'auto-lock', 'snap lock', 'snap-lock', 'crash lock', 'auto bottom', 'auto bottome', '1-2-3 bottom')) return 'auto-lock';
+  if (has('gable', 'handle', 'carry')) return 'gable';
+  if (has('pillow')) return 'pillow';
+  if (has('hexagon', 'polygon', 'polygonal', 'octagon')) return 'hexagonal';
+  if (has('sleeve', 'envelope')) return 'sleeve';
+  if (has('two piece', 'two-piece', 'lid and base', 'base and lid', 'telescope', 'shoulder box', 'rigid')) return 'two-piece';
+  if (has('tray', 'display', 'pos ', 'stand')) return 'tray';
+  if (has('rsc', 'regular slotted', 'fefco 0201', 'shipping', 'carton', 'mailer')) return dieline?.category === 'mailer' ? 'mailer' : 'tray';
+  return CATEGORY_TO_TYPE[dieline?.category] || 'straight-tuck';
+}
+
+// Base nominal proportions (L=depth, W=width, H=height) per box-type.
+const TYPE_BASE = {
+  'mailer':        { L: 250, W: 190, H: 80 },
+  'straight-tuck': { L: 90,  W: 60,  H: 150 },
+  'reverse-tuck':  { L: 85,  W: 65,  H: 145 },
+  'auto-lock':     { L: 100, W: 70,  H: 160 },
+  'window':        { L: 90,  W: 70,  H: 150 },
+  'hanger':        { L: 70,  W: 55,  H: 150 },
+  'tray':          { L: 220, W: 160, H: 60 },
+  'two-piece':     { L: 200, W: 150, H: 90 },
+  'gable':         { L: 120, W: 120, H: 170 },
+  'sleeve':        { L: 150, W: 100, H: 70 },
+  'hexagonal':     { L: 110, W: 110, H: 120 },
+  'pillow':        { L: 140, W: 90,  H: 35 },
+};
+// Thickness range by type (corrugated vs folding carton).
+const TYPE_T = {
+  'mailer': [1.5, 3.0], 'tray': [1.5, 3.0], 'two-piece': [1.2, 2.5],
+  'straight-tuck': [0.4, 0.7], 'reverse-tuck': [0.4, 0.7], 'auto-lock': [0.5, 0.8],
+  'window': [0.4, 0.7], 'hanger': [0.4, 0.7], 'gable': [0.5, 0.9],
+  'sleeve': [0.4, 0.7], 'hexagonal': [0.5, 0.9], 'pillow': [0.4, 0.6],
+};
+
+// Try to read explicit "L x W x H" numbers from the name, if present.
+function parseDimsFromName(name) {
+  const m = (name || '').match(/(\d{1,4})\s*[x×*]\s*(\d{1,4})\s*[x×*]\s*(\d{1,4})/i);
+  if (!m) return null;
+  const a = +m[1], b = +m[2], c = +m[3];
+  if ([a, b, c].some((v) => v < 10 || v > 2000)) return null;
+  return { L: a, W: b, H: c };
+}
+
+// Derive a stable design (type + dimensions) for a given card.
+export function deriveDefaults(dieline) {
+  const type = refineType(dieline);
+  const base = TYPE_BASE[type] || TYPE_BASE['straight-tuck'];
+  const rnd = seeded(hashStr(`${dieline?.id || 0}:${dieline?.name || ''}`));
+
+  // Explicit dims in the name win; otherwise jitter the base by a seeded factor.
+  const explicit = parseDimsFromName(dieline?.name);
+  const jit = () => 0.72 + rnd() * 0.66; // 0.72 .. 1.38
+  let L = explicit ? explicit.L : Math.round(base.L * jit());
+  let W = explicit ? explicit.W : Math.round(base.W * jit());
+  let H = explicit ? explicit.H : Math.round(base.H * jit());
+
+  // Clamp to editor slider ranges.
+  L = Math.max(50, Math.min(500, L));
+  W = Math.max(30, Math.min(400, W));
+  H = Math.max(20, Math.min(400, H));
+
+  const tr = TYPE_T[type] || [0.4, 0.7];
+  const T = +(tr[0] + rnd() * (tr[1] - tr[0])).toFixed(1);
+
+  return { type, L, W, H, T };
+}
+
 // The 3D shape family a given box-type id should render as
 export const TYPE_TO_SHAPE = {
   'mailer': 'closed',
