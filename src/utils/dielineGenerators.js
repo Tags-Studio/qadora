@@ -512,8 +512,8 @@ export function refineType(dieline) {
   if (has('straight tuck')) return 'straight-tuck';
   if (has('window', 'clear pvc', 'display window')) return 'window';
   if (has('hang', 'hook', 'euro slot', 'euro-slot')) return 'hanger';
+  if (has('gable', 'carrying handle', 'carry handle', 'handle top', 'carry')) return 'gable';
   if (has('auto lock', 'auto-lock', 'snap lock', 'snap-lock', 'crash lock', 'auto bottom', 'auto bottome', '1-2-3 bottom')) return 'auto-lock';
-  if (has('gable', 'handle', 'carry')) return 'gable';
   if (has('pillow')) return 'pillow';
   if (has('hexagon', 'polygon', 'polygonal', 'octagon')) return 'hexagonal';
   if (has('sleeve', 'envelope')) return 'sleeve';
