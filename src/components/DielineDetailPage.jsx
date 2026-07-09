@@ -1,21 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { BOX_TYPES, GENERATORS } from '../utils/dielineGenerators';
+import { BOX_TYPES, GENERATORS, resolveTypeForDieline } from '../utils/dielineGenerators';
 import './DielineDetailPage.css';
 
 export default function DielineDetailPage({ dieline, onBack }) {
-  // Try to match the selected dieline to our implemented types
-  let initialType = 'mailer';
+  // Resolve the dedicated generator type from the card's category/name
   const allBoxes = BOX_TYPES.flatMap(c => c.items);
-  
-  if (dieline && dieline.name) {
-    const matched = allBoxes.find(b => 
-      b.name.toLowerCase().includes(dieline.name.toLowerCase()) || 
-      dieline.name.toLowerCase().includes(b.name.toLowerCase())
-    );
-    if (matched && matched.impl) initialType = matched.id;
-  }
+  const initialType = resolveTypeForDieline(dieline);
 
   // --- State ---
   const [currentType, setCurrentType] = useState(initialType);
@@ -120,6 +112,106 @@ export default function DielineDetailPage({ dieline, onBack }) {
       addPanel(W, Math.hypot(hl, roofRise), 0, hh + roofRise / 2, -hl / 2, 0.85, 0, 0);
     }
 
+    function addClosedTop() {
+      addPanel(W, L, 0, hh, 0, -Math.PI / 2, 0, 0);
+    }
+
+    function addPillow() {
+      const geo = new THREE.SphereGeometry(1, 48, 32);
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.scale.set(hw, hh * 0.55, hl);
+      targetGroup.add(mesh);
+      // Seam crease line around the pillow
+      const pts = [];
+      for (let i = 0; i <= 64; i++) {
+        const a = (i / 64) * Math.PI * 2;
+        pts.push(new THREE.Vector3(Math.cos(a) * hw, 0, Math.sin(a) * hl));
+      }
+      const seam = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), edgeMat);
+      targetGroup.add(seam);
+    }
+
+    function addHexagonal() {
+      const R = Math.max(hw, hl);
+      const geo = new THREE.CylinderGeometry(R, R, H, 6);
+      const mesh = new THREE.Mesh(geo, mat);
+      targetGroup.add(mesh);
+      const edges = new THREE.EdgesGeometry(geo, 10);
+      targetGroup.add(new THREE.LineSegments(edges, edgeMat));
+    }
+
+    function addTwoPiece() {
+      // Base tray
+      addOpenBox(true);
+      // Lid hovering above the base
+      const W2 = W + 8, L2 = L + 8;
+      const lidH = Math.max(H * 0.35, 12);
+      const yLid = hh + H * 0.35;
+      addPanel(W2, lidH, 0, yLid, L2 / 2, 0, 0, 0);
+      addPanel(W2, lidH, 0, yLid, -L2 / 2, 0, Math.PI, 0);
+      addPanel(L2, lidH, -W2 / 2, yLid, 0, 0, -Math.PI / 2, 0);
+      addPanel(L2, lidH, W2 / 2, yLid, 0, 0, Math.PI / 2, 0);
+      addPanel(W2, L2, 0, yLid + lidH / 2, 0, -Math.PI / 2, 0, 0);
+    }
+
+    function addWindowBox() {
+      // Front panel with a window hole
+      const shape = new THREE.Shape();
+      shape.moveTo(-hw, -hh); shape.lineTo(hw, -hh); shape.lineTo(hw, hh); shape.lineTo(-hw, hh); shape.closePath();
+      const wx = (W * 0.62) / 2, wy = (H * 0.62) / 2;
+      const hole = new THREE.Path();
+      hole.moveTo(-wx, -wy); hole.lineTo(wx, -wy); hole.lineTo(wx, wy); hole.lineTo(-wx, wy); hole.closePath();
+      shape.holes.push(hole);
+      const frontGeo = new THREE.ShapeGeometry(shape);
+      const front = new THREE.Mesh(frontGeo, mat);
+      front.position.set(0, 0, hl);
+      targetGroup.add(front);
+      const fEdges = new THREE.EdgesGeometry(frontGeo);
+      const fLine = new THREE.LineSegments(fEdges, edgeMat);
+      fLine.position.copy(front.position);
+      targetGroup.add(fLine);
+      // Transparent window film
+      const glass = new THREE.Mesh(
+        new THREE.PlaneGeometry(wx * 2, wy * 2),
+        new THREE.MeshPhysicalMaterial({ color: 0xbfd8e6, transparent: true, opacity: 0.22, roughness: 0.1, side: THREE.DoubleSide })
+      );
+      glass.position.set(0, 0, hl);
+      targetGroup.add(glass);
+      // Remaining closed panels
+      addPanel(W, H, 0, 0, -hl, 0, Math.PI, 0);
+      addPanel(L, H, -hw, 0, 0, 0, -Math.PI / 2, 0);
+      addPanel(L, H, hw, 0, 0, 0, Math.PI / 2, 0);
+      addPanel(W, L, 0, -hh, 0, -Math.PI / 2, 0, 0);
+      addClosedTop();
+    }
+
+    function addHangerBox() {
+      addOpenBox(true);
+      addClosedTop();
+      // Hang tab with euro hole rising above the back panel
+      const tabH = Math.max(H * 0.4, 20);
+      const shape = new THREE.Shape();
+      const r = Math.min(8, hw / 2);
+      shape.moveTo(-hw, 0);
+      shape.lineTo(-hw, tabH - r);
+      shape.quadraticCurveTo(-hw, tabH, -hw + r, tabH);
+      shape.lineTo(hw - r, tabH);
+      shape.quadraticCurveTo(hw, tabH, hw, tabH - r);
+      shape.lineTo(hw, 0);
+      shape.closePath();
+      const hole = new THREE.Path();
+      hole.absarc(0, tabH * 0.55, Math.min(5, tabH / 5), 0, Math.PI * 2, true);
+      shape.holes.push(hole);
+      const tabGeo = new THREE.ShapeGeometry(shape);
+      const tab = new THREE.Mesh(tabGeo, mat);
+      tab.position.set(0, hh, -hl);
+      targetGroup.add(tab);
+      const tEdges = new THREE.EdgesGeometry(tabGeo);
+      const tLine = new THREE.LineSegments(tEdges, edgeMat);
+      tLine.position.copy(tab.position);
+      targetGroup.add(tLine);
+    }
+
     if (type === 'sleeve') {
       addOpenBox(false);
     } else if (type === 'tray') {
@@ -127,6 +219,19 @@ export default function DielineDetailPage({ dieline, onBack }) {
     } else if (type === 'gable') {
       addOpenBox(true);
       addGableRoof();
+    } else if (type === 'pillow') {
+      addPillow();
+    } else if (type === 'hexagonal') {
+      addHexagonal();
+    } else if (type === 'rigid-two') {
+      addTwoPiece();
+    } else if (type === 'window-box') {
+      addWindowBox();
+    } else if (type === 'hanger') {
+      addHangerBox();
+    } else if (type === 'snap-lock') {
+      addOpenBox(true);
+      addClosedTop();
     } else {
       addOpenBox(true);
       addTuckFlaps();
@@ -279,12 +384,12 @@ export default function DielineDetailPage({ dieline, onBack }) {
           <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
             <i className="fas fa-cube text-bg text-sm"></i>
           </div>
-          <h1 className="text-base font-bold tracking-tight">Dieline Studio</h1>
+          <h1 className="text-base font-bold tracking-tight">{dieline?.name || 'Dieline Studio'}</h1>
           <span className="text-[11px] text-muted bg-card px-2 py-0.5 rounded">v2.0</span>
         </div>
         <div className="flex-1"></div>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-muted">6 / 1928 templates</span>
+          <span className="text-xs text-muted">{Object.keys(GENERATORS).length} / 1928 templates</span>
           <div className="w-[1px] h-5 bg-border"></div>
           <button className="btn" onClick={() => setShowArchModal(true)} title="Architecture Info">
             <i className="fas fa-layer-group"></i> Architecture

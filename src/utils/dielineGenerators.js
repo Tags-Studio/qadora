@@ -9,7 +9,7 @@ export const BOX_TYPES = [
     { id:'straight-tuck', name:'Straight Tuck-End', impl:true, icon:'fa-arrow-right' },
     { id:'reverse-tuck', name:'Reverse Tuck-End', impl:true, icon:'fa-exchange-alt' },
     { id:'full-overlap', name:'Full Overlap Tuck', impl:false, icon:'fa-layer-group' },
-    { id:'snap-lock', name:'Snap-Lock Bottom', impl:false, icon:'fa-lock' },
+    { id:'snap-lock', name:'Auto-Lock Bottom', impl:true, icon:'fa-lock' },
   ]},
   { cat: 'Trays & Bases', items: [
     { id:'tray', name:'Tray with Flaps', impl:true, icon:'fa-inbox' },
@@ -22,16 +22,17 @@ export const BOX_TYPES = [
   ]},
   { cat: 'Specialty Boxes', items: [
     { id:'gable', name:'Gable Box', impl:true, icon:'fa-home' },
-    { id:'pillow', name:'Pillow Box', impl:false, icon:'fa-cloud' },
-    { id:'hexagonal', name:'Hexagonal Box', impl:false, icon:'fa-hexagon-xmark' },
+    { id:'pillow', name:'Pillow Box', impl:true, icon:'fa-cloud' },
+    { id:'hexagonal', name:'Hexagonal Box', impl:true, icon:'fa-hexagon-xmark' },
     { id:'pyramid', name:'Pyramid Box', impl:false, icon:'fa-mountain' },
     { id:'cone', name:'Cone / Cylinder', impl:false, icon:'fa-circle' },
     { id:'octagonal', name:'Octagonal Box', impl:false, icon:'fa-stop' },
-    { id:'window-box', name:'Window Box', impl:false, icon:'fa-window-maximize' },
+    { id:'window-box', name:'Window Box', impl:true, icon:'fa-window-maximize' },
+    { id:'hanger', name:'Hanger Box', impl:true, icon:'fa-tag' },
     { id:'handle-box', name:'Handle Box', impl:false, icon:'fa-hand-paper' },
   ]},
   { cat: 'Rigid Boxes', items: [
-    { id:'rigid-two', name:'Two-Piece Rigid', impl:false, icon:'fa-archive' },
+    { id:'rigid-two', name:'Two-Piece Rigid', impl:true, icon:'fa-archive' },
     { id:'rigid-hinge', name:'Hinged Lid Rigid', impl:false, icon:'fa-door-open' },
     { id:'rigid-magnetic', name:'Magnetic Closure', impl:false, icon:'fa-magnet' },
   ]},
@@ -250,6 +251,222 @@ export function generateGable(L, W, H, T) {
   return {cut,crease,width:xE,height:yBot,annotations:ann};
 }
 
+export function generatePillow(L, W, H, T) {
+  const G = 16;
+  const arc = Math.max(W * 0.25, 14);
+  const xF = G, xB = G + L, xE = G + 2 * L;
+  const yTop = arc, yBot = arc + W, yEnd = 2 * arc + W;
+  const cut = [], crease = [];
+
+  // Glue flap (left)
+  cut.push(`M 0 ${yTop + 6} L ${G} ${yTop} L ${G} ${yBot} L 0 ${yBot - 6} Z`);
+
+  // Outer bulging arcs (top & bottom edges of both panels)
+  cut.push(`M ${xF} ${yTop} Q ${xF + L / 2} ${yTop - 2 * arc} ${xB} ${yTop} Q ${xB + L / 2} ${yTop - 2 * arc} ${xE} ${yTop}`);
+  cut.push(`M ${xF} ${yBot} Q ${xF + L / 2} ${yBot + 2 * arc} ${xB} ${yBot} Q ${xB + L / 2} ${yBot + 2 * arc} ${xE} ${yBot}`);
+  cut.push(`M ${xE} ${yTop} L ${xE} ${yBot}`);
+
+  // Curved fold creases for the pillow ends
+  crease.push(`M ${xF} ${yTop} Q ${xF + L / 2} ${yTop + arc} ${xB} ${yTop}`);
+  crease.push(`M ${xB} ${yTop} Q ${xB + L / 2} ${yTop + arc} ${xE} ${yTop}`);
+  crease.push(`M ${xF} ${yBot} Q ${xF + L / 2} ${yBot - arc} ${xB} ${yBot}`);
+  crease.push(`M ${xB} ${yBot} Q ${xB + L / 2} ${yBot - arc} ${xE} ${yBot}`);
+  crease.push(`M ${xF} ${yTop} L ${xF} ${yBot}`);
+  crease.push(`M ${xB} ${yTop} L ${xB} ${yBot}`);
+
+  const ann = [
+    { text: 'Front', x: xF + L / 2, y: (yTop + yBot) / 2 },
+    { text: 'Back', x: xB + L / 2, y: (yTop + yBot) / 2 },
+    { text: L + '', x: xF + L / 2, y: yEnd + 12, dim: 'l' },
+    { text: W + '', x: xF - 12, y: (yTop + yBot) / 2, dim: 'w', rotate: true },
+  ];
+  return { cut, crease, width: xE, height: yEnd, annotations: ann };
+}
+
+export function generateHexagonal(L, W, H, T) {
+  const G = 15;
+  const S = Math.max(W * 0.6, 30); // hexagon face width
+  const fh = S * 0.55;             // closure flap height
+  const cut = [], crease = [];
+  const xs = Array.from({ length: 7 }, (_, i) => G + i * S);
+  const yT = fh, yB = fh + H, yEnd = fh * 2 + H;
+
+  cut.push(`M 0 ${yT + 6} L ${G} ${yT} L ${G} ${yB} L 0 ${yB - 6} Z`);
+
+  // Top edge with pointed flaps on alternating panels
+  let top = `M ${xs[0]} ${yT}`;
+  for (let i = 0; i < 6; i++) {
+    const a = xs[i], b = xs[i + 1];
+    if (i % 2 === 0) top += ` L ${a + 4} ${yT - fh} L ${b - 4} ${yT - fh} L ${b} ${yT}`;
+    else top += ` L ${b} ${yT}`;
+  }
+  cut.push(top);
+
+  // Bottom edge with flaps on the other alternating panels
+  let bot = `M ${xs[0]} ${yB}`;
+  for (let i = 0; i < 6; i++) {
+    const a = xs[i], b = xs[i + 1];
+    if (i % 2 === 1) bot += ` L ${a + 4} ${yB + fh} L ${b - 4} ${yB + fh} L ${b} ${yB}`;
+    else bot += ` L ${b} ${yB}`;
+  }
+  cut.push(bot);
+  cut.push(`M ${xs[6]} ${yT} L ${xs[6]} ${yB}`);
+
+  for (let i = 0; i <= 6; i++) crease.push(`M ${xs[i]} ${yT} L ${xs[i]} ${yB}`);
+  crease.push(`M ${xs[0]} ${yT} L ${xs[6]} ${yT}`);
+  crease.push(`M ${xs[0]} ${yB} L ${xs[6]} ${yB}`);
+
+  const ann = [];
+  for (let i = 0; i < 6; i++) ann.push({ text: 'P' + (i + 1), x: xs[i] + S / 2, y: yT + H / 2 });
+  ann.push({ text: S.toFixed(0), x: xs[0] + S / 2, y: yB + fh + 12, dim: 'w' });
+  ann.push({ text: H + '', x: G - 12, y: yT + H / 2, dim: 'h', rotate: true });
+  return { cut, crease, width: xs[6], height: yEnd, annotations: ann };
+}
+
+export function generateTwoPiece(L, W, H, T) {
+  const gap = 30, m = T * 4 + 6;
+  const lidH = Math.max(H * 0.35, 15);
+  const cut = [], crease = [], ann = [];
+
+  const piece = (x0, w, l, wall, label) => {
+    const cx = x0 + wall, cy = wall;
+    cut.push(
+      `M ${cx} 0 L ${cx + w} 0 L ${cx + w} ${cy} L ${cx + w + wall} ${cy} L ${cx + w + wall} ${cy + l} ` +
+      `L ${cx + w} ${cy + l} L ${cx + w} ${cy + l + wall} L ${cx} ${cy + l + wall} L ${cx} ${cy + l} ` +
+      `L ${x0} ${cy + l} L ${x0} ${cy} L ${cx} ${cy} Z`
+    );
+    crease.push(`M ${cx} ${cy} L ${cx + w} ${cy}`);
+    crease.push(`M ${cx} ${cy + l} L ${cx + w} ${cy + l}`);
+    crease.push(`M ${cx} ${cy} L ${cx} ${cy + l}`);
+    crease.push(`M ${cx + w} ${cy} L ${cx + w} ${cy + l}`);
+    ann.push({ text: label, x: cx + w / 2, y: cy + l / 2 });
+    return x0 + w + wall * 2;
+  };
+
+  let x = piece(0, W, L, H, 'Base');
+  x += gap;
+  const totalW = piece(x, W + m, L + m, lidH, 'Lid');
+
+  ann.push({ text: W + '', x: H + W / 2, y: L + 2 * H + 12, dim: 'w' });
+  ann.push({ text: L + '', x: H + W + H + 14, y: H + L / 2, dim: 'l', rotate: true });
+  const height = Math.max(L + 2 * H, L + m + 2 * lidH);
+  return { cut, crease, width: totalW, height, annotations: ann };
+}
+
+export function generateWindowBox(L, W, H, T) {
+  const base = generateStraightTuck(L, W, H, T);
+  const G = 20;
+  const tfh = L / 2 + T;
+  const xF = G, yPT = tfh;
+  const ww = W * 0.62, wh = H * 0.62, r = Math.min(10, ww / 4, wh / 4);
+  const wx = xF + (W - ww) / 2, wy = yPT + (H - wh) / 2;
+
+  // Rounded-rect window cutout on the Front panel
+  base.cut.push(
+    `M ${wx + r} ${wy} L ${wx + ww - r} ${wy} Q ${wx + ww} ${wy} ${wx + ww} ${wy + r} ` +
+    `L ${wx + ww} ${wy + wh - r} Q ${wx + ww} ${wy + wh} ${wx + ww - r} ${wy + wh} ` +
+    `L ${wx + r} ${wy + wh} Q ${wx} ${wy + wh} ${wx} ${wy + wh - r} ` +
+    `L ${wx} ${wy + r} Q ${wx} ${wy} ${wx + r} ${wy} Z`
+  );
+  base.annotations = base.annotations.map(a => a.text === 'Front' ? { ...a, y: wy - 8 } : a);
+  base.annotations.push({ text: 'Window', x: wx + ww / 2, y: wy + wh / 2 });
+  return base;
+}
+
+export function generateSnapLock(L, W, H, T) {
+  const G = 20, gt = 8, dt = Math.min(12, W / 15), tr = Math.min(10, L / 20);
+  const tfh = L / 2 + T, sfh = W / 2 + T, bfh = L * 0.6;
+  const xF = G, xR = G + W, xB = G + W + L, xL = G + 2 * W + L, xE = G + 2 * W + 2 * L;
+  const yPT = tfh, yPB = tfh + H, yBot = yPB + bfh, yST = tfh - sfh, ySB = yPB + L * 0.35;
+  const cut = [], crease = [];
+
+  cut.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
+
+  // Top: standard tuck flaps
+  cut.push(`M ${xF} ${yPT} L ${xF} ${tr} Q ${xF} 0 ${xF + tr} 0 L ${xF + W - tr} 0 Q ${xF + W} 0 ${xF + W} ${tr} L ${xF + W} ${yPT}`);
+  cut.push(`M ${xR} ${yPT} L ${xR + dt} ${yST} L ${xR + L - dt} ${yST} L ${xR + L} ${yPT}`);
+  cut.push(`M ${xB} ${yPT} L ${xB} ${tr} Q ${xB} 0 ${xB + tr} 0 L ${xB + W - tr} 0 Q ${xB + W} 0 ${xB + W} ${tr} L ${xB + W} ${yPT}`);
+  cut.push(`M ${xL} ${yPT} L ${xL + dt} ${yST} L ${xL + L - dt} ${yST} L ${xL + L} ${yPT}`);
+  cut.push(`M ${xE} ${yPT} L ${xE} ${yPB}`);
+
+  // Bottom: crash-lock (auto-lock) panels on Front & Back with diagonal creases
+  const lock = (x) => {
+    cut.push(
+      `M ${x} ${yPB} L ${x} ${yPB + bfh * 0.55} L ${x + W * 0.5} ${yBot} L ${x + W * 0.72} ${yBot} ` +
+      `L ${x + W * 0.72} ${yPB + bfh * 0.35} L ${x + W} ${yPB + bfh * 0.35} L ${x + W} ${yPB}`
+    );
+    crease.push(`M ${x} ${yPB} L ${x + W * 0.5} ${yBot}`);
+  };
+  lock(xF);
+  lock(xB);
+
+  // Bottom: angled side flaps
+  cut.push(`M ${xR} ${yPB} L ${xR + dt} ${ySB} L ${xR + L - dt} ${ySB} L ${xR + L} ${yPB}`);
+  cut.push(`M ${xL} ${yPB} L ${xL + dt} ${ySB} L ${xL + L - dt} ${ySB} L ${xL + L} ${yPB}`);
+
+  crease.push(`M ${xF} ${yPT} L ${xF} ${yPB}`, `M ${xR} ${yPT} L ${xR} ${yPB}`, `M ${xB} ${yPT} L ${xB} ${yPB}`, `M ${xL} ${yPT} L ${xL} ${yPB}`);
+  crease.push(`M ${xF} ${yPT} L ${xE} ${yPT}`, `M ${xF} ${yPB} L ${xE} ${yPB}`);
+
+  const ann = [
+    { text: 'Front', x: xF + W / 2, y: yPT + H / 2 }, { text: 'Right', x: xR + L / 2, y: yPT + H / 2 },
+    { text: 'Back', x: xB + W / 2, y: yPT + H / 2 }, { text: 'Left', x: xL + L / 2, y: yPT + H / 2 },
+    { text: 'Auto-Lock', x: xF + W / 2, y: yPB + bfh * 0.45 },
+    { text: W + '', x: xF + W / 2, y: yPT + H + 12, dim: 'w' }, { text: L + '', x: xR + L / 2, y: yPT + H + 12, dim: 'l' },
+    { text: H + '', x: xF - 12, y: yPT + H / 2, dim: 'h', rotate: true },
+  ];
+  return { cut, crease, width: xE, height: yBot, annotations: ann };
+}
+
+export function generateHanger(L, W, H, T) {
+  const G = 20, gt = 8, dt = Math.min(12, W / 15), tr = Math.min(10, L / 20);
+  const tabH = Math.max(H * 0.35, 30);
+  const tfh = L / 2 + T, sfh = W / 2 + T, bfh = L / 2 + T;
+  const yOff = Math.max(tfh, tabH);
+  const xF = G, xR = G + W, xB = G + W + L, xL = G + 2 * W + L, xE = G + 2 * W + 2 * L;
+  const yPT = yOff, yPB = yOff + H, yBot = yPB + bfh, yST = yPT - sfh, ySB = yPB + sfh;
+  const cut = [], crease = [];
+
+  cut.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
+
+  // Front top tuck flap
+  const fTop = yPT - tfh;
+  cut.push(`M ${xF} ${yPT} L ${xF} ${fTop + tr} Q ${xF} ${fTop} ${xF + tr} ${fTop} L ${xF + W - tr} ${fTop} Q ${xF + W} ${fTop} ${xF + W} ${fTop + tr} L ${xF + W} ${yPT}`);
+  cut.push(`M ${xR} ${yPT} L ${xR + dt} ${yST} L ${xR + L - dt} ${yST} L ${xR + L} ${yPT}`);
+
+  // Back panel: hanger tab with euro hole
+  const tTop = yPT - tabH, tc = xB + W / 2;
+  const tabR = Math.min(12, W / 6);
+  cut.push(
+    `M ${xB} ${yPT} L ${xB} ${tTop + tabR} Q ${xB} ${tTop} ${xB + tabR} ${tTop} ` +
+    `L ${xB + W - tabR} ${tTop} Q ${xB + W} ${tTop} ${xB + W} ${tTop + tabR} L ${xB + W} ${yPT}`
+  );
+  // Euro slot: circle + wide slot below it
+  const hr = Math.min(6, tabH / 5), hy = tTop + tabH * 0.4;
+  cut.push(`M ${tc - hr} ${hy} A ${hr} ${hr} 0 1 0 ${tc + hr} ${hy} A ${hr} ${hr} 0 1 0 ${tc - hr} ${hy}`);
+  cut.push(`M ${tc - hr * 3} ${hy + hr * 1.6} L ${tc + hr * 3} ${hy + hr * 1.6}`);
+
+  cut.push(`M ${xL} ${yPT} L ${xL + dt} ${yST} L ${xL + L - dt} ${yST} L ${xL + L} ${yPT}`);
+  cut.push(`M ${xE} ${yPT} L ${xE} ${yPB}`);
+
+  // Bottom: straight tuck bottom
+  cut.push(`M ${xF} ${yPB} L ${xF} ${yBot - tr} Q ${xF} ${yBot} ${xF + tr} ${yBot} L ${xF + W - tr} ${yBot} Q ${xF + W} ${yBot} ${xF + W} ${yBot - tr} L ${xF + W} ${yPB}`);
+  cut.push(`M ${xR} ${yPB} L ${xR + dt} ${ySB} L ${xR + L - dt} ${ySB} L ${xR + L} ${yPB}`);
+  cut.push(`M ${xB} ${yPB} L ${xB} ${yBot - tr} Q ${xB} ${yBot} ${xB + tr} ${yBot} L ${xB + W - tr} ${yBot} Q ${xB + W} ${yBot} ${xB + W} ${yBot - tr} L ${xB + W} ${yPB}`);
+  cut.push(`M ${xL} ${yPB} L ${xL + dt} ${ySB} L ${xL + L - dt} ${ySB} L ${xL + L} ${yPB}`);
+
+  crease.push(`M ${xF} ${yPT} L ${xF} ${yPB}`, `M ${xR} ${yPT} L ${xR} ${yPB}`, `M ${xB} ${yPT} L ${xB} ${yPB}`, `M ${xL} ${yPT} L ${xL} ${yPB}`);
+  crease.push(`M ${xF} ${yPT} L ${xE} ${yPT}`, `M ${xF} ${yPB} L ${xE} ${yPB}`);
+
+  const ann = [
+    { text: 'Front', x: xF + W / 2, y: yPT + H / 2 }, { text: 'Right', x: xR + L / 2, y: yPT + H / 2 },
+    { text: 'Back', x: xB + W / 2, y: yPT + H / 2 }, { text: 'Left', x: xL + L / 2, y: yPT + H / 2 },
+    { text: 'Hang Tab', x: tc, y: tTop + tabH * 0.75 },
+    { text: W + '', x: xF + W / 2, y: yPT + H + 12, dim: 'w' }, { text: L + '', x: xR + L / 2, y: yPT + H + 12, dim: 'l' },
+    { text: H + '', x: xF - 12, y: yPT + H / 2, dim: 'h', rotate: true },
+  ];
+  return { cut, crease, width: xE, height: yBot, annotations: ann };
+}
+
 export const GENERATORS = {
   'mailer': generateMailer,
   'straight-tuck': generateStraightTuck,
@@ -257,4 +474,37 @@ export const GENERATORS = {
   'tray': generateTray,
   'sleeve': generateSleeve,
   'gable': generateGable,
+  'pillow': generatePillow,
+  'hexagonal': generateHexagonal,
+  'rigid-two': generateTwoPiece,
+  'window-box': generateWindowBox,
+  'snap-lock': generateSnapLock,
+  'hanger': generateHanger,
 };
+
+// Maps a Pacdora dataset category to its dedicated generator type
+export const CATEGORY_TO_TYPE = {
+  mailer: 'mailer',
+  tuckend: 'straight-tuck',
+  gable: 'gable',
+  pillow: 'pillow',
+  sleeve: 'sleeve',
+  twopiece: 'rigid-two',
+  window: 'window-box',
+  autolock: 'snap-lock',
+  tray: 'tray',
+  hanger: 'hanger',
+  hexagonal: 'hexagonal',
+};
+
+// Resolves the best generator type for a specific dieline card
+export function resolveTypeForDieline(dieline) {
+  if (!dieline) return 'mailer';
+  const n = (dieline.name || '').toLowerCase();
+  if (dieline.category === 'tuckend') {
+    if (n.includes('reverse')) return 'reverse-tuck';
+    if (n.includes('auto lock') || n.includes('auto-lock') || n.includes('snap')) return 'snap-lock';
+    return 'straight-tuck';
+  }
+  return CATEGORY_TO_TYPE[dieline.category] || 'mailer';
+}
