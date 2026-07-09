@@ -51,7 +51,7 @@ export default function App() {
   if (currentView === 'dieline-detail' && selectedDieline) {
     return (
       <div className="app-layout dieline-detail-view">
-        <DielineDetailPage dieline={selectedDieline} onBack={handleBackToDielinesList} />
+        <DielineDetailPage dieline={selectedDieline} onBack={handleBackToDielinesList} onSelectDieline={handleSelectDieline} />
       </div>
     );
   }
