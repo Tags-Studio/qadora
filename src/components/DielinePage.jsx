@@ -250,7 +250,7 @@ export default function DielinePage({ onBack, onSelectDieline }) {
                 <span>Updated weekly · Free for commercial use</span>
               </div>
               <h2 className="hero-title">
-                3,000+ Free Printable<br />
+                1,928 Free Printable<br />
                 <span className="text-highlight">Box Dieline</span> Templates
               </h2>
               <p className="hero-description">
@@ -261,7 +261,7 @@ export default function DielinePage({ onBack, onSelectDieline }) {
               {/* 4-Column Stats */}
               <div className="hero-stats-grid">
                 <div className="stat-column">
-                  <span className="stat-number">3,247</span>
+                  <span className="stat-number">1,928</span>
                   <span className="stat-label">Templates</span>
                 </div>
                 <div className="stat-column">
