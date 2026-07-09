@@ -359,7 +359,34 @@
   background: var(--bg2);
   border-left: 1px solid var(--border);
   padding: 18px;
+}
+/* Right panel with 3D canvas */
+.ds-right-panel-3d {
+  width: 340px;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
+}
+.ds-3d-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  min-height: 200px;
+  background: #0a0908;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.ds-3d-canvas-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+.ds-3d-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 .ds-3d-box {
   position: relative;
@@ -404,11 +431,14 @@
 
 /* Responsive: collapse side panels on narrow screens */
 @media (max-width: 1100px) {
-  .ds-right-panel { display: none; }
+  .ds-right-panel-3d { width: 280px; }
+  .ds-3d-canvas-wrap { height: 220px; }
 }
 @media (max-width: 820px) {
   .ds-left-panel { width: 240px; }
   .ds-dims-readout { display: none; }
+  .ds-right-panel-3d { width: 240px; }
+  .ds-3d-canvas-wrap { height: 180px; }
 }
 
 /* ============ v5.0 real pacdora geometry ============ */

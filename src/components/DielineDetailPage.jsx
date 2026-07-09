@@ -15,6 +15,8 @@ const MATERIALS = [
 const MM_PER_IN = 25.4;
 const BLEED = 3;
 
+// ── helpers ──────────────────────────────────────────────
+
 // Sample a serialized THREE curve into [x,y] points.
 function curveToPoints(c) {
   if (c.type === 'LineCurve') return [c.v1, c.v2];
@@ -46,7 +48,15 @@ function curveToPoints(c) {
   return [];
 }
 
-// Build one SVG path string from a serialized THREE.Shape.
+// Build one SVG path string from a list of [x,y] points.
+function pointsToPath(pts) {
+  if (!pts.length) return '';
+  let d = `M ${pts[0][0]} ${pts[0][1]}`;
+  for (let i = 1; i < pts.length; i++) d += ` L ${pts[i][0]} ${pts[i][1]}`;
+  return d;
+}
+
+// Build one SVG path string from a serialized THREE.Shape (legacy, used for fallback shapes).
 function shapeToPath(shape) {
   let d = '';
   let started = false;
@@ -62,10 +72,71 @@ function shapeToPath(shape) {
   return d;
 }
 
+// ── classify real pacdora shapes into CUT vs CREASE ──────
+// Shapes come in pairs: even = panel outline, odd = hinge marker.
+// LineCurve segments shared between 2+ panels = CREASE (fold line).
+// Non-shared segments + all EllipseCurves = CUT (trim line).
+function classifyRealPaths(shapes) {
+  const segMap = new Map(); // key → count
+
+  // First pass: count LineCurve segments across panel shapes (even indices)
+  for (let i = 0; i < shapes.length; i += 2) {
+    for (const c of shapes[i].curves) {
+      if (c.type === 'LineCurve') {
+        const v1 = c.v1, v2 = c.v2;
+        // Normalise endpoint order so shared edges match
+        const key = [v1, v2]
+          .sort((a, b) => a[0] - b[0] || a[1] - b[1])
+          .map((p) => `${p[0]},${p[1]}`)
+          .join('|');
+        segMap.set(key, (segMap.get(key) || 0) + 1);
+      }
+    }
+  }
+
+  const cutPaths = [];
+  const creasePaths = [];
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+  // Second pass: build path strings, classify each segment
+  for (let i = 0; i < shapes.length; i += 2) {
+    for (const c of shapes[i].curves) {
+      const pts = curveToPoints(c);
+      for (const p of pts) {
+        minX = Math.min(minX, p[0]); minY = Math.min(minY, p[1]);
+        maxX = Math.max(maxX, p[0]); maxY = Math.max(maxY, p[1]);
+      }
+      if (c.type === 'LineCurve') {
+        const v1 = c.v1, v2 = c.v2;
+        const key = [v1, v2]
+          .sort((a, b) => a[0] - b[0] || a[1] - b[1])
+          .map((p) => `${p[0]},${p[1]}`)
+          .join('|');
+        const path = `M ${v1[0]} ${v1[1]} L ${v2[0]} ${v2[1]}`;
+        if (segMap.get(key) > 1) {
+          creasePaths.push(path);
+        } else {
+          cutPaths.push(path);
+        }
+      } else {
+        // EllipseCurve, SplineCurve, etc. → always cut
+        cutPaths.push(pointsToPath(pts));
+      }
+    }
+  }
+
+  return {
+    cutPaths,
+    creasePaths,
+    vb: { x: minX, y: minY, w: maxX - minX, h: maxY - minY },
+  };
+}
+
+// ── component ────────────────────────────────────────────
+
 export default function DielineDetailPage({ dieline, onBack }) {
   const preset = useMemo(() => {
     const d = deriveDefaults(dieline);
-    // Prefer the REAL pacdora dimensions when we resolved them for this card.
     if (dieline?.L) { d.L = dieline.L; d.W = dieline.W; d.H = dieline.H; }
     return d;
   }, [dieline?.id]);
@@ -73,7 +144,6 @@ export default function DielineDetailPage({ dieline, onBack }) {
   const [unit, setUnit] = useState('mm');
   const [sizeMode, setSizeMode] = useState('manufacture');
   const [material, setMaterial] = useState(MATERIALS[0]);
-  const [tab, setTab] = useState('dieline');
 
   const [L, setL] = useState(preset.L);
   const [W, setW] = useState(preset.W);
@@ -82,8 +152,12 @@ export default function DielineDetailPage({ dieline, onBack }) {
 
   // Real pacdora geometry state
   const [status, setStatus] = useState('idle'); // idle | loading | real | fallback
-  const [real2D, setReal2D] = useState(null);    // { paths:[], vb:{x,y,w,h} }
+  const [real2D, setReal2D] = useState(null);    // { cutPaths:[], creasePaths:[], vb:{} }
   const realSceneJSON = useRef(null);
+
+  // Original dimensions for scaling
+  const origDims = useRef(null);   // { L, W, H } from pacdora when real geometry loads
+  const orig3DSize = useRef(null);  // bounding box of loaded 3D model
 
   // SVG pan/zoom
   const [svgScale, setSvgScale] = useState(1);
@@ -100,10 +174,31 @@ export default function DielineDetailPage({ dieline, onBack }) {
   const gen = GENERATORS[preset.type] || GENERATORS['straight-tuck'];
   const paramData = useMemo(() => gen(L, W, H, T), [gen, L, W, H, T]);
 
+  // Dimension scale factors (real mode only)
+  const dimScale = useMemo(() => {
+    if (status !== 'real' || !origDims.current) return { x: 1, y: 1, z: 1 };
+    const o = origDims.current;
+    return {
+      x: o.L ? L / o.L : 1,
+      y: o.H ? H / o.H : 1,
+      z: o.W ? W / o.W : 1,
+    };
+  }, [L, W, H, status]);
+
+  // 2D sheet scale (approximate: sheet X ~ W, sheet Y ~ L + 2H)
+  const dim2D = useMemo(() => {
+    if (status !== 'real' || !origDims.current) return { x: 1, y: 1 };
+    const o = origDims.current;
+    return {
+      x: o.W ? W / o.W : 1,
+      y: o.L && o.H ? (L + 2 * H) / (o.L + 2 * o.H) : 1,
+    };
+  }, [L, W, H, status]);
+
   // ---- Fetch real pacdora geometry when a card opens ----
   useEffect(() => {
     let cancelled = false;
-    setReal2D(null); realSceneJSON.current = null;
+    setReal2D(null); realSceneJSON.current = null; origDims.current = null; orig3DSize.current = null;
     setL(preset.L); setW(preset.W); setH(preset.H); setT(preset.T);
 
     if (!dieline?.num) { setStatus('fallback'); return; }
@@ -116,21 +211,17 @@ export default function DielineDetailPage({ dieline, onBack }) {
         const shapes = scene.shapes || [];
         if (!shapes.length) throw new Error('no shapes');
 
-        // Build 2D paths + bbox
-        const paths = shapes.map(shapeToPath).filter(Boolean);
-        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-        for (const sh of shapes) for (const c of sh.curves) for (const p of curveToPoints(c)) {
-          minX = Math.min(minX, p[0]); minY = Math.min(minY, p[1]);
-          maxX = Math.max(maxX, p[0]); maxY = Math.max(maxY, p[1]);
-        }
-        const vb = { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
-        setReal2D({ paths, vb });
+        // Classify paths into cut vs crease
+        const classified = classifyRealPaths(shapes);
+        setReal2D(classified);
         realSceneJSON.current = scene;
 
-        // Derive real dims from sheet + typical proportions
-        const sheetW = Math.round(json.totalX || vb.w);
-        const sheetH = Math.round(json.totalY || vb.h);
-        // Try 3D bbox for L/W/H after we load it (below). Use sheet as a hint now.
+        // Store original dimensions for scaling
+        const oL = dieline?.L || Math.round(json.totalX || classified.vb.w);
+        const oW = dieline?.W || Math.round(json.totalY || classified.vb.h);
+        const oH = dieline?.H || 0;
+        origDims.current = { L: oL, W: oW, H: oH };
+
         setStatus('real');
       })
       .catch(() => { if (!cancelled) setStatus('fallback'); });
@@ -167,7 +258,10 @@ export default function DielineDetailPage({ dieline, onBack }) {
       obj.renderer.setSize(c.clientWidth, c.clientHeight);
     };
     window.addEventListener('resize', onResize);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', onResize); obj.renderer.dispose(); three.current = null; };
+    // Also observe the canvas container for panel size changes
+    const ro = new ResizeObserver(onResize);
+    ro.observe(canvasRef.current);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', onResize); ro.disconnect(); obj.renderer.dispose(); three.current = null; };
   }, []);
 
   const frameObject = (object) => {
@@ -188,6 +282,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
     const obj = three.current; if (!obj) return;
     while (obj.group.children.length) obj.group.remove(obj.group.children[0]);
     realObjRef.current = null;
+    orig3DSize.current = null;
 
     if (status === 'real' && realSceneJSON.current) {
       try {
@@ -196,17 +291,18 @@ export default function DielineDetailPage({ dieline, onBack }) {
           if (!three.current) return;
           obj.group.add(loaded);
           realObjRef.current = loaded;
-          frameObject(loaded);
-          // Keep the authoritative pacdora dimensions if we have them; otherwise
-          // fall back to the model bounding box.
-          if (!dieline?.L) {
-            const size = new THREE.Box3().setFromObject(loaded).getSize(new THREE.Vector3());
-            if (size) { setL(Math.round(size.x)); setH(Math.round(size.y)); setW(Math.round(size.z)); }
+          const size = frameObject(loaded);
+          orig3DSize.current = size ? { x: size.x, y: size.y, z: size.z } : null;
+          // Apply current dim scale
+          if (orig3DSize.current) {
+            loaded.scale.set(dimScale.x, dimScale.y, dimScale.z);
+          }
+          if (!dieline?.L && size) {
+            setL(Math.round(size.x)); setH(Math.round(size.y)); setW(Math.round(size.z));
           }
         });
-      } catch (e) { /* fall through to parametric on next deps */ }
+      } catch (e) { /* fall through to parametric */ }
     } else if (status === 'fallback') {
-      // Parametric 3D
       const mat = new THREE.MeshPhysicalMaterial({ color: 0xdcbf94, roughness: 0.8, metalness: 0, side: THREE.DoubleSide, transparent: true, opacity: 0.96 });
       const edgeMat = new THREE.LineBasicMaterial({ color: 0x6b5636 });
       buildParametric3D(obj.group, mat, edgeMat, preset.type, L, W, H);
@@ -217,7 +313,23 @@ export default function DielineDetailPage({ dieline, onBack }) {
     }
   }, [status, dieline?.id]);
 
-  // Rebuild parametric 3D when dims change (only in fallback mode)
+  // Scale 3D model when dims change (real mode only)
+  useEffect(() => {
+    if (status !== 'real' || !realObjRef.current) return;
+    realObjRef.current.scale.set(dimScale.x, dimScale.y, dimScale.z);
+    // Re-frame after scale change
+    const obj = three.current; if (!obj || !orig3DSize.current) return;
+    const maxDim = Math.max(
+      orig3DSize.current.x * dimScale.x,
+      orig3DSize.current.y * dimScale.y,
+      orig3DSize.current.z * dimScale.z
+    ) || 100;
+    obj.cam.position.set(maxDim * 1.3, maxDim * 1.0, maxDim * 1.7);
+    obj.cam.near = maxDim / 100; obj.cam.far = maxDim * 100; obj.cam.updateProjectionMatrix();
+    obj.controls.target.set(0, 0, 0); obj.controls.update();
+  }, [dimScale, status]);
+
+  // Rebuild parametric 3D when dims change (fallback mode only)
   useEffect(() => {
     const obj = three.current; if (!obj || status !== 'fallback') return;
     while (obj.group.children.length) obj.group.remove(obj.group.children[0]);
@@ -231,13 +343,19 @@ export default function DielineDetailPage({ dieline, onBack }) {
     if (!svgContainerRef.current) return;
     const cw = svgContainerRef.current.clientWidth, ch = svgContainerRef.current.clientHeight;
     let bw, bh;
-    if (status === 'real' && real2D) { bw = real2D.vb.w; bh = real2D.vb.h; }
-    else { bw = paramData.width + BLEED * 2; bh = paramData.height + BLEED * 2; }
+    if (status === 'real' && real2D) {
+      bw = real2D.vb.w * dim2D.x;
+      bh = real2D.vb.h * dim2D.y;
+    } else {
+      bw = paramData.width + BLEED * 2; bh = paramData.height + BLEED * 2;
+    }
     const pad = 70;
     const fit = Math.min((cw - pad * 2) / bw, (ch - pad * 2) / bh, 3);
     setSvgScale(fit);
-    setSvgPan({ x: (cw - bw * fit) / 2 - (status === 'real' && real2D ? real2D.vb.x * fit : 0), y: (ch - bh * fit) / 2 - (status === 'real' && real2D ? real2D.vb.y * fit : 0) });
-  }, [status, real2D, paramData.width, paramData.height]);
+    const offsetX = status === 'real' && real2D ? real2D.vb.x * dim2D.x : 0;
+    const offsetY = status === 'real' && real2D ? real2D.vb.y * dim2D.y : 0;
+    setSvgPan({ x: (cw - bw * fit) / 2 - offsetX * fit, y: (ch - bh * fit) / 2 - offsetY * fit });
+  }, [status, real2D, paramData.width, paramData.height, dim2D.x, dim2D.y]);
 
   // Interactions
   const onWheel = (e) => {
@@ -276,7 +394,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
       </header>
 
       <div className="flex h-[calc(100vh-56px)]">
-        {/* Left panel */}
+        {/* Left panel — controls */}
         <aside className="ds-left-panel">
           <div className="ds-ctrl-group">
             <div className="flex items-center justify-between mb-1.5">
@@ -331,7 +449,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
           </div>
         </aside>
 
-        {/* Center */}
+        {/* Center — 2D Dieline (always visible) */}
         <div className="ds-main-area">
           <div className="ds-legend-bar">
             <div className="ds-legend">
@@ -346,19 +464,8 @@ export default function DielineDetailPage({ dieline, onBack }) {
             </div>
           </div>
 
-          <div className="ds-tab-bar">
-            <button className={`ds-tab-btn ${tab === 'dieline' ? 'active' : ''}`} onClick={() => setTab('dieline')}>
-              <i className="fas fa-drafting-compass mr-1.5"></i>2D Dieline
-            </button>
-            <button className={`ds-tab-btn ${tab === 'preview' ? 'active' : ''}`} onClick={() => setTab('preview')}>
-              <i className="fas fa-cube mr-1.5"></i>3D Preview
-            </button>
-          </div>
-
-          {/* 2D */}
           <div
             className="ds-svg-container"
-            style={{ display: tab === 'dieline' ? 'block' : 'none' }}
             ref={svgContainerRef}
             onWheel={onWheel} onMouseDown={onDown} onMouseMove={onMove} onMouseUp={onUp} onMouseLeave={onUp}
           >
@@ -368,15 +475,40 @@ export default function DielineDetailPage({ dieline, onBack }) {
             </div>
             <div className="ds-info-bar">
               <span>{isReal ? 'Real dieline geometry' : (status === 'loading' ? 'Loading…' : 'Parametric dieline')}</span>
-              <span>Sheet: {isReal ? `${real2D.vb.w.toFixed(0)} × ${real2D.vb.h.toFixed(0)}` : `${paramData.width.toFixed(0)} × ${paramData.height.toFixed(0)}`} mm</span>
+              <span>Sheet: {isReal ? `${(real2D.vb.w * dim2D.x).toFixed(0)} × ${(real2D.vb.h * dim2D.y).toFixed(0)}` : `${paramData.width.toFixed(0)} × ${paramData.height.toFixed(0)}`} mm</span>
             </div>
             {status === 'loading' && <div className="ds-loading"><i className="fas fa-circle-notch fa-spin"></i> Fetching real pacdora structure…</div>}
             <svg width="100%" height="100%">
               <g transform={`translate(${svgPan.x},${svgPan.y}) scale(${svgScale})`}>
                 {isReal ? (
-                  real2D.paths.map((d, i) => (
-                    <path key={`r-${i}`} d={d} fill="none" stroke="var(--cut)" strokeWidth={0.6 / svgScale} shapeRendering="geometricPrecision" />
-                  ))
+                  <>
+                    {/* Bleed outline (green) — dilated cut paths */}
+                    <defs>
+                      <filter id="bleedDilateReal" x="-30%" y="-30%" width="160%" height="160%">
+                        <feMorphology operator="dilate" radius={BLEED} in="SourceGraphic" result="dil" />
+                        <feComposite in="dil" in2="SourceGraphic" operator="out" result="ring" />
+                        <feFlood floodColor="var(--bleed)" result="col" />
+                        <feComposite in="col" in2="ring" operator="in" result="bleed" />
+                      </filter>
+                    </defs>
+                    {/* Apply dim scale to real paths */}
+                    <g transform={`translate(${real2D.vb.x},${real2D.vb.y}) scale(${dim2D.x},${dim2D.y}) translate(${-real2D.vb.x},${-real2D.vb.y})`}>
+                      {/* Bleed ring */}
+                      <g filter="url(#bleedDilateReal)">
+                        {real2D.cutPaths.map((d, i) => (
+                          <path key={`b-${i}`} d={d} fill="none" stroke="#000" strokeWidth={0.1} />
+                        ))}
+                      </g>
+                      {/* Crease lines (red, dashed) */}
+                      {real2D.creasePaths.map((d, i) => (
+                        <path key={`cr-${i}`} d={d} fill="none" stroke="var(--crease)" strokeWidth={0.9 / (svgScale * Math.max(dim2D.x, dim2D.y))} strokeDasharray={`${4 / (svgScale * Math.max(dim2D.x, dim2D.y))},${3 / (svgScale * Math.max(dim2D.x, dim2D.y))}`} />
+                      ))}
+                      {/* Trim / cut lines (blue, solid) */}
+                      {real2D.cutPaths.map((d, i) => (
+                        <path key={`ct-${i}`} d={d} fill="none" stroke="var(--cut)" strokeWidth={1.3 / (svgScale * Math.max(dim2D.x, dim2D.y))} shapeRendering="geometricPrecision" />
+                      ))}
+                    </g>
+                  </>
                 ) : (
                   <>
                     <defs>
@@ -408,27 +540,26 @@ export default function DielineDetailPage({ dieline, onBack }) {
               </g>
             </svg>
           </div>
+        </div>
 
-          {/* 3D */}
-          <div className="ds-svg-container !bg-[#0a0908]" style={{ display: tab === 'preview' ? 'block' : 'none' }}>
+        {/* Right panel — 3D Preview + file formats */}
+        <aside className="ds-right-panel ds-right-panel-3d">
+          <div className="ds-ctrl-label mt-3 mb-1.5">3D Preview</div>
+          <div className="ds-3d-canvas-wrap">
             <canvas ref={canvasRef} className="w-full h-full block" />
-            <div className="ds-info-bar">
+            <div className="ds-info-bar ds-3d-info">
               <span><i className="fas fa-mouse-pointer text-[10px]"></i> Drag to rotate · Scroll to zoom</span>
               <span>{isReal ? 'Real 3D model' : 'Parametric 3D'}</span>
             </div>
           </div>
-        </div>
 
-        {/* Right */}
-        <aside className="ds-right-panel">
-          <div className="ds-ctrl-label mt-4">File formats</div>
+          <div className="ds-ctrl-label mt-3">File formats</div>
           <div className="ds-format-grid2">
             <div className="ds-fmt-card"><i className="fab fa-adobe"></i> AI dieline</div>
             <div className="ds-fmt-card"><i className="fas fa-file-pdf"></i> PDF dieline</div>
             <div className="ds-fmt-card"><i className="fas fa-vector-square"></i> DXF dieline</div>
             <div className="ds-fmt-card"><i className="fas fa-image"></i> 3D mockup</div>
           </div>
-          <div className="ds-ctrl-label mt-4">You will get</div>
           <ul className="ds-getlist">
             <li>All dieline files generated and downloaded within a few minutes.</li>
             <li>Structurally inspected — dimensions, thickness &amp; material included.</li>
