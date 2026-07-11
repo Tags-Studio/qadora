@@ -572,6 +572,176 @@ function pathsToSVG(paths) {
     .join(' ');
 }
 
+
+
+// ── Unified contour classification (Trim + Crease + Bleed) ───────────────────
+// Extracts contours from Pacdora shapes and classifies each curve as CUT or CREASE
+// using geometric equivalence (not just endpoint matching).
+// Supports LineCurve, EllipseCurve, and QuadraticBezierCurve sharing detection.
+//
+// All contours use the same flattenCurveChain() as bleed — ensuring consistent
+// geometry across Trim, Bleed, and Crease.
+
+// Compute a geometric hash for a curve that identifies it uniquely
+// regardless of direction (start↔end swapped).
+// Two curves with the same hash are geometrically equivalent (shared edge).
+function curveGeometricHash(curve) {
+  const start = getCurveStart(curve);
+  const end = getCurveEnd(curve);
+  if (!start || !end) return null;
+
+  // Normalize: always sort endpoints so direction doesn't matter
+  const p1 = [Math.round(start[0] * 1000) / 1000, Math.round(start[1] * 1000) / 1000];
+  const p2 = [Math.round(end[0] * 1000) / 1000, Math.round(end[1] * 1000) / 1000];
+
+  // Sort by x then y
+  let a, b;
+  if (p1[0] < p2[0] || (p1[0] === p2[0] && p1[1] <= p2[1])) {
+    a = p1; b = p2;
+  } else {
+    a = p2; b = p1;
+  }
+
+  // Include curve type and key parameters in the hash
+  const type = curve.type;
+  let params = '';
+  if (type === 'EllipseCurve') {
+    // For arcs, include center and radii to distinguish from lines
+    const cx = Math.round(curve.aX * 1000) / 1000;
+    const cy = Math.round(curve.aY * 1000) / 1000;
+    const rx = Math.round(curve.xRadius * 1000) / 1000;
+    const ry = Math.round(curve.yRadius * 1000) / 1000;
+    params = `|${cx},${cy},${rx},${ry}`;
+  } else if (type === 'QuadraticBezierCurve') {
+    // For Beziers, include the control point midpoint
+    const mx = Math.round((curve.v0[0] + curve.v1[0] + curve.v2[0]) / 3 * 1000) / 1000;
+    const my = Math.round((curve.v0[1] + curve.v1[1] + curve.v2[1]) / 3 * 1000) / 1000;
+    params = `|${mx},${my}`;
+  }
+
+  return `${a[0]},${a[1]}→${b[0]},${b[1]}|${type}${params}`;
+}
+
+// Classify all curves in Pacdora shapes as CUT or CREASE.
+// Uses geometric equivalence to detect shared edges between panels.
+//
+// Algorithm:
+// 1. For each even-indexed shape (panel), extract all curves
+// 2. Compute a geometric hash for each curve
+// 3. Count how many panels share each hash
+// 4. Curves shared by 2+ panels → CREASE
+// 5. Curves unique to 1 panel → CUT
+//
+// Returns: {
+//   cutContours: [SVG path strings],    // continuous contours for trim
+//   creaseContours: [SVG path strings], // continuous contours for crease
+//   allContours: [[x,y]...],            // all contours as point arrays (for bleed)
+//   holes: [[x,y]...],                  // holes as point arrays
+//   vb: {x, y, w, h}                    // bounding box
+// }
+export function classifyContours(shapes, flattenTolMM = FLATTEN_TOL_MM) {
+  if (!shapes || !shapes.length) return { cutContours: [], creaseContours: [], allContours: [], holes: [], vb: { x: 0, y: 0, w: 0, h: 0 } };
+
+  const tol = GEOMETRY.mmToUnits(flattenTolMM);
+
+  // Step 1: Count shared curves across even-indexed shapes (panels)
+  const hashCounts = new Map();
+
+  for (let i = 0; i < shapes.length; i += 2) {
+    const curves = shapes[i].curves || [];
+    const seen = new Set(); // don't count duplicates within same shape
+
+    for (const curve of curves) {
+      const hash = curveGeometricHash(curve);
+      if (!hash || seen.has(hash)) continue;
+      seen.add(hash);
+      hashCounts.set(hash, (hashCounts.get(hash) || 0) + 1);
+    }
+  }
+
+  // Step 2: For each even-indexed shape, flatten and classify
+  const cutContours = [];
+  const creaseContours = [];
+  const allContours = [];
+  const holes = [];
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+  for (let i = 0; i < shapes.length; i += 2) {
+    const shape = shapes[i];
+    const curves = shape.curves || [];
+
+    // Flatten this shape's curves into a continuous contour
+    const contour = flattenCurveChain(curves, tol);
+
+    if (contour.length >= 3) {
+      // Update bounding box
+      for (const p of contour) {
+        minX = Math.min(minX, p[0]); minY = Math.min(minY, p[1]);
+        maxX = Math.max(maxX, p[0]); maxY = Math.max(maxY, p[1]);
+      }
+
+      // Add to allContours (for bleed offset)
+      allContours.push(closeContour(contour));
+
+      // Classify each curve in this shape as cut or crease
+      // Build separate path strings for cut and crease portions
+      const cutParts = [];
+      const creaseParts = [];
+      const seen = new Set();
+
+      for (const curve of curves) {
+        const hash = curveGeometricHash(curve);
+        if (!hash) continue;
+
+        // Avoid processing the same curve twice within one shape
+        if (seen.has(hash)) continue;
+        seen.add(hash);
+
+        const isShared = hashCounts.get(hash) > 1;
+
+        // Flatten this individual curve for path string
+        const curvePts = [];
+        const isLast = true; // single curve, always last
+        const isFirst = true; // single curve, always first
+        flattenCurveG1(curve, tol, curvePts, isFirst, isLast, null, null);
+
+        if (curvePts.length >= 2) {
+          const pathD = ptsToD(curvePts.length >= 3 ? curvePts : [curvePts[0], curvePts[1], curvePts[0]]);
+          if (pathD) {
+            if (isShared) {
+              creaseParts.push(pathD);
+            } else {
+              cutParts.push(pathD);
+            }
+          }
+        }
+      }
+
+      if (cutParts.length > 0) cutContours.push(cutParts.join(' '));
+      if (creaseParts.length > 0) creaseContours.push(creaseParts.join(' '));
+    }
+
+    // Process holes
+    for (const hole of (shape.holes || [])) {
+      const holeContour = flattenCurveChain(hole.curves || [], tol);
+      if (holeContour.length >= 3) {
+        holes.push(closeContour(holeContour));
+      }
+    }
+  }
+
+  // Handle case where no shapes were processed
+  if (minX === Infinity) { minX = 0; minY = 0; maxX = 0; maxY = 0; }
+
+  return {
+    cutContours,
+    creaseContours,
+    allContours,
+    holes,
+    vb: { x: minX, y: minY, w: maxX - minX, h: maxY - minY },
+  };
+}
+
 // Main export: compute bleed offset path from Pacdora shapes.
 // Returns SVG path 'd' string(s) for the green bleed line.
 export function computeBleedOffset(shapes, bleedMM) {

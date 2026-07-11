@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GENERATORS, TYPE_TO_SHAPE, deriveDefaults } from '../utils/dielineGenerators';
-import { deriveUnits, computeBleedOffset, computeBleedOffsetFromSVG } from '../utils/bleedOffset';
+import { deriveUnits, computeBleedOffset, computeBleedOffsetFromSVG, classifyContours } from '../utils/bleedOffset';
 import './DielineDetailPage.css';
 
 const MATERIALS = [
@@ -158,6 +158,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
   const [real2D, setReal2D] = useState(null);    // { cutPaths:[], creasePaths:[], vb:{} }
   const realSceneJSON = useRef(null);
   const rawShapesRef = useRef(null);  // raw Pacdora shapes for bleed offset
+  const classifiedRef = useRef(null); // { cutContours, creaseContours, allContours, holes, vb }
 
   // Original dimensions for scaling
   const origDims = useRef(null);   // { L, W, H } from pacdora when real geometry loads
@@ -204,7 +205,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
   // ---- Fetch real pacdora geometry when a card opens ----
   useEffect(() => {
     let cancelled = false;
-    setReal2D(null); realSceneJSON.current = null; rawShapesRef.current = null; origDims.current = null; orig3DSize.current = null;
+    setReal2D(null); realSceneJSON.current = null; rawShapesRef.current = null; classifiedRef.current = null; origDims.current = null; orig3DSize.current = null;
     setL(preset.L); setW(preset.W); setH(preset.H); setT(preset.T);
 
     if (!dieline?.num) { setStatus('fallback'); return; }
@@ -223,7 +224,8 @@ export default function DielineDetailPage({ dieline, onBack }) {
 
         // Classify paths into cut vs crease
         deriveUnits(shapes, dieline?.L, dieline?.W, dieline?.H);
-        const classified = classifyRealPaths(shapes);
+        const classified = classifyContours(shapes);
+        classifiedRef.current = classified;
         setReal2D(classified);
         realSceneJSON.current = scene;
         rawShapesRef.current = shapes;
@@ -547,12 +549,12 @@ export default function DielineDetailPage({ dieline, onBack }) {
                         const bleedD = computeBleedOffset(rawShapesRef.current, bleed);
                         return bleedD ? <path d={bleedD} fill="none" stroke="var(--bleed)" strokeWidth={1.0 / (svgScale * Math.max(dim2D.x, dim2D.y))} /> : null;
                       })()}
-                      {/* Crease lines (red, dashed) */}
-                      {real2D.creasePaths.map((d, i) => (
+                      {/* Crease lines (red, dashed) — continuous contours */}
+                      {(real2D.creaseContours || []).map((d, i) => (
                         <path key={`cr-${i}`} d={d} fill="none" stroke="var(--crease)" strokeWidth={0.9 / (svgScale * Math.max(dim2D.x, dim2D.y))} strokeDasharray={`${4 / (svgScale * Math.max(dim2D.x, dim2D.y))},${3 / (svgScale * Math.max(dim2D.x, dim2D.y))}`} />
                       ))}
-                      {/* Trim / cut lines (blue, solid) */}
-                      {real2D.cutPaths.map((d, i) => (
+                      {/* Trim / cut lines (blue, solid) — continuous contours */}
+                      {(real2D.cutContours || []).map((d, i) => (
                         <path key={`ct-${i}`} d={d} fill="none" stroke="var(--cut)" strokeWidth={1.3 / (svgScale * Math.max(dim2D.x, dim2D.y))} shapeRendering="geometricPrecision" />
                       ))}
                     </g>
