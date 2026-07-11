@@ -157,8 +157,10 @@ function flattenEllipseCurve(curve, tol, out) {
   }
 }
 
-// ── Curve extraction from Pacdora THREE.js serialized shapes ────────────────
+// ── Curve extraction with G1-continuity-preserving flattening ────────────────
 // Extracts all curves (including holes) and flattens them into point arrays.
+// Consecutive G1-continuous curves are flattened as a single chain — no
+// duplicate boundary points, no artificial tangent-break vertices.
 // Returns: { outer: [[x,y]...], holes: [[[x,y]...]...] }
 
 export function extractContours(shapes, flattenTolMM = FLATTEN_TOL_MM) {
@@ -167,21 +169,15 @@ export function extractContours(shapes, flattenTolMM = FLATTEN_TOL_MM) {
   const holes = [];
 
   for (const shape of shapes) {
-    // Flatten outer contour
-    const contour = [];
-    for (const curve of (shape.curves || [])) {
-      flattenCurve(curve, tol, contour);
-    }
+    // Flatten outer contour with G1 chaining
+    const contour = flattenCurveChain(shape.curves || [], tol);
     if (contour.length >= 3) {
       outer.push(closeContour(contour));
     }
 
-    // Flatten holes
+    // Flatten holes with G1 chaining
     for (const hole of (shape.holes || [])) {
-      const holeContour = [];
-      for (const curve of (hole.curves || [])) {
-        flattenCurve(curve, tol, holeContour);
-      }
+      const holeContour = flattenCurveChain(hole.curves || [], tol);
       if (holeContour.length >= 3) {
         holes.push(closeContour(holeContour));
       }
@@ -191,34 +187,296 @@ export function extractContours(shapes, flattenTolMM = FLATTEN_TOL_MM) {
   return { outer, holes };
 }
 
-// Flatten a single THREE.js curve into the output point array
-function flattenCurve(curve, tol, out) {
+// Flatten a list of curves into a single point array, preserving G1 continuity.
+// Consecutive curves that are G1-continuous (tangent angle < 0.5° from original
+// curve data) are flattened as a single chain — the boundary point is shared,
+// not duplicated. This prevents artificial tangent-break vertices that cause
+// Clipper to generate oversized round joins.
+//
+// Supports all curve type transitions:
+//   Ellipse → Line, Line → Ellipse,
+//   Quadratic → Line, Line → Quadratic,
+//   Ellipse → Quadratic, Quadratic → Ellipse,
+//   Cubic → *, * → Cubic, Spline → *, * → Spline
+function flattenCurveChain(curves, tol) {
+  if (!curves || curves.length === 0) return [];
+  if (curves.length === 1) {
+    const out = [];
+    flattenCurveG1(curves[0], tol, out, true, true);
+    return out;
+  }
+
+  // Step 1: Detect G1 continuity at each boundary from original curve data
+  // Build chains of G1-connected curves
+  const isG1 = []; // isG1[i] = true if curve[i] and curve[i+1] are G1-continuous
+  for (let i = 0; i < curves.length; i++) {
+    const c1 = curves[i];
+    const c2 = curves[(i + 1) % curves.length];
+    isG1.push(isG1Continuous(c1, c2, 0.5)); // 0.5° tolerance
+  }
+
+  // Step 2: Flatten with G1 chaining
+  // We process curves in order. When curve[i] and curve[i+1] are G1-continuous,
+  // they're part of the same chain — the boundary point is shared.
+  const out = [];
+
+  for (let i = 0; i < curves.length; i++) {
+    const isFirst = (i === 0) || !isG1[i - 1];
+    const isLast = (i === curves.length - 1) || !isG1[i];
+
+    flattenCurveG1(curves[i], tol, out, isFirst, isLast);
+  }
+
+  return out;
+}
+
+// ── G1 continuity detection from original curve primitives ──────────
+// Computes tangent vectors at curve boundaries from the ORIGINAL curve data,
+// not from flattened points. This detects true G1 continuity before
+// flattening introduces sampling quantization errors.
+
+// Get tangent direction at the END of a curve (unit vector)
+function getTangentEnd(curve) {
   switch (curve.type) {
-    case 'LineCurve':
-      out.push([curve.v1[0], curve.v1[1]]);
-      // v2 will be added by the next curve or closeContour
-      break;
-    case 'EllipseCurve':
-      flattenEllipseCurve(curve, tol, out);
-      break;
-    case 'QuadraticBezierCurve':
-      flattenQuadraticBezier(curve.v0, curve.v1, curve.v2, tol, out);
-      break;
-    case 'CubicBezierCurve':
-      flattenCubicBezier(curve.v0, curve.v1, curve.v2, curve.v3, tol, out);
-      break;
-    case 'SplineCurve':
-      // Sample spline with adaptive density
-      if (curve.points && curve.points.length > 1) {
-        for (const p of curve.points) out.push([p[0], p[1]]);
+    case 'LineCurve': {
+      const dx = curve.v2[0] - curve.v1[0];
+      const dy = curve.v2[1] - curve.v1[1];
+      const len = Math.hypot(dx, dy);
+      return len > 1e-9 ? [dx / len, dy / len] : null;
+    }
+    case 'EllipseCurve': {
+      const { aX, aY, xRadius, yRadius, aEndAngle, aClockwise, aRotation } = curve;
+      const cosA = Math.cos(aEndAngle), sinA = Math.sin(aEndAngle);
+      // Tangent of ellipse: (-sin*r_x, cos*r_y), direction depends on clockwise
+      let tx = -sinA * xRadius, ty = cosA * yRadius;
+      if (aClockwise) { tx = -tx; ty = -ty; }
+      // Apply rotation
+      if (aRotation) {
+        const cR = Math.cos(aRotation), sR = Math.sin(aRotation);
+        const ox = tx, oy = ty;
+        tx = ox * cR - oy * sR;
+        ty = ox * sR + oy * cR;
       }
-      break;
+      const len = Math.hypot(tx, ty);
+      return len > 1e-9 ? [tx / len, ty / len] : null;
+    }
+    case 'QuadraticBezierCurve': {
+      // Tangent at t=1 = direction from v1 to v2
+      const dx = curve.v2[0] - curve.v1[0];
+      const dy = curve.v2[1] - curve.v1[1];
+      const len = Math.hypot(dx, dy);
+      return len > 1e-9 ? [dx / len, dy / len] : null;
+    }
+    case 'CubicBezierCurve': {
+      // Tangent at t=1 = direction from v2 to v3
+      const dx = curve.v3[0] - curve.v2[0];
+      const dy = curve.v3[1] - curve.v2[1];
+      const len = Math.hypot(dx, dy);
+      return len > 1e-9 ? [dx / len, dy / len] : null;
+    }
+    case 'SplineCurve': {
+      if (curve.points && curve.points.length >= 2) {
+        const p1 = curve.points[curve.points.length - 2];
+        const p2 = curve.points[curve.points.length - 1];
+        const dx = p2[0] - p1[0], dy = p2[1] - p1[1];
+        const len = Math.hypot(dx, dy);
+        return len > 1e-9 ? [dx / len, dy / len] : null;
+      }
+      return null;
+    }
     default:
-      // Unknown curve type — try to extract any point data
-      for (const key of ['v0', 'v1', 'v2', 'v3']) {
-        if (curve[key]) out.push([curve[key][0], curve[key][1]]);
+      return null;
+  }
+}
+
+// Get tangent direction at the START of a curve (unit vector)
+function getTangentStart(curve) {
+  switch (curve.type) {
+    case 'LineCurve': {
+      const dx = curve.v2[0] - curve.v1[0];
+      const dy = curve.v2[1] - curve.v1[1];
+      const len = Math.hypot(dx, dy);
+      return len > 1e-9 ? [dx / len, dy / len] : null;
+    }
+    case 'EllipseCurve': {
+      const { aX, aY, xRadius, yRadius, aStartAngle, aClockwise, aRotation } = curve;
+      const cosA = Math.cos(aStartAngle), sinA = Math.sin(aStartAngle);
+      let tx = -sinA * xRadius, ty = cosA * yRadius;
+      if (aClockwise) { tx = -tx; ty = -ty; }
+      if (aRotation) {
+        const cR = Math.cos(aRotation), sR = Math.sin(aRotation);
+        const ox = tx, oy = ty;
+        tx = ox * cR - oy * sR;
+        ty = ox * sR + oy * cR;
+      }
+      const len = Math.hypot(tx, ty);
+      return len > 1e-9 ? [tx / len, ty / len] : null;
+    }
+    case 'QuadraticBezierCurve': {
+      // Tangent at t=0 = direction from v0 to v1
+      const dx = curve.v1[0] - curve.v0[0];
+      const dy = curve.v1[1] - curve.v0[1];
+      const len = Math.hypot(dx, dy);
+      return len > 1e-9 ? [dx / len, dy / len] : null;
+    }
+    case 'CubicBezierCurve': {
+      // Tangent at t=0 = direction from v0 to v1
+      const dx = curve.v1[0] - curve.v0[0];
+      const dy = curve.v1[1] - curve.v0[1];
+      const len = Math.hypot(dx, dy);
+      return len > 1e-9 ? [dx / len, dy / len] : null;
+    }
+    case 'SplineCurve': {
+      if (curve.points && curve.points.length >= 2) {
+        const p0 = curve.points[0];
+        const p1 = curve.points[1];
+        const dx = p1[0] - p0[0], dy = p1[1] - p0[1];
+        const len = Math.hypot(dx, dy);
+        return len > 1e-9 ? [dx / len, dy / len] : null;
+      }
+      return null;
+    }
+    default:
+      return null;
+  }
+}
+
+// Check if two consecutive curves are G1-continuous (tangent vectors parallel).
+// Uses ORIGINAL curve data, not flattened points.
+// Returns true if the tangent angle between curve1.end and curve2.start < tolDeg.
+function isG1Continuous(curve1, curve2, tolDeg = 0.5) {
+  const t1 = getTangentEnd(curve1);
+  const t2 = getTangentStart(curve2);
+  if (!t1 || !t2) return false;
+  // Tangent vectors should point in the SAME direction (dot product ≈ 1)
+  const dot = t1[0] * t2[0] + t1[1] * t2[1];
+  const angle = Math.acos(Math.max(-1, Math.min(1, Math.abs(dot)))) * 180 / Math.PI;
+  return angle < tolDeg;
+}
+
+// Get the endpoint of a curve (the shared point at a boundary)
+function getCurveEnd(curve) {
+  switch (curve.type) {
+    case 'LineCurve': return curve.v2;
+    case 'EllipseCurve': {
+      const { aX, aY, xRadius, yRadius, aEndAngle, aRotation } = curve;
+      let x = aX + Math.cos(aEndAngle) * xRadius;
+      let y = aY + Math.sin(aEndAngle) * yRadius;
+      if (aRotation) {
+        const cR = Math.cos(aRotation), sR = Math.sin(aRotation);
+        const dx = x - aX, dy = y - aY;
+        x = aX + dx * cR - dy * sR;
+        y = aY + dx * sR + dy * cR;
+      }
+      return [x, y];
+    }
+    case 'QuadraticBezierCurve': return curve.v2;
+    case 'CubicBezierCurve': return curve.v3;
+    case 'SplineCurve':
+      return curve.points && curve.points.length > 0
+        ? curve.points[curve.points.length - 1] : null;
+    default: return null;
+  }
+}
+
+// Get the start point of a curve
+function getCurveStart(curve) {
+  switch (curve.type) {
+    case 'LineCurve': return curve.v1;
+    case 'EllipseCurve': {
+      const { aX, aY, xRadius, yRadius, aStartAngle, aRotation } = curve;
+      let x = aX + Math.cos(aStartAngle) * xRadius;
+      let y = aY + Math.sin(aStartAngle) * yRadius;
+      if (aRotation) {
+        const cR = Math.cos(aRotation), sR = Math.sin(aRotation);
+        const dx = x - aX, dy = y - aY;
+        x = aX + dx * cR - dy * sR;
+        y = aY + dx * sR + dy * cR;
+      }
+      return [x, y];
+    }
+    case 'QuadraticBezierCurve': return curve.v0;
+    case 'CubicBezierCurve': return curve.v0;
+    case 'SplineCurve':
+      return curve.points && curve.points.length > 0 ? curve.points[0] : null;
+    default: return null;
+  }
+}
+
+// Flatten a single THREE.js curve into the output point array.
+// If `isFirstInChain` is true, the start point is emitted.
+// If `isLastInChain` is true, the end point is emitted.
+// For G1-continuous chains, intermediate boundary points are NOT duplicated.
+function flattenCurveG1(curve, tol, out, isFirstInChain, isLastInChain) {
+  switch (curve.type) {
+    case 'LineCurve': {
+      if (isFirstInChain) out.push([curve.v1[0], curve.v1[1]]);
+      // End point is only emitted if this is the last curve in the chain
+      // (otherwise the next curve will start from here)
+      if (isLastInChain) out.push([curve.v2[0], curve.v2[1]]);
+      break;
+    }
+    case 'EllipseCurve': {
+      // For arcs, we need to sample the curve
+      // If this is NOT the first in chain, we skip the first sample point
+      // (it's the same as the previous curve's end)
+      const pts = [];
+      flattenEllipseCurve(curve, tol, pts);
+      // pts[0] is the start point, pts[pts.length-1] is the end point
+      if (isFirstInChain) {
+        out.push(...pts);
+      } else {
+        // Skip first point (shared with previous curve's end)
+        out.push(...pts.slice(1));
+      }
+      // If this is NOT the last in chain, the next curve will continue from
+      // our last point, so we keep it in the output
+      break;
+    }
+    case 'QuadraticBezierCurve': {
+      const pts = [];
+      flattenQuadraticBezier(curve.v0, curve.v1, curve.v2, tol, pts);
+      if (isFirstInChain) {
+        out.push(...pts);
+      } else {
+        out.push(...pts.slice(1));
       }
       break;
+    }
+    case 'CubicBezierCurve': {
+      const pts = [];
+      flattenCubicBezier(curve.v0, curve.v1, curve.v2, curve.v3, tol, pts);
+      if (isFirstInChain) {
+        out.push(...pts);
+      } else {
+        out.push(...pts.slice(1));
+      }
+      break;
+    }
+    case 'SplineCurve': {
+      if (curve.points && curve.points.length > 1) {
+        if (isFirstInChain) {
+          for (const p of curve.points) out.push([p[0], p[1]]);
+        } else {
+          for (let i = 1; i < curve.points.length; i++) {
+            out.push([curve.points[i][0], curve.points[i][1]]);
+          }
+        }
+      }
+      break;
+    }
+    default: {
+      // Unknown curve type — try to extract any point data
+      const keys = ['v0', 'v1', 'v2', 'v3'].filter(k => curve[k]);
+      if (isFirstInChain) {
+        for (const key of keys) out.push([curve[key][0], curve[key][1]]);
+      } else {
+        for (let i = 1; i < keys.length; i++) {
+          out.push([curve[keys[i]][0], curve[keys[i]][1]]);
+        }
+      }
+      break;
+    }
   }
 }
 
