@@ -1,6 +1,9 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import pacdoraDielines from '../data/pacdora_dielines.json';
+import animatedNums from '../data/animated_dielines.json';
 import './DielinePage.css';
+
+const ANIMATED_SET = new Set(animatedNums);
 
 export default function DielinePage({ onBack, onSelectDieline }) {
   // Filter States
@@ -35,6 +38,7 @@ export default function DielinePage({ onBack, onSelectDieline }) {
   // Category Configuration
   const CATEGORIES = useMemo(() => [
     { id: 'all', name: 'All Templates', icon: 'fa-border-all' },
+    { id: 'animated', name: 'Animated 3D', icon: 'fa-magic' },
     { id: 'tuckend', name: 'Tuck End Boxes', icon: 'fa-box' },
     { id: 'mailer', name: 'Mailer Boxes', icon: 'fa-envelope-open' },
     { id: 'gable', name: 'Gable & Handle', icon: 'fa-shopping-bag' },
@@ -81,8 +85,9 @@ export default function DielinePage({ onBack, onSelectDieline }) {
   // Filter templates based on all active criteria
   const filteredDielines = useMemo(() => {
     let result = pacdoraDielines.filter(dieline => {
-      // 1. Category Filter
-      const matchCategory = selectedCategory === 'all' || dieline.category === selectedCategory;
+      // 1. Category Filter (including special 'animated' filter)
+      const matchCategory = selectedCategory === 'all' || 
+        (selectedCategory === 'animated' ? ANIMATED_SET.has(dieline.num) : dieline.category === selectedCategory);
 
       // 2. Search Keyword Filter
       const matchSearch = dieline.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -376,7 +381,14 @@ export default function DielinePage({ onBack, onSelectDieline }) {
 
                 {/* Card Info */}
                 <div className="saas-card-footer">
-                  <span className="card-tag">ALL TEMPLATES</span>
+                  <div className="card-tag-row">
+                    <span className="card-tag">ALL TEMPLATES</span>
+                    {ANIMATED_SET.has(dieline.num) && (
+                      <span className="card-tag card-tag-animated">
+                        <i className="fas fa-magic"></i> Animated
+                      </span>
+                    )}
+                  </div>
                   <h4 className="card-title-text">{dieline.name}</h4>
                 </div>
               </div>

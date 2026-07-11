@@ -981,3 +981,35 @@
     justify-content: space-between;
   }
 }
+
+
+/* Animated badge styles */
+.card-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.card-tag-animated {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #fff !important;
+  font-size: 9px !important;
+  padding: 2px 7px !important;
+  border-radius: 4px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.3px !important;
+  font-weight: 600 !important;
+}
+
+.card-tag-animated i {
+  font-size: 8px !important;
+}
+
+/* Sidebar animated category highlight */
+.sidebar-menu-item .menu-item-left .fa-magic {
+  color: #667eea;
+}
