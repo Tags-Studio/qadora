@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GENERATORS, TYPE_TO_SHAPE, deriveDefaults } from '../utils/dielineGenerators';
+import { deriveUnits, computeBleedOffset, computeBleedOffsetFromSVG } from '../utils/bleedOffset';
 import './DielineDetailPage.css';
 
 const MATERIALS = [
@@ -70,251 +71,6 @@ function shapeToPath(shape) {
   }
   if (shape.autoClose) d += ' Z';
   return d;
-}
-
-// ── geometric path offset for bleed line (CAD-quality) ──────────
-// Computes a proper outer offset contour using:
-// - Perpendicular edge offset with winding detection
-// - Intersection-based corner joins (not miter approximation)
-// - Self-intersection detection and loop removal
-// - Miter limit clamping to prevent spikes
-// Result is a single continuous outline at constant distance from trim,
-// identical to a CAD "Offset Path" operation.
-
-// Parse SVG path 'd' into array of subpaths (each = array of [x,y] points).
-// Handles M, L, H, V, C, Q, Z commands. Bezier curves are sampled into segments.
-function parsePathPoints(d) {
-  if (!d) return [];
-  const subs = [];
-  let cur = [];
-  let cx = 0, cy = 0;
-  const re = /([MLHVCQZmlhvcqz])\s*([^MLHVCQZmlhvcqz]*)/g;
-  let m;
-  while ((m = re.exec(d)) !== null) {
-    const cmd = m[1].toUpperCase();
-    const rel = m[1] !== cmd;
-    const nums = (m[2].match(/-?\d*\.?\d+(?:e-?\d+)?/gi) || []).map(Number);
-    switch (cmd) {
-      case 'M':
-        if (cur.length >= 3) subs.push(cur);
-        cur = [];
-        cx = rel ? cx + nums[0] : nums[0];
-        cy = rel ? cy + nums[1] : nums[1];
-        cur.push([cx, cy]);
-        for (let i = 2; i + 1 < nums.length; i += 2) {
-          cx = rel ? cx + nums[i] : nums[i];
-          cy = rel ? cy + nums[i + 1] : nums[i + 1];
-          cur.push([cx, cy]);
-        }
-        break;
-      case 'L':
-        for (let i = 0; i + 1 < nums.length; i += 2) {
-          cx = rel ? cx + nums[i] : nums[i];
-          cy = rel ? cy + nums[i + 1] : nums[i + 1];
-          cur.push([cx, cy]);
-        }
-        break;
-      case 'H':
-        for (let i = 0; i < nums.length; i++) {
-          cx = rel ? cx + nums[i] : nums[i];
-          cur.push([cx, cy]);
-        }
-        break;
-      case 'V':
-        for (let i = 0; i < nums.length; i++) {
-          cy = rel ? cy + nums[i] : nums[i];
-          cur.push([cx, cy]);
-        }
-        break;
-      case 'C':
-        for (let i = 0; i + 5 < nums.length; i += 6) {
-          const x1 = rel ? cx + nums[i] : nums[i], y1 = rel ? cy + nums[i+1] : nums[i+1];
-          const x2 = rel ? cx + nums[i+2] : nums[i+2], y2 = rel ? cy + nums[i+3] : nums[i+3];
-          const x = rel ? cx + nums[i+4] : nums[i+4], y = rel ? cy + nums[i+5] : nums[i+5];
-          const px = cx, py = cy; cx = x; cy = y;
-          for (let s = 1; s <= 16; s++) {
-            const t = s / 16, mt = 1 - t;
-            cur.push([
-              mt*mt*mt*px + 3*mt*mt*t*x1 + 3*mt*t*t*x2 + t*t*t*cx,
-              mt*mt*mt*py + 3*mt*mt*t*y1 + 3*mt*t*t*y2 + t*t*t*cy
-            ]);
-          }
-        }
-        break;
-      case 'Q':
-        for (let i = 0; i + 3 < nums.length; i += 4) {
-          const x1 = rel ? cx + nums[i] : nums[i], y1 = rel ? cy + nums[i+1] : nums[i+1];
-          const x = rel ? cx + nums[i+2] : nums[i+2], y = rel ? cy + nums[i+3] : nums[i+3];
-          const px = cx, py = cy; cx = x; cy = y;
-          for (let s = 1; s <= 12; s++) {
-            const t = s / 12, mt = 1 - t;
-            cur.push([mt*mt*px + 2*mt*t*x1 + t*t*cx, mt*mt*py + 2*mt*t*y1 + t*t*cy]);
-          }
-        }
-        break;
-      case 'Z':
-        if (cur.length >= 3) subs.push(cur);
-        cur = [];
-        break;
-    }
-  }
-  if (cur.length >= 3) subs.push(cur);
-  return subs;
-}
-
-// Compute signed area of a closed polygon.
-// Positive = clockwise in SVG (y-down) coordinates.
-function signedArea(pts) {
-  let a = 0;
-  const n = pts.length;
-  for (let i = 0; i < n; i++) {
-    const j = (i + 1) % n;
-    a += pts[i][0] * pts[j][1] - pts[j][0] * pts[i][1];
-  }
-  return a / 2;
-}
-
-// Infinite line intersection: returns [x,y] or null if parallel.
-function lineLineIX(p1, p2, p3, p4) {
-  const x1=p1[0],y1=p1[1],x2=p2[0],y2=p2[1],x3=p3[0],y3=p3[1],x4=p4[0],y4=p4[1];
-  const d = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
-  if (Math.abs(d) < 1e-10) return null;
-  const t = ((x1-x3)*(y3-y4) - (y1-y3)*(x3-x4)) / d;
-  return [x1 + t*(x2-x1), y1 + t*(y2-y1)];
-}
-
-// Segment intersection: returns [x,y] if segments cross, null otherwise.
-function segSegIX(p1, p2, p3, p4) {
-  const x1=p1[0],y1=p1[1],x2=p2[0],y2=p2[1],x3=p3[0],y3=p3[1],x4=p4[0],y4=p4[1];
-  const d = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
-  if (Math.abs(d) < 1e-10) return null;
-  const t = ((x1-x3)*(y3-y4) - (y1-y3)*(x3-x4)) / d;
-  const u = -((x1-x2)*(y1-y3) - (y1-y2)*(x1-x3)) / d;
-  const eps = 1e-6;
-  if (t >= eps && t <= 1-eps && u >= eps && u <= 1-eps) {
-    return [x1 + t*(x2-x1), y1 + t*(y2-y1)];
-  }
-  return null;
-}
-
-// Offset a closed polygon by `dist` outward.
-// Uses perpendicular edge offset + intersection-based corner joins
-// + self-intersection cleanup. Produces a single clean contour.
-function offsetClosedPolygon(pts, dist) {
-  const n = pts.length;
-  if (n < 3) return [];
-
-  // Determine winding (positive area = CW in SVG y-down)
-  const area = signedArea(pts);
-  const sign = area > 0 ? 1 : -1;
-
-  // 1. Offset each edge perpendicular to itself
-  const offEdges = [];
-  for (let i = 0; i < n; i++) {
-    const p1 = pts[i], p2 = pts[(i + 1) % n];
-    const dx = p2[0] - p1[0], dy = p2[1] - p1[1];
-    const len = Math.hypot(dx, dy);
-    if (len < 1e-6) { offEdges.push([p1.slice(), p2.slice()]); continue; }
-    const nx = sign * dy / len, ny = -sign * dx / len;
-    offEdges.push([
-      [p1[0] + nx * dist, p1[1] + ny * dist],
-      [p2[0] + nx * dist, p2[1] + ny * dist]
-    ]);
-  }
-
-  // 2. At each vertex, find intersection of adjacent offset edges
-  const raw = [];
-  const miterLimit = 4.0;
-  for (let i = 0; i < n; i++) {
-    const e1 = offEdges[i], e2 = offEdges[(i + 1) % n];
-    const vertex = pts[(i + 1) % n];
-    const ip = lineLineIX(e1[0], e1[1], e2[0], e2[1]);
-    if (ip) {
-      const d = Math.hypot(ip[0] - vertex[0], ip[1] - vertex[1]);
-      if (d <= dist * miterLimit) {
-        raw.push(ip);
-      } else {
-        // Bevel join: midpoint of the two offset endpoints
-        raw.push([(e1[1][0] + e2[0][0]) / 2, (e1[1][1] + e2[0][1]) / 2]);
-      }
-    } else {
-      raw.push(e1[1]); // parallel edges
-    }
-  }
-
-  // 3. Remove self-intersections
-  return cleanSelfIX(raw);
-}
-
-// Remove self-intersections by finding crossing segments and keeping the outer loop.
-// Iteratively removes inner loops until no self-intersections remain.
-function cleanSelfIX(pts) {
-  let current = dedupPts(pts);
-  let found = true, iter = 0;
-  while (found && iter < 50) {
-    found = false; iter++;
-    const n = current.length;
-    if (n < 4) break;
-    for (let i = 0; i < n && !found; i++) {
-      const i2 = (i + 1) % n;
-      for (let j = i + 2; j < n && !found; j++) {
-        const j2 = (j + 1) % n;
-        if (j2 === i) continue;
-        const ip = segSegIX(current[i], current[i2], current[j], current[j2]);
-        if (ip) {
-          // Two arcs: A from i2→j, B from j2→i
-          // Inner loop = shorter arc, outer contour = longer arc
-          const arcA = [], arcB = [];
-          for (let k = i2; k !== j2; k = (k + 1) % n) arcA.push(current[k]);
-          for (let k = j2; k !== i2; k = (k + 1) % n) arcB.push(current[k]);
-          const keep = arcA.length >= arcB.length ? arcA : arcB;
-          current = dedupPts([ip, ...keep]);
-          found = true;
-        }
-      }
-    }
-  }
-  return current;
-}
-
-// Remove duplicate/near-duplicate consecutive points.
-function dedupPts(pts) {
-  if (pts.length < 2) return pts;
-  const result = [pts[0]];
-  for (let i = 1; i < pts.length; i++) {
-    const prev = result[result.length - 1];
-    if (Math.hypot(pts[i][0] - prev[0], pts[i][1] - prev[1]) > 0.01) {
-      result.push(pts[i]);
-    }
-  }
-  if (result.length > 2) {
-    const f = result[0], l = result[result.length - 1];
-    if (Math.hypot(l[0] - f[0], l[1] - f[1]) < 0.01) result.pop();
-  }
-  return result;
-}
-
-// Build SVG path 'd' string from array of [x,y] points.
-function ptsToD(pts) {
-  if (pts.length < 3) return '';
-  let d = `M ${pts[0][0].toFixed(2)} ${pts[0][1].toFixed(2)}`;
-  for (let i = 1; i < pts.length; i++) {
-    d += ` L ${pts[i][0].toFixed(2)} ${pts[i][1].toFixed(2)}`;
-  }
-  d += ' Z';
-  return d;
-}
-
-// Main: compute outer offset contour of SVG path at `dist` mm.
-// Returns a new SVG path 'd' string for the bleed line.
-function offsetPathD(d, dist) {
-  if (!d || dist <= 0) return '';
-  const subs = parsePathPoints(d);
-  return subs
-    .map(sub => offsetClosedPolygon(sub, dist))
-    .filter(pts => pts.length >= 3)
-    .map(ptsToD)
-    .join(' ');
 }
 
 // ── classify real pacdora shapes into CUT vs CREASE ──────
@@ -401,6 +157,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
   const [status, setStatus] = useState('idle'); // idle | loading | real | fallback
   const [real2D, setReal2D] = useState(null);    // { cutPaths:[], creasePaths:[], vb:{} }
   const realSceneJSON = useRef(null);
+  const rawShapesRef = useRef(null);  // raw Pacdora shapes for bleed offset
 
   // Original dimensions for scaling
   const origDims = useRef(null);   // { L, W, H } from pacdora when real geometry loads
@@ -447,7 +204,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
   // ---- Fetch real pacdora geometry when a card opens ----
   useEffect(() => {
     let cancelled = false;
-    setReal2D(null); realSceneJSON.current = null; origDims.current = null; orig3DSize.current = null;
+    setReal2D(null); realSceneJSON.current = null; rawShapesRef.current = null; origDims.current = null; orig3DSize.current = null;
     setL(preset.L); setW(preset.W); setH(preset.H); setT(preset.T);
 
     if (!dieline?.num) { setStatus('fallback'); return; }
@@ -465,9 +222,11 @@ export default function DielineDetailPage({ dieline, onBack }) {
         if (!shapes.length) throw new Error('no shapes');
 
         // Classify paths into cut vs crease
+        deriveUnits(shapes, dieline?.L, dieline?.W, dieline?.H);
         const classified = classifyRealPaths(shapes);
         setReal2D(classified);
         realSceneJSON.current = scene;
+        rawShapesRef.current = shapes;
 
         // Store original dimensions for scaling
         const oL = dieline?.L || Math.round(json.totalX || classified.vb.w);
@@ -782,11 +541,12 @@ export default function DielineDetailPage({ dieline, onBack }) {
                   <>
                     {/* Apply dim scale to real paths */}
                     <g transform={`translate(${real2D.vb.x},${real2D.vb.y}) scale(${dim2D.x},${dim2D.y}) translate(${-real2D.vb.x},${-real2D.vb.y})`}>
-                      {/* Bleed line (green) — geometric outer offset of trim at `bleed` mm */}
-                      {real2D.cutPaths.map((d, i) => {
-                        const offsetD = offsetPathD(d, bleed);
-                        return offsetD ? <path key={`bl-${i}`} d={offsetD} fill="none" stroke="var(--bleed)" strokeWidth={1.0 / (svgScale * Math.max(dim2D.x, dim2D.y))} /> : null;
-                      })}
+                      {/* Bleed line (green) — Clipper2 offset of all contours + holes */}
+                      {(() => {
+                        if (!rawShapesRef.current) return null;
+                        const bleedD = computeBleedOffset(rawShapesRef.current, bleed);
+                        return bleedD ? <path d={bleedD} fill="none" stroke="var(--bleed)" strokeWidth={1.0 / (svgScale * Math.max(dim2D.x, dim2D.y))} /> : null;
+                      })()}
                       {/* Crease lines (red, dashed) */}
                       {real2D.creasePaths.map((d, i) => (
                         <path key={`cr-${i}`} d={d} fill="none" stroke="var(--crease)" strokeWidth={0.9 / (svgScale * Math.max(dim2D.x, dim2D.y))} strokeDasharray={`${4 / (svgScale * Math.max(dim2D.x, dim2D.y))},${3 / (svgScale * Math.max(dim2D.x, dim2D.y))}`} />
@@ -799,11 +559,11 @@ export default function DielineDetailPage({ dieline, onBack }) {
                   </>
                 ) : (
                   <>
-                    {/* Bleed line (green) — geometric outer offset of trim at `bleed` mm */}
-                    {paramData.cut.map((d, i) => {
-                      const offsetD = offsetPathD(d, bleed);
-                      return offsetD ? <path key={`bl-${i}`} d={offsetD} fill="none" stroke="var(--bleed)" strokeWidth={1.0 / svgScale} /> : null;
-                    })}
+                    {/* Bleed line (green) — Clipper2 offset of parametric cut paths */}
+                    {(() => {
+                      const bleedD = computeBleedOffsetFromSVG(paramData.cut, bleed);
+                      return bleedD ? <path d={bleedD} fill="none" stroke="var(--bleed)" strokeWidth={1.0 / svgScale} /> : null;
+                    })()}
 
                     {paramData.crease.map((d, i) => (
                       <path key={`cr-${i}`} d={d} fill="none" stroke="var(--crease)" strokeWidth={0.9 / svgScale} strokeDasharray={`${4 / svgScale},${3 / svgScale}`} />

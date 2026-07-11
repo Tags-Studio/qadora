@@ -2,7 +2,7 @@
   "name": "packwave",
   "private": true,
   "version": "1.0.0",
-  "description": "Packwave — 3D Packaging Design Editor",
+  "description": "Packwave \u2014 3D Packaging Design Editor",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,7 +15,8 @@
     "three": "^0.166.1",
     "@react-three/fiber": "^8.17.6",
     "@react-three/drei": "^9.108.3",
-    "zustand": "^5.0.0"
+    "zustand": "^5.0.0",
+    "clipper2-ts": "^2.0.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
