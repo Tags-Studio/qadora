@@ -407,30 +407,31 @@ function getCurveStart(curve) {
 // If `isFirstInChain` is true, the start point is emitted.
 // If `isLastInChain` is true, the end point is emitted.
 // For G1-continuous chains, intermediate boundary points are NOT duplicated.
+// When NOT the last in chain, the last point is REPLACED with the exact
+// endpoint from getCurveEnd() to eliminate sampling quantization error.
 function flattenCurveG1(curve, tol, out, isFirstInChain, isLastInChain) {
   switch (curve.type) {
     case 'LineCurve': {
       if (isFirstInChain) out.push([curve.v1[0], curve.v1[1]]);
-      // End point is only emitted if this is the last curve in the chain
-      // (otherwise the next curve will start from here)
       if (isLastInChain) out.push([curve.v2[0], curve.v2[1]]);
+      // LineCurve endpoints are exact — no sampling error to fix
       break;
     }
     case 'EllipseCurve': {
-      // For arcs, we need to sample the curve
-      // If this is NOT the first in chain, we skip the first sample point
-      // (it's the same as the previous curve's end)
       const pts = [];
       flattenEllipseCurve(curve, tol, pts);
-      // pts[0] is the start point, pts[pts.length-1] is the end point
       if (isFirstInChain) {
         out.push(...pts);
       } else {
-        // Skip first point (shared with previous curve's end)
+        // Skip first point (shared with previous curve's exact end)
         out.push(...pts.slice(1));
       }
-      // If this is NOT the last in chain, the next curve will continue from
-      // our last point, so we keep it in the output
+      // If NOT last in chain, replace last sampled point with exact endpoint
+      // to eliminate sampling quantization error at G1 boundary
+      if (!isLastInChain && out.length > 0) {
+        const exactEnd = getCurveEnd(curve);
+        if (exactEnd) out[out.length - 1] = [exactEnd[0], exactEnd[1]];
+      }
       break;
     }
     case 'QuadraticBezierCurve': {
@@ -441,6 +442,10 @@ function flattenCurveG1(curve, tol, out, isFirstInChain, isLastInChain) {
       } else {
         out.push(...pts.slice(1));
       }
+      // Replace last point with exact endpoint for G1 continuity
+      if (!isLastInChain && out.length > 0) {
+        out[out.length - 1] = [curve.v2[0], curve.v2[1]];
+      }
       break;
     }
     case 'CubicBezierCurve': {
@@ -450,6 +455,10 @@ function flattenCurveG1(curve, tol, out, isFirstInChain, isLastInChain) {
         out.push(...pts);
       } else {
         out.push(...pts.slice(1));
+      }
+      // Replace last point with exact endpoint for G1 continuity
+      if (!isLastInChain && out.length > 0) {
+        out[out.length - 1] = [curve.v3[0], curve.v3[1]];
       }
       break;
     }
@@ -466,7 +475,6 @@ function flattenCurveG1(curve, tol, out, isFirstInChain, isLastInChain) {
       break;
     }
     default: {
-      // Unknown curve type — try to extract any point data
       const keys = ['v0', 'v1', 'v2', 'v3'].filter(k => curve[k]);
       if (isFirstInChain) {
         for (const key of keys) out.push([curve[key][0], curve[key][1]]);
