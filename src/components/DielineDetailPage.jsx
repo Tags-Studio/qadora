@@ -535,24 +535,8 @@ export default function DielineDetailPage({ dieline, onBack }) {
               <g transform={`translate(${svgPan.x},${svgPan.y}) scale(${svgScale})`}>
                 {isReal ? (
                   <>
-                    {/* Bleed outline (green) — dilated cut paths */}
                     {/* Apply dim scale to real paths */}
                     <g transform={`translate(${real2D.vb.x},${real2D.vb.y}) scale(${dim2D.x},${dim2D.y}) translate(${-real2D.vb.x},${-real2D.vb.y})`}>
-                      {/* Bleed — thin green ring at 3mm outside trim (dilation filter) */}
-                      <defs>
-                        <filter id="bleedDilateReal" x="-30%" y="-30%" width="160%" height="160%">
-                          <feMorphology operator="dilate" radius={bleed + 0.08} in="SourceGraphic" result="dil1" />
-                          <feMorphology operator="dilate" radius={bleed - 0.08} in="SourceGraphic" result="dil2" />
-                          <feComposite in="dil1" in2="dil2" operator="out" result="ring" />
-                          <feFlood floodColor="#2eae3a" floodOpacity="1" result="col" />
-                          <feComposite in="col" in2="ring" operator="in" result="bleed" />
-                        </filter>
-                      </defs>
-                      <g filter="url(#bleedDilateReal)">
-                        {real2D.cutPaths.map((d, i) => (
-                          <path key={`b-${i}`} d={d} fill="none" stroke="#000" strokeWidth={0.1} />
-                        ))}
-                      </g>
                       {/* Crease lines (red, dashed) */}
                       {real2D.creasePaths.map((d, i) => (
                         <path key={`cr-${i}`} d={d} fill="none" stroke="var(--crease)" strokeWidth={0.9 / (svgScale * Math.max(dim2D.x, dim2D.y))} strokeDasharray={`${4 / (svgScale * Math.max(dim2D.x, dim2D.y))},${3 / (svgScale * Math.max(dim2D.x, dim2D.y))}`} />
@@ -565,18 +549,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
                   </>
                 ) : (
                   <>
-                    <defs>
-                      <filter id="bleedDilate" x="-30%" y="-30%" width="160%" height="160%">
-                        <feMorphology operator="dilate" radius={bleed + 0.08} in="SourceGraphic" result="dil1" />
-                        <feMorphology operator="dilate" radius={bleed - 0.08} in="SourceGraphic" result="dil2" />
-                        <feComposite in="dil1" in2="dil2" operator="out" result="ring" />
-                        <feFlood floodColor="#2eae3a" floodOpacity="1" result="col" />
-                        <feComposite in="col" in2="ring" operator="in" result="bleed" />
-                      </filter>
-                    </defs>
-                    <g filter="url(#bleedDilate)">
-                      {paramData.cut.map((d, i) => <path key={`b-${i}`} d={d} fill="none" stroke="#000" strokeWidth={0.1} />)}
-                    </g>
+
                     {paramData.crease.map((d, i) => (
                       <path key={`cr-${i}`} d={d} fill="none" stroke="var(--crease)" strokeWidth={0.9 / svgScale} strokeDasharray={`${4 / svgScale},${3 / svgScale}`} />
                     ))}
