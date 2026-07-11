@@ -202,29 +202,29 @@ function flattenCurveChain(curves, tol) {
   if (!curves || curves.length === 0) return [];
   if (curves.length === 1) {
     const out = [];
-    flattenCurveG1(curves[0], tol, out, true, true);
+    flattenCurveG1(curves[0], tol, out, true, true, null, null);
     return out;
   }
 
   // Step 1: Detect G1 continuity at each boundary from original curve data
-  // Build chains of G1-connected curves
-  const isG1 = []; // isG1[i] = true if curve[i] and curve[i+1] are G1-continuous
+  const isG1 = [];
   for (let i = 0; i < curves.length; i++) {
     const c1 = curves[i];
     const c2 = curves[(i + 1) % curves.length];
-    isG1.push(isG1Continuous(c1, c2, 0.5)); // 0.5° tolerance
+    isG1.push(isG1Continuous(c1, c2, 0.5));
   }
 
-  // Step 2: Flatten with G1 chaining
-  // We process curves in order. When curve[i] and curve[i+1] are G1-continuous,
-  // they're part of the same chain — the boundary point is shared.
+  // Step 2: Flatten with G1 chaining + bilateral tangent projection
   const out = [];
-
   for (let i = 0; i < curves.length; i++) {
     const isFirst = (i === 0) || !isG1[i - 1];
     const isLast = (i === curves.length - 1) || !isG1[i];
 
-    flattenCurveG1(curves[i], tol, out, isFirst, isLast);
+    // Get tangent vectors for projection at G1 boundaries
+    const prevTangent = !isFirst ? getTangentEnd(curves[i - 1]) : null;
+    const nextTangent = !isLast ? getTangentStart(curves[i + 1]) : null;
+
+    flattenCurveG1(curves[i], tol, out, isFirst, isLast, prevTangent, nextTangent);
   }
 
   return out;
