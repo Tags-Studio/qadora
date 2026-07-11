@@ -13,7 +13,7 @@ const MATERIALS = [
   { id: 'white-sbs', name: 'White SBS 400g', t: 0.5 },
 ];
 const MM_PER_IN = 25.4;
-// BLEED is now a state variable (see inside component) — default 3mm
+const BLEED = 3;
 
 // ── helpers ──────────────────────────────────────────────
 
@@ -150,7 +150,6 @@ export default function DielineDetailPage({ dieline, onBack }) {
   const [H, setH] = useState(preset.H);
   const [T, setT] = useState(preset.T);
   const [foldProgress, setFoldProgress] = useState(1); // 0 = flat, 1 = folded
-  const [bleed, setBleed] = useState(3); // bleed margin in mm (adjustable)
 
   // Real pacdora geometry state
   const [status, setStatus] = useState('idle'); // idle | loading | real | fallback
@@ -390,7 +389,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
       bw = real2D.vb.w * dim2D.x;
       bh = real2D.vb.h * dim2D.y;
     } else {
-      bw = paramData.width + bleed * 2; bh = paramData.height + bleed * 2;
+      bw = paramData.width + BLEED * 2; bh = paramData.height + BLEED * 2;
     }
     const pad = 70;
     const fit = Math.min((cw - pad * 2) / bw, (ch - pad * 2) / bh, 3);
@@ -398,7 +397,7 @@ export default function DielineDetailPage({ dieline, onBack }) {
     const offsetX = status === 'real' && real2D ? real2D.vb.x * dim2D.x : 0;
     const offsetY = status === 'real' && real2D ? real2D.vb.y * dim2D.y : 0;
     setSvgPan({ x: (cw - bw * fit) / 2 - offsetX * fit, y: (ch - bh * fit) / 2 - offsetY * fit });
-  }, [status, real2D, paramData.width, paramData.height, dim2D.x, dim2D.y, bleed]);
+  }, [status, real2D, paramData.width, paramData.height, dim2D.x, dim2D.y]);
 
   // Interactions
   const onWheel = (e) => {
@@ -472,16 +471,6 @@ export default function DielineDetailPage({ dieline, onBack }) {
           </div>
 
           <div className="ds-ctrl-group">
-            <div className="ds-ctrl-label">Bleed margin</div>
-            <div className="text-[10px] text-muted mb-1.5">(1 ~ 10 mm)</div>
-            <div className="ds-stepper">
-              <button onClick={() => setBleed((v) => Math.max(1, +(v - 0.5).toFixed(1)))}><i className="fas fa-minus"></i></button>
-              <span>{bleed.toFixed(1)} mm</span>
-              <button onClick={() => setBleed((v) => Math.min(10, +(v + 0.5).toFixed(1)))}><i className="fas fa-plus"></i></button>
-            </div>
-          </div>
-
-          <div className="ds-ctrl-group">
             <div className="ds-ctrl-label">Size mode</div>
             <div className="ds-mode-grid">
               {['manufacture', 'inner', 'outer'].map((m) => (
@@ -541,10 +530,10 @@ export default function DielineDetailPage({ dieline, onBack }) {
                       {/* Bleed — thin green ring at 3mm outside trim (dilation filter) */}
                       <defs>
                         <filter id="bleedDilateReal" x="-30%" y="-30%" width="160%" height="160%">
-                          <feMorphology operator="dilate" radius={bleed + 0.4} in="SourceGraphic" result="dil1" />
-                          <feMorphology operator="dilate" radius={bleed - 0.4} in="SourceGraphic" result="dil2" />
+                          <feMorphology operator="dilate" radius={BLEED + 0.4} in="SourceGraphic" result="dil1" />
+                          <feMorphology operator="dilate" radius={BLEED - 0.4} in="SourceGraphic" result="dil2" />
                           <feComposite in="dil1" in2="dil2" operator="out" result="ring" />
-                          <feFlood floodColor="#2eae3a" result="col" />
+                          <feFlood floodColor="#2eae3a" floodOpacity="1" result="col" />
                           <feComposite in="col" in2="ring" operator="in" result="bleed" />
                         </filter>
                       </defs>
@@ -567,15 +556,15 @@ export default function DielineDetailPage({ dieline, onBack }) {
                   <>
                     <defs>
                       <filter id="bleedDilate" x="-30%" y="-30%" width="160%" height="160%">
-                        <feMorphology operator="dilate" radius={bleed + 0.4} in="SourceGraphic" result="dil1" />
-                        <feMorphology operator="dilate" radius={bleed - 0.4} in="SourceGraphic" result="dil2" />
+                        <feMorphology operator="dilate" radius={BLEED + 0.4} in="SourceGraphic" result="dil1" />
+                        <feMorphology operator="dilate" radius={BLEED - 0.4} in="SourceGraphic" result="dil2" />
                         <feComposite in="dil1" in2="dil2" operator="out" result="ring" />
-                        <feFlood floodColor="#2eae3a" result="col" />
+                        <feFlood floodColor="#2eae3a" floodOpacity="1" result="col" />
                         <feComposite in="col" in2="ring" operator="in" result="bleed" />
                       </filter>
                     </defs>
                     <g filter="url(#bleedDilate)">
-                      {paramData.cut.map((d, i) => <path key={`b-${i}`} d={d} fill="none" stroke="#000" strokeWidth={0.1} />)}
+                      {paramData.cut.map((d, i) => <path key={`b-${i}`} d={d} fill="#000" stroke="none" />)}
                     </g>
                     {paramData.crease.map((d, i) => (
                       <path key={`cr-${i}`} d={d} fill="none" stroke="var(--crease)" strokeWidth={0.9 / svgScale} strokeDasharray={`${4 / svgScale},${3 / svgScale}`} />
