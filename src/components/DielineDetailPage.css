@@ -520,3 +520,17 @@
   background: var(--card2);
   color: var(--accent);
 }
+
+
+/* Bleed margin stepper — reuses ds-stepper */
+.ds-stepper span {
+  min-width: 60px;
+  text-align: center;
+}
+
+/* Make bleed swatch in legend more visible */
+.ds-line-swatch.bleed {
+  background: #2eae3a;
+  height: 3px;
+  box-shadow: 0 0 0 1px rgba(46, 174, 58, 0.2);
+}
