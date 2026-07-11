@@ -72,6 +72,134 @@ function shapeToPath(shape) {
   return d;
 }
 
+// ── geometric path offset for bleed line ──────────────────────────
+// Computes a proper outer offset contour of an SVG path at distance `dist`.
+// NOT dilation — produces a single continuous outline that follows the
+// exact shape of the trim path including curves, corners, and concave sections.
+
+// Parse an SVG path "d" string into an array of subpaths, each being
+// an array of [x, y] points. Handles M, L, H, V, Z commands.
+function parsePathPoints(d) {
+  const subs = [];
+  let cur = [];
+  let cx = 0, cy = 0;
+  const tokens = d.match(/[MLHVCZmlhvcz]|-?\d*\.?\d+(?:e-?\d+)?/gi) || [];
+  let i = 0;
+  let cmd = '';
+  while (i < tokens.length) {
+    const t = tokens[i];
+    if (/[mlhvcz]/i.test(t)) { cmd = t.toUpperCase(); i++; }
+    const rel = t === t.toLowerCase() && /[mlhvcz]/.test(t);
+    const getNum = () => { const v = parseFloat(tokens[i]); i++; return v; };
+    if (cmd === 'M' || cmd === 'L') {
+      const x = getNum(), y = getNum();
+      cx = rel ? cx + x : x; cy = rel ? cy + y : y;
+      if (cmd === 'M' && cur.length > 0) { subs.push(cur); cur = []; }
+      cur.push([cx, cy]);
+    } else if (cmd === 'H') {
+      const x = getNum(); cx = rel ? cx + x : x;
+      cur.push([cx, cy]);
+    } else if (cmd === 'V') {
+      const y = getNum(); cy = rel ? cy + y : y;
+      cur.push([cx, cy]);
+    } else if (cmd === 'C') {
+      // Cubic bezier — sample into line segments
+      const x1 = getNum(), y1 = getNum(), x2 = getNum(), y2 = getNum(), x = getNum(), y = getNum();
+      const px = cx, py = cy;
+      cx = rel ? cx + x : x; cy = rel ? cy + y : y;
+      const steps = 12;
+      for (let s = 1; s <= steps; s++) {
+        const t = s / steps;
+        const mt = 1 - t;
+        const bx = mt*mt*mt*px + 3*mt*mt*t*x1 + 3*mt*t*t*x2 + t*t*t*cx;
+        const by = mt*mt*mt*py + 3*mt*mt*t*y1 + 3*mt*t*t*y2 + t*t*t*cy;
+        cur.push([bx, by]);
+      }
+    } else if (cmd === 'Q') {
+      // Quadratic bezier
+      const x1 = getNum(), y1 = getNum(), x = getNum(), y = getNum();
+      const px = cx, py = cy;
+      cx = rel ? cx + x : x; cy = rel ? cy + y : y;
+      const steps = 10;
+      for (let s = 1; s <= steps; s++) {
+        const t = s / steps;
+        const mt = 1 - t;
+        const bx = mt*mt*px + 2*mt*t*x1 + t*t*cx;
+        const by = mt*mt*py + 2*mt*t*y1 + t*t*cy;
+        cur.push([bx, by]);
+      }
+    } else if (cmd === 'Z') {
+      if (cur.length > 1) { subs.push(cur); cur = []; }
+    }
+  }
+  if (cur.length > 1) subs.push(cur);
+  return subs;
+}
+
+// Compute the outward unit normal for a 2D path segment.
+// For a closed path traversed clockwise, the outward normal is [dy, -dx] normalized.
+function pathNormal(p1, p2) {
+  const dx = p2[0] - p1[0], dy = p2[1] - p1[1];
+  const len = Math.hypot(dx, dy) || 1;
+  // Outward normal (assuming clockwise winding)
+  return [dy / len, -dx / len];
+}
+
+// Offset a single subpath (array of [x,y]) by `dist` outward.
+// Uses segment intersection at corners to maintain sharp geometry.
+function offsetSubpath(pts, dist) {
+  if (pts.length < 2) return [];
+  const n = pts.length;
+  const closed = Math.hypot(pts[0][0] - pts[n-1][0], pts[0][1] - pts[n-1][1]) < 0.5;
+  const result = [];
+
+  for (let i = 0; i < n; i++) {
+    const prev = closed ? pts[(i - 1 + n) % n] : pts[Math.max(0, i - 1)];
+    const curr = pts[i];
+    const next = closed ? pts[(i + 1) % n] : pts[Math.min(n - 1, i + 1)];
+
+    // Normals of incoming and outgoing segments
+    const n1 = pathNormal(prev, curr);
+    const n2 = pathNormal(curr, next);
+
+    // Average normal at the corner (miter join)
+    let nx = (n1[0] + n2[0]) / 2;
+    let ny = (n1[1] + n2[1]) / 2;
+    const nlen = Math.hypot(nx, ny);
+    if (nlen < 1e-6) { nx = n1[0]; ny = n1[1]; }
+    else { nx /= nlen; ny /= nlen; }
+
+    // Miter limit — clamp to avoid spikes at very sharp corners
+    const dot = n1[0] * n2[0] + n1[1] * n2[1];
+    const miter = 1 / Math.max(0.1, Math.cos(Math.acos(Math.max(-1, Math.min(1, dot))) / 2));
+    const clampedMiter = Math.min(miter, 4);
+    const scale = dist * clampedMiter;
+
+    result.push([curr[0] + nx * scale, curr[1] + ny * scale]);
+  }
+  return result;
+}
+
+// Build an SVG path "d" string from an array of [x,y] points.
+function pointsToD(pts) {
+  if (pts.length === 0) return '';
+  let d = `M ${pts[0][0].toFixed(2)} ${pts[0][1].toFixed(2)}`;
+  for (let i = 1; i < pts.length; i++) {
+    d += ` L ${pts[i][0].toFixed(2)} ${pts[i][1].toFixed(2)}`;
+  }
+  d += ' Z';
+  return d;
+}
+
+// Compute the outer offset contour of an SVG path at `dist` mm.
+// Returns a new SVG path "d" string for the bleed line.
+function offsetPathD(d, dist) {
+  if (!d || dist <= 0) return '';
+  const subs = parsePathPoints(d);
+  const offsetSubs = subs.map(sub => offsetSubpath(sub, dist));
+  return offsetSubs.map(pointsToD).join(' ');
+}
+
 // ── classify real pacdora shapes into CUT vs CREASE ──────
 // Shapes come in pairs: even = panel outline, odd = hinge marker.
 // LineCurve segments shared between 2+ panels = CREASE (fold line).
@@ -537,6 +665,11 @@ export default function DielineDetailPage({ dieline, onBack }) {
                   <>
                     {/* Apply dim scale to real paths */}
                     <g transform={`translate(${real2D.vb.x},${real2D.vb.y}) scale(${dim2D.x},${dim2D.y}) translate(${-real2D.vb.x},${-real2D.vb.y})`}>
+                      {/* Bleed line (green) — geometric outer offset of trim at `bleed` mm */}
+                      {real2D.cutPaths.map((d, i) => {
+                        const offsetD = offsetPathD(d, bleed);
+                        return offsetD ? <path key={`bl-${i}`} d={offsetD} fill="none" stroke="var(--bleed)" strokeWidth={1.0 / (svgScale * Math.max(dim2D.x, dim2D.y))} /> : null;
+                      })}
                       {/* Crease lines (red, dashed) */}
                       {real2D.creasePaths.map((d, i) => (
                         <path key={`cr-${i}`} d={d} fill="none" stroke="var(--crease)" strokeWidth={0.9 / (svgScale * Math.max(dim2D.x, dim2D.y))} strokeDasharray={`${4 / (svgScale * Math.max(dim2D.x, dim2D.y))},${3 / (svgScale * Math.max(dim2D.x, dim2D.y))}`} />
@@ -549,6 +682,11 @@ export default function DielineDetailPage({ dieline, onBack }) {
                   </>
                 ) : (
                   <>
+                    {/* Bleed line (green) — geometric outer offset of trim at `bleed` mm */}
+                    {paramData.cut.map((d, i) => {
+                      const offsetD = offsetPathD(d, bleed);
+                      return offsetD ? <path key={`bl-${i}`} d={offsetD} fill="none" stroke="var(--bleed)" strokeWidth={1.0 / svgScale} /> : null;
+                    })}
 
                     {paramData.crease.map((d, i) => (
                       <path key={`cr-${i}`} d={d} fill="none" stroke="var(--crease)" strokeWidth={0.9 / svgScale} strokeDasharray={`${4 / svgScale},${3 / svgScale}`} />
