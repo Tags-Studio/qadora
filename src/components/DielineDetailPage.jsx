@@ -72,117 +72,231 @@ function shapeToPath(shape) {
   return d;
 }
 
-// ── geometric path offset for bleed line ──────────────────────────
-// Computes a proper outer offset contour of an SVG path at distance `dist`.
-// NOT dilation — produces a single continuous outline that follows the
-// exact shape of the trim path including curves, corners, and concave sections.
+// ── geometric path offset for bleed line (CAD-quality) ──────────
+// Computes a proper outer offset contour using:
+// - Perpendicular edge offset with winding detection
+// - Intersection-based corner joins (not miter approximation)
+// - Self-intersection detection and loop removal
+// - Miter limit clamping to prevent spikes
+// Result is a single continuous outline at constant distance from trim,
+// identical to a CAD "Offset Path" operation.
 
-// Parse an SVG path "d" string into an array of subpaths, each being
-// an array of [x, y] points. Handles M, L, H, V, Z commands.
+// Parse SVG path 'd' into array of subpaths (each = array of [x,y] points).
+// Handles M, L, H, V, C, Q, Z commands. Bezier curves are sampled into segments.
 function parsePathPoints(d) {
+  if (!d) return [];
   const subs = [];
   let cur = [];
   let cx = 0, cy = 0;
-  const tokens = d.match(/[MLHVCZmlhvcz]|-?\d*\.?\d+(?:e-?\d+)?/gi) || [];
-  let i = 0;
-  let cmd = '';
-  while (i < tokens.length) {
-    const t = tokens[i];
-    if (/[mlhvcz]/i.test(t)) { cmd = t.toUpperCase(); i++; }
-    const rel = t === t.toLowerCase() && /[mlhvcz]/.test(t);
-    const getNum = () => { const v = parseFloat(tokens[i]); i++; return v; };
-    if (cmd === 'M' || cmd === 'L') {
-      const x = getNum(), y = getNum();
-      cx = rel ? cx + x : x; cy = rel ? cy + y : y;
-      if (cmd === 'M' && cur.length > 0) { subs.push(cur); cur = []; }
-      cur.push([cx, cy]);
-    } else if (cmd === 'H') {
-      const x = getNum(); cx = rel ? cx + x : x;
-      cur.push([cx, cy]);
-    } else if (cmd === 'V') {
-      const y = getNum(); cy = rel ? cy + y : y;
-      cur.push([cx, cy]);
-    } else if (cmd === 'C') {
-      // Cubic bezier — sample into line segments
-      const x1 = getNum(), y1 = getNum(), x2 = getNum(), y2 = getNum(), x = getNum(), y = getNum();
-      const px = cx, py = cy;
-      cx = rel ? cx + x : x; cy = rel ? cy + y : y;
-      const steps = 12;
-      for (let s = 1; s <= steps; s++) {
-        const t = s / steps;
-        const mt = 1 - t;
-        const bx = mt*mt*mt*px + 3*mt*mt*t*x1 + 3*mt*t*t*x2 + t*t*t*cx;
-        const by = mt*mt*mt*py + 3*mt*mt*t*y1 + 3*mt*t*t*y2 + t*t*t*cy;
-        cur.push([bx, by]);
-      }
-    } else if (cmd === 'Q') {
-      // Quadratic bezier
-      const x1 = getNum(), y1 = getNum(), x = getNum(), y = getNum();
-      const px = cx, py = cy;
-      cx = rel ? cx + x : x; cy = rel ? cy + y : y;
-      const steps = 10;
-      for (let s = 1; s <= steps; s++) {
-        const t = s / steps;
-        const mt = 1 - t;
-        const bx = mt*mt*px + 2*mt*t*x1 + t*t*cx;
-        const by = mt*mt*py + 2*mt*t*y1 + t*t*cy;
-        cur.push([bx, by]);
-      }
-    } else if (cmd === 'Z') {
-      if (cur.length > 1) { subs.push(cur); cur = []; }
+  const re = /([MLHVCQZmlhvcqz])\s*([^MLHVCQZmlhvcqz]*)/g;
+  let m;
+  while ((m = re.exec(d)) !== null) {
+    const cmd = m[1].toUpperCase();
+    const rel = m[1] !== cmd;
+    const nums = (m[2].match(/-?\d*\.?\d+(?:e-?\d+)?/gi) || []).map(Number);
+    switch (cmd) {
+      case 'M':
+        if (cur.length >= 3) subs.push(cur);
+        cur = [];
+        cx = rel ? cx + nums[0] : nums[0];
+        cy = rel ? cy + nums[1] : nums[1];
+        cur.push([cx, cy]);
+        for (let i = 2; i + 1 < nums.length; i += 2) {
+          cx = rel ? cx + nums[i] : nums[i];
+          cy = rel ? cy + nums[i + 1] : nums[i + 1];
+          cur.push([cx, cy]);
+        }
+        break;
+      case 'L':
+        for (let i = 0; i + 1 < nums.length; i += 2) {
+          cx = rel ? cx + nums[i] : nums[i];
+          cy = rel ? cy + nums[i + 1] : nums[i + 1];
+          cur.push([cx, cy]);
+        }
+        break;
+      case 'H':
+        for (let i = 0; i < nums.length; i++) {
+          cx = rel ? cx + nums[i] : nums[i];
+          cur.push([cx, cy]);
+        }
+        break;
+      case 'V':
+        for (let i = 0; i < nums.length; i++) {
+          cy = rel ? cy + nums[i] : nums[i];
+          cur.push([cx, cy]);
+        }
+        break;
+      case 'C':
+        for (let i = 0; i + 5 < nums.length; i += 6) {
+          const x1 = rel ? cx + nums[i] : nums[i], y1 = rel ? cy + nums[i+1] : nums[i+1];
+          const x2 = rel ? cx + nums[i+2] : nums[i+2], y2 = rel ? cy + nums[i+3] : nums[i+3];
+          const x = rel ? cx + nums[i+4] : nums[i+4], y = rel ? cy + nums[i+5] : nums[i+5];
+          const px = cx, py = cy; cx = x; cy = y;
+          for (let s = 1; s <= 16; s++) {
+            const t = s / 16, mt = 1 - t;
+            cur.push([
+              mt*mt*mt*px + 3*mt*mt*t*x1 + 3*mt*t*t*x2 + t*t*t*cx,
+              mt*mt*mt*py + 3*mt*mt*t*y1 + 3*mt*t*t*y2 + t*t*t*cy
+            ]);
+          }
+        }
+        break;
+      case 'Q':
+        for (let i = 0; i + 3 < nums.length; i += 4) {
+          const x1 = rel ? cx + nums[i] : nums[i], y1 = rel ? cy + nums[i+1] : nums[i+1];
+          const x = rel ? cx + nums[i+2] : nums[i+2], y = rel ? cy + nums[i+3] : nums[i+3];
+          const px = cx, py = cy; cx = x; cy = y;
+          for (let s = 1; s <= 12; s++) {
+            const t = s / 12, mt = 1 - t;
+            cur.push([mt*mt*px + 2*mt*t*x1 + t*t*cx, mt*mt*py + 2*mt*t*y1 + t*t*cy]);
+          }
+        }
+        break;
+      case 'Z':
+        if (cur.length >= 3) subs.push(cur);
+        cur = [];
+        break;
     }
   }
-  if (cur.length > 1) subs.push(cur);
+  if (cur.length >= 3) subs.push(cur);
   return subs;
 }
 
-// Compute the outward unit normal for a 2D path segment.
-// For a closed path traversed clockwise, the outward normal is [dy, -dx] normalized.
-function pathNormal(p1, p2) {
-  const dx = p2[0] - p1[0], dy = p2[1] - p1[1];
-  const len = Math.hypot(dx, dy) || 1;
-  // Outward normal (assuming clockwise winding)
-  return [dy / len, -dx / len];
+// Compute signed area of a closed polygon.
+// Positive = clockwise in SVG (y-down) coordinates.
+function signedArea(pts) {
+  let a = 0;
+  const n = pts.length;
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n;
+    a += pts[i][0] * pts[j][1] - pts[j][0] * pts[i][1];
+  }
+  return a / 2;
 }
 
-// Offset a single subpath (array of [x,y]) by `dist` outward.
-// Uses segment intersection at corners to maintain sharp geometry.
-function offsetSubpath(pts, dist) {
-  if (pts.length < 2) return [];
+// Infinite line intersection: returns [x,y] or null if parallel.
+function lineLineIX(p1, p2, p3, p4) {
+  const x1=p1[0],y1=p1[1],x2=p2[0],y2=p2[1],x3=p3[0],y3=p3[1],x4=p4[0],y4=p4[1];
+  const d = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
+  if (Math.abs(d) < 1e-10) return null;
+  const t = ((x1-x3)*(y3-y4) - (y1-y3)*(x3-x4)) / d;
+  return [x1 + t*(x2-x1), y1 + t*(y2-y1)];
+}
+
+// Segment intersection: returns [x,y] if segments cross, null otherwise.
+function segSegIX(p1, p2, p3, p4) {
+  const x1=p1[0],y1=p1[1],x2=p2[0],y2=p2[1],x3=p3[0],y3=p3[1],x4=p4[0],y4=p4[1];
+  const d = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
+  if (Math.abs(d) < 1e-10) return null;
+  const t = ((x1-x3)*(y3-y4) - (y1-y3)*(x3-x4)) / d;
+  const u = -((x1-x2)*(y1-y3) - (y1-y2)*(x1-x3)) / d;
+  const eps = 1e-6;
+  if (t >= eps && t <= 1-eps && u >= eps && u <= 1-eps) {
+    return [x1 + t*(x2-x1), y1 + t*(y2-y1)];
+  }
+  return null;
+}
+
+// Offset a closed polygon by `dist` outward.
+// Uses perpendicular edge offset + intersection-based corner joins
+// + self-intersection cleanup. Produces a single clean contour.
+function offsetClosedPolygon(pts, dist) {
   const n = pts.length;
-  const closed = Math.hypot(pts[0][0] - pts[n-1][0], pts[0][1] - pts[n-1][1]) < 0.5;
-  const result = [];
+  if (n < 3) return [];
 
+  // Determine winding (positive area = CW in SVG y-down)
+  const area = signedArea(pts);
+  const sign = area > 0 ? 1 : -1;
+
+  // 1. Offset each edge perpendicular to itself
+  const offEdges = [];
   for (let i = 0; i < n; i++) {
-    const prev = closed ? pts[(i - 1 + n) % n] : pts[Math.max(0, i - 1)];
-    const curr = pts[i];
-    const next = closed ? pts[(i + 1) % n] : pts[Math.min(n - 1, i + 1)];
+    const p1 = pts[i], p2 = pts[(i + 1) % n];
+    const dx = p2[0] - p1[0], dy = p2[1] - p1[1];
+    const len = Math.hypot(dx, dy);
+    if (len < 1e-6) { offEdges.push([p1.slice(), p2.slice()]); continue; }
+    const nx = sign * dy / len, ny = -sign * dx / len;
+    offEdges.push([
+      [p1[0] + nx * dist, p1[1] + ny * dist],
+      [p2[0] + nx * dist, p2[1] + ny * dist]
+    ]);
+  }
 
-    // Normals of incoming and outgoing segments
-    const n1 = pathNormal(prev, curr);
-    const n2 = pathNormal(curr, next);
+  // 2. At each vertex, find intersection of adjacent offset edges
+  const raw = [];
+  const miterLimit = 4.0;
+  for (let i = 0; i < n; i++) {
+    const e1 = offEdges[i], e2 = offEdges[(i + 1) % n];
+    const vertex = pts[(i + 1) % n];
+    const ip = lineLineIX(e1[0], e1[1], e2[0], e2[1]);
+    if (ip) {
+      const d = Math.hypot(ip[0] - vertex[0], ip[1] - vertex[1]);
+      if (d <= dist * miterLimit) {
+        raw.push(ip);
+      } else {
+        // Bevel join: midpoint of the two offset endpoints
+        raw.push([(e1[1][0] + e2[0][0]) / 2, (e1[1][1] + e2[0][1]) / 2]);
+      }
+    } else {
+      raw.push(e1[1]); // parallel edges
+    }
+  }
 
-    // Average normal at the corner (miter join)
-    let nx = (n1[0] + n2[0]) / 2;
-    let ny = (n1[1] + n2[1]) / 2;
-    const nlen = Math.hypot(nx, ny);
-    if (nlen < 1e-6) { nx = n1[0]; ny = n1[1]; }
-    else { nx /= nlen; ny /= nlen; }
+  // 3. Remove self-intersections
+  return cleanSelfIX(raw);
+}
 
-    // Miter limit — clamp to avoid spikes at very sharp corners
-    const dot = n1[0] * n2[0] + n1[1] * n2[1];
-    const miter = 1 / Math.max(0.1, Math.cos(Math.acos(Math.max(-1, Math.min(1, dot))) / 2));
-    const clampedMiter = Math.min(miter, 4);
-    const scale = dist * clampedMiter;
+// Remove self-intersections by finding crossing segments and keeping the outer loop.
+// Iteratively removes inner loops until no self-intersections remain.
+function cleanSelfIX(pts) {
+  let current = dedupPts(pts);
+  let found = true, iter = 0;
+  while (found && iter < 50) {
+    found = false; iter++;
+    const n = current.length;
+    if (n < 4) break;
+    for (let i = 0; i < n && !found; i++) {
+      const i2 = (i + 1) % n;
+      for (let j = i + 2; j < n && !found; j++) {
+        const j2 = (j + 1) % n;
+        if (j2 === i) continue;
+        const ip = segSegIX(current[i], current[i2], current[j], current[j2]);
+        if (ip) {
+          // Two arcs: A from i2→j, B from j2→i
+          // Inner loop = shorter arc, outer contour = longer arc
+          const arcA = [], arcB = [];
+          for (let k = i2; k !== j2; k = (k + 1) % n) arcA.push(current[k]);
+          for (let k = j2; k !== i2; k = (k + 1) % n) arcB.push(current[k]);
+          const keep = arcA.length >= arcB.length ? arcA : arcB;
+          current = dedupPts([ip, ...keep]);
+          found = true;
+        }
+      }
+    }
+  }
+  return current;
+}
 
-    result.push([curr[0] + nx * scale, curr[1] + ny * scale]);
+// Remove duplicate/near-duplicate consecutive points.
+function dedupPts(pts) {
+  if (pts.length < 2) return pts;
+  const result = [pts[0]];
+  for (let i = 1; i < pts.length; i++) {
+    const prev = result[result.length - 1];
+    if (Math.hypot(pts[i][0] - prev[0], pts[i][1] - prev[1]) > 0.01) {
+      result.push(pts[i]);
+    }
+  }
+  if (result.length > 2) {
+    const f = result[0], l = result[result.length - 1];
+    if (Math.hypot(l[0] - f[0], l[1] - f[1]) < 0.01) result.pop();
   }
   return result;
 }
 
-// Build an SVG path "d" string from an array of [x,y] points.
-function pointsToD(pts) {
-  if (pts.length === 0) return '';
+// Build SVG path 'd' string from array of [x,y] points.
+function ptsToD(pts) {
+  if (pts.length < 3) return '';
   let d = `M ${pts[0][0].toFixed(2)} ${pts[0][1].toFixed(2)}`;
   for (let i = 1; i < pts.length; i++) {
     d += ` L ${pts[i][0].toFixed(2)} ${pts[i][1].toFixed(2)}`;
@@ -191,13 +305,16 @@ function pointsToD(pts) {
   return d;
 }
 
-// Compute the outer offset contour of an SVG path at `dist` mm.
-// Returns a new SVG path "d" string for the bleed line.
+// Main: compute outer offset contour of SVG path at `dist` mm.
+// Returns a new SVG path 'd' string for the bleed line.
 function offsetPathD(d, dist) {
   if (!d || dist <= 0) return '';
   const subs = parsePathPoints(d);
-  const offsetSubs = subs.map(sub => offsetSubpath(sub, dist));
-  return offsetSubs.map(pointsToD).join(' ');
+  return subs
+    .map(sub => offsetClosedPolygon(sub, dist))
+    .filter(pts => pts.length >= 3)
+    .map(ptsToD)
+    .join(' ');
 }
 
 // ── classify real pacdora shapes into CUT vs CREASE ──────
