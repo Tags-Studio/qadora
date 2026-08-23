@@ -804,9 +804,11 @@ export function computeBleedOffsetFromSVG(svgCutPaths, bleedMM) {
   const contours = [];
 
   for (const d of svgCutPaths) {
-    const pts = parseSVGPathToPoints(d, tol);
-    if (pts.length >= 3) {
-      contours.push(ensureWinding(dedup(pts), true));
+    const subpaths = parseSVGPathToPoints(d, tol);
+    for (const pts of subpaths) {
+      if (pts.length >= 2) {
+        contours.push(dedup(pts));
+      }
     }
   }
 
@@ -881,7 +883,7 @@ function parseSVGPathToPoints(d, tol) {
 
     switch (cmd) {
       case 'M': {
-        if (cur.length >= 3) subs.push(cur);
+        if (cur.length >= 2) subs.push(cur);
         cur = [];
         cx = rel ? cx + nums[0] : nums[0];
         cy = rel ? cy + nums[1] : nums[1];
@@ -998,18 +1000,17 @@ function parseSVGPathToPoints(d, tol) {
         break;
       }
       case 'Z': {
-        if (cur.length >= 3) subs.push(cur);
+        if (cur.length >= 2) subs.push(cur);
         cur = [];
         lastCmd = 'Z';
         break;
       }
     }
   }
-  if (cur.length >= 3) subs.push(cur);
+  if (cur.length >= 2) subs.push(cur);
 
-  // Flatten subpaths into single point array (for now, use first subpath)
-  // For multi-subpath, each becomes a separate contour
-  return subs.length > 0 ? subs[0] : [];
+  // Return all subpaths
+  return subs;
 }
 
 // Convert SVG arc (A command) to cubic Bézier segments.
