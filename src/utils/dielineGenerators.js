@@ -7,20 +7,20 @@
 // Rounded tuck-flap helper (returns a path from (x0) across width w with radius r)
 function tuckTop(x, yBase, w, depth, tr) {
   const yTip = yBase - depth;
-  return `M ${x} ${yBase} L ${x} ${yTip + tr} Q ${x} ${yTip} ${x + tr} ${yTip} L ${x + w - tr} ${yTip} Q ${x + w} ${yTip} ${x + w} ${yTip + tr} L ${x + w} ${yBase}`;
+  return `M ${x} ${yBase} L ${x} ${yTip + tr} Q ${x} ${yTip} ${x + tr} ${yTip} L ${x + w - tr} ${yTip} Q ${x + w} ${yTip} ${x + w} ${yTip + tr} L ${x + w} ${yBase} Z`;
 }
 function tuckBottom(x, yBase, w, depth, tr) {
   const yTip = yBase + depth;
-  return `M ${x} ${yBase} L ${x} ${yTip - tr} Q ${x} ${yTip} ${x + tr} ${yTip} L ${x + w - tr} ${yTip} Q ${x + w} ${yTip} ${x + w} ${yTip - tr} L ${x + w} ${yBase}`;
+  return `M ${x} ${yBase} L ${x} ${yTip - tr} Q ${x} ${yTip} ${x + tr} ${yTip} L ${x + w - tr} ${yTip} Q ${x + w} ${yTip} ${x + w} ${yTip - tr} L ${x + w} ${yBase} Z`;
 }
 // Trapezoid dust/side flap
 function dustFlapUp(x, yBase, w, depth, inset) {
   const yTip = yBase - depth;
-  return `M ${x} ${yBase} L ${x + inset} ${yTip} L ${x + w - inset} ${yTip} L ${x + w} ${yBase}`;
+  return `M ${x} ${yBase} L ${x + inset} ${yTip} L ${x + w - inset} ${yTip} L ${x + w} ${yBase} Z`;
 }
 function dustFlapDown(x, yBase, w, depth, inset) {
   const yTip = yBase + depth;
-  return `M ${x} ${yBase} L ${x + inset} ${yTip} L ${x + w - inset} ${yTip} L ${x + w} ${yBase}`;
+  return `M ${x} ${yBase} L ${x + inset} ${yTip} L ${x + w - inset} ${yTip} L ${x + w} ${yBase} Z`;
 }
 
 // ---------------------------------------------------------------------------

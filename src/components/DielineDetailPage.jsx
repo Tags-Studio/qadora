@@ -569,7 +569,7 @@ export default function DielineDetailPage({ onBack }) {
                   <>
                     {/* Bleed line (green) — Clipper2 offset of parametric cut paths */}
                     {(() => {
-                      const bleedD = computeBleedOffsetFromSVG([...paramData.cut, ...paramData.crease], bleed);
+                      const bleedD = computeBleedOffsetFromSVG(paramData.cut, bleed);
                       return bleedD ? <path d={bleedD} fill="none" stroke="var(--bleed)" strokeWidth={1.0 / svgScale} /> : null;
                     })()}
 

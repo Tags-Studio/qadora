@@ -826,62 +826,36 @@ export function computeBleedOffsetFromSVG(svgCutPaths, bleedMM) {
 
   if (contours.length === 0) return '';
 
-  // Convert to Clipper and offset using Open paths (EndType.Round)
+  // Convert to Clipper
   const clipperInput = contours.map(toClipperPath);
   const delta = Math.round(GEOMETRY.mmToUnits(bleedMM) * CLIPPER_SCALE);
 
-  let inflated;
+  let silhouette;
   try {
-    inflated = inflatePaths(
-      clipperInput,
+    silhouette = union(clipperInput, FillRule.NonZero);
+  } catch (e) {
+    console.error('Clipper2 union error:', e);
+    return '';
+  }
+
+  if (!silhouette || silhouette.length === 0) return '';
+
+  let result;
+  try {
+    result = inflatePaths(
+      silhouette,
       delta,
       JoinType.Round,
-      EndType.Round
+      EndType.Polygon
     );
   } catch (e) {
     console.error('Clipper2 inflatePaths error:', e);
     return '';
   }
 
-  if (!inflated || inflated.length === 0) return '';
-
-  // Merge overlapping offset polygons
-  let result;
-  try {
-    result = union(inflated, FillRule.NonZero);
-  } catch (e) {
-    console.error('Clipper2 union error:', e);
-    return '';
-  }
-
   if (!result || result.length === 0) return '';
 
-  // Extract only the outer boundaries (positive area usually, but let's take the ones with max area)
-  // In Clipper2, outer polygons and holes have opposite windings.
-  const areas = result.map(p => {
-    let a = 0;
-    const n = p.length;
-    for (let i = 0; i < n; i++) {
-      const j = (i + 1) % n;
-      a += p[i].x * p[j].y - p[j].x * p[i].y;
-    }
-    return a / 2;
-  });
-
-  // Keep all paths that have the same area sign as the largest absolute area path
-  // (Usually outer paths have positive area, holes negative, or vice versa)
-  let maxAbsArea = 0;
-  let dominantSign = 1;
-  areas.forEach(a => {
-    if (Math.abs(a) > maxAbsArea) {
-      maxAbsArea = Math.abs(a);
-      dominantSign = Math.sign(a);
-    }
-  });
-
-  const outerPaths = result.filter((_, i) => Math.sign(areas[i]) === dominantSign);
-
-  const svgPaths = outerPaths.map(fromClipperPath);
+  const svgPaths = result.map(fromClipperPath);
   return pathsToSVG(svgPaths);
 }
 
