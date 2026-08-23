@@ -4,7 +4,7 @@ import { useTexture, Decal, RoundedBox } from '@react-three/drei';
 import { useEditorStore } from '../../store/useEditorStore';
 
 // ─── مكون الشعار (Decal) ───────────────────────────────────────────────
-function DecalLogo() {
+function DecalLogo({ zOffset = 1 }) {
   const textureUrl = useEditorStore((s) => s.textureUrl);
   const decalScale = useEditorStore((s) => s.decalScale);
   const decalPositionX = useEditorStore((s) => s.decalPositionX);
@@ -14,11 +14,12 @@ function DecalLogo() {
 
   return (
     <Decal
-      position={[decalPositionX, decalPositionY, 1.02]}
+      position={[decalPositionX, decalPositionY, zOffset]}
       rotation={[0, 0, 0]}
       scale={decalScale * 1.5}
       map={texture}
-      depthTest={false}
+      polygonOffset
+      polygonOffsetFactor={-10}
     />
   );
 }
@@ -31,7 +32,7 @@ function CylinderModel({ materialProps, textureUrl }) {
       <meshStandardMaterial {...materialProps} />
       {textureUrl && (
         <Suspense fallback={null}>
-          <DecalLogo />
+          <DecalLogo zOffset={1} />
         </Suspense>
       )}
     </mesh>
@@ -64,7 +65,7 @@ export default function PackagingModel() {
           <meshStandardMaterial {...materialProps} />
           {textureUrl && (
             <Suspense fallback={null}>
-              <DecalLogo />
+              <DecalLogo zOffset={1} />
             </Suspense>
           )}
         </RoundedBox>
@@ -79,7 +80,7 @@ export default function PackagingModel() {
           <meshStandardMaterial {...materialProps} />
           {textureUrl && (
             <Suspense fallback={null}>
-              <DecalLogo />
+              <DecalLogo zOffset={0.3} />
             </Suspense>
           )}
         </RoundedBox>

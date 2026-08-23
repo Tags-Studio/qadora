@@ -15,8 +15,15 @@ function CaptureHandler() {
   useFrame(() => {
     if (!isExporting) return;
 
+    // Save original aspect and sizes
+    const originalAspect = camera.aspect;
+    const parentWidth = gl.domElement.parentElement?.clientWidth || window.innerWidth;
+    const parentHeight = gl.domElement.parentElement?.clientHeight || window.innerHeight;
+
     // ارسم المشهد بدقة عالية
     gl.setSize(1920, 1080, false);
+    camera.aspect = 1920 / 1080;
+    camera.updateProjectionMatrix();
     gl.render(scene, camera);
 
     const dataURL = gl.domElement.toDataURL('image/png');
@@ -26,7 +33,9 @@ function CaptureHandler() {
     link.click();
 
     // أعد الحجم الأصلي
-    gl.setSize(gl.domElement.parentElement?.clientWidth || window.innerWidth, gl.domElement.parentElement?.clientHeight || window.innerHeight, false);
+    gl.setSize(parentWidth, parentHeight, false);
+    camera.aspect = originalAspect;
+    camera.updateProjectionMatrix();
 
     finishExport();
   });
@@ -49,7 +58,6 @@ export default function Canvas3D() {
       shadows
       camera={{ position: [4, 3, 5], fov: 50 }}
       dpr={[1, 2]}
-      gl={{ preserveDrawingBuffer: true }}
       style={{ background: bgColor }}
     >
       <ambientLight intensity={isDark ? 0.4 : 0.8} />

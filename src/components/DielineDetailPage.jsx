@@ -1,10 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { BOX_TYPES, GENERATORS } from '../utils/dielineGenerators';
+import pacdoraDielines from '../data/pacdora_dielines.json';
 import './DielineDetailPage.css';
 
-export default function DielineDetailPage({ dieline, onBack }) {
+export default function DielineDetailPage({ onBack }) {
+  const { id } = useParams();
+  
+  // Find the requested dieline
+  const dieline = pacdoraDielines.find(d => d.id.toString() === id) || pacdoraDielines[0];
+
   // Try to match the selected dieline to our implemented types
   let initialType = 'mailer';
   const allBoxes = BOX_TYPES.flatMap(c => c.items);

@@ -1,8 +1,10 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import pacdoraDielines from '../data/pacdora_dielines.json';
 import './DielinePage.css';
 
 export default function DielinePage({ onBack, onSelectDieline }) {
+  const navigate = useNavigate();
   // Filter States
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -336,10 +338,10 @@ export default function DielinePage({ onBack, onSelectDieline }) {
           {/* Cards Grid */}
           <div className={`saas-grid ${viewMode}`}>
             {filteredDielines.slice(0, visibleCount).map((dieline) => (
-              <div
+              <div 
                 key={dieline.id}
                 className="saas-card"
-                onClick={() => onSelectDieline?.(dieline)}
+                onClick={() => navigate(`/studio/${dieline.id}`)}
               >
                 {/* Preview Image with Printable/Downloadable Pills */}
                 <div className="saas-card-preview split-thumbnail">
