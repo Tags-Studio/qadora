@@ -12,7 +12,7 @@
 // converted through the unit layer.
 // ============================================================================
 
-import { inflatePaths, JoinType, EndType, FillRule } from 'clipper2-ts';
+import { inflatePaths, union, JoinType, EndType, FillRule } from 'clipper2-ts';
 
 // ── Unit layer ──────────────────────────────────────────────────────────────
 
@@ -168,7 +168,8 @@ export function extractContours(shapes, flattenTolMM = FLATTEN_TOL_MM) {
   const outer = [];
   const holes = [];
 
-  for (const shape of shapes) {
+  for (let i = 0; i < shapes.length; i += 2) {
+    const shape = shapes[i];
     // Flatten outer contour with G1 chaining
     const contour = flattenCurveChain(shape.curves || [], tol);
     if (contour.length >= 3) {
@@ -772,13 +773,24 @@ export function computeBleedOffset(shapes, bleedMM) {
     clipperInput.push(toClipperPath(pts));
   }
 
-  // 4. Run Clipper2 inflatePaths (Minkowski sum + boolean union)
+  // 4. Perform Boolean Union first to merge panels and eliminate internal chords/overlapping edges
   const delta = Math.round(GEOMETRY.mmToUnits(bleedMM) * CLIPPER_SCALE);
 
+  let silhouette;
+  try {
+    silhouette = union(clipperInput, FillRule.NonZero);
+  } catch (e) {
+    console.error('Clipper2 union error:', e);
+    return '';
+  }
+
+  if (!silhouette || silhouette.length === 0) return '';
+
+  // 5. Run Clipper2 inflatePaths on the unified silhouette
   let result;
   try {
     result = inflatePaths(
-      clipperInput,
+      silhouette,
       delta,
       JoinType.Round,
       EndType.Polygon
@@ -818,9 +830,9 @@ export function computeBleedOffsetFromSVG(svgCutPaths, bleedMM) {
   const clipperInput = contours.map(toClipperPath);
   const delta = Math.round(GEOMETRY.mmToUnits(bleedMM) * CLIPPER_SCALE);
 
-  let result;
+  let inflated;
   try {
-    result = inflatePaths(
+    inflated = inflatePaths(
       clipperInput,
       delta,
       JoinType.Round,
@@ -828,6 +840,17 @@ export function computeBleedOffsetFromSVG(svgCutPaths, bleedMM) {
     );
   } catch (e) {
     console.error('Clipper2 inflatePaths error:', e);
+    return '';
+  }
+
+  if (!inflated || inflated.length === 0) return '';
+
+  // Merge overlapping offset polygons
+  let result;
+  try {
+    result = union(inflated, FillRule.NonZero);
+  } catch (e) {
+    console.error('Clipper2 union error:', e);
     return '';
   }
 
