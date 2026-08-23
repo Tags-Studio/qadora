@@ -1,20 +1,21 @@
 :root {
-  --bg: #0c0a08;
-  --bg2: #12100c;
-  --card: #181410;
-  --card2: #1e1a14;
-  --border: #2a2319;
-  --border2: #3a3228;
-  --fg: #f0ebe3;
-  --fg2: #d4cdc2;
-  --muted: #8a7d6c;
+  --bg: #ffffff;
+  --bg2: #f7f7f8;
+  --card: #ffffff;
+  --card2: #f0f0f2;
+  --border: #e2e2e6;
+  --border2: #d0d0d6;
+  --fg: #1a1a1f;
+  --fg2: #4a4a52;
+  --muted: #8a8a92;
   --accent: #d4913b;
   --accent2: #e8a849;
-  --accent-dim: #5a3d18;
-  --cut: #4a9eff;
-  --crease: #ff5252;
+  --accent-dim: #f5e6d0;
+  --cut: #2b6cff;
+  --crease: #ff3b3b;
   --score: #ffa726;
-  --bleed: #4caf50;
+  --bleed: #2eae3a;
+  --bg3d: #ececef;
 }
 
 .dieline-studio-root {
@@ -132,7 +133,7 @@
   flex: 1;
   position: relative;
   background: var(--bg);
-  background-image: radial-gradient(circle, var(--border) 0.5px, transparent 0.5px);
+  background-image: radial-gradient(circle, #d8d8dc 0.5px, transparent 0.5px);
   background-size: 20px 20px;
   overflow: hidden;
   cursor: grab;
@@ -232,3 +233,304 @@
 .bg-bleed { background: var(--bleed); }
 .text-bg { color: var(--bg); }
 .text-accent { color: var(--accent); }
+
+/* ============ v4.0 pacdora-style parametric editor ============ */
+
+/* Left panel */
+.ds-left-panel {
+  width: 300px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 18px 18px 40px;
+  overflow-y: auto;
+}
+.ds-select {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--fg);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+}
+.ds-select:focus { outline: none; border-color: var(--accent); }
+
+.ds-unit-toggle {
+  display: inline-flex;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.ds-unit-toggle button {
+  padding: 3px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  background: none;
+  cursor: pointer;
+}
+.ds-unit-toggle button.active { background: var(--accent); color: var(--bg); font-weight: 700; }
+
+.ds-size-grid { display: flex; flex-direction: column; gap: 10px; }
+.ds-size-grid label {
+  display: grid;
+  grid-template-columns: 64px 1fr 28px;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--fg2);
+}
+.ds-size-grid input {
+  padding: 8px 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--fg);
+  font-size: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  text-align: center;
+}
+.ds-size-grid input:focus { outline: none; border-color: var(--accent); }
+.ds-size-grid span { font-size: 11px; color: var(--muted); }
+
+.ds-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+}
+.ds-stepper button {
+  width: 34px; height: 34px;
+  border-radius: 6px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--fg2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ds-stepper button:hover { border-color: var(--accent); color: var(--accent); }
+.ds-stepper span { font-family: 'Space Grotesk'; font-size: 15px; font-weight: 600; }
+
+.ds-mode-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.ds-mode-btn {
+  padding: 8px 4px;
+  font-size: 10.5px;
+  line-height: 1.25;
+  text-align: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--fg2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ds-mode-btn:hover { border-color: var(--border2); }
+.ds-mode-btn.active { border-color: var(--accent); background: var(--accent-dim); color: var(--accent2); font-weight: 600; }
+
+/* Center legend + dims */
+.ds-legend-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  flex-wrap: wrap;
+}
+.ds-legend { display: flex; gap: 18px; font-size: 12px; color: var(--fg2); }
+.ds-legend span { display: flex; align-items: center; gap: 6px; }
+.ds-line-swatch { width: 18px; height: 3px; border-radius: 2px; display: inline-block; }
+.ds-line-swatch.bleed { background: var(--bleed); }
+.ds-line-swatch.trim { background: var(--cut); }
+.ds-line-swatch.crease { background: var(--crease); }
+.ds-dims-readout { font-size: 11px; color: var(--muted); text-align: right; line-height: 1.7; }
+.ds-dims-readout .lbl { color: var(--fg2); font-weight: 600; margin-right: 6px; }
+
+/* Right panel */
+.ds-right-panel {
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  padding: 18px;
+}
+/* Right panel with 3D canvas */
+.ds-right-panel-3d {
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.ds-3d-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  min-height: 200px;
+  background: var(--bg3d);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.ds-3d-canvas-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+.ds-3d-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.ds-3d-box {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 40%, #f0f0f2 0%, #ececef 100%);
+  border: 1px solid var(--border);
+}
+.ds-3d-badge {
+  position: absolute; top: 8px; right: 10px; z-index: 2;
+  font-size: 11px; font-weight: 700; color: var(--accent);
+}
+.ds-openclose {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 12px; font-size: 11px; color: var(--muted);
+}
+.ds-openclose input { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: var(--border); }
+.ds-openclose input::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--accent); cursor: pointer; border: 2px solid var(--bg);
+}
+
+.ds-format-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ds-fmt-card {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px; color: var(--fg2);
+  cursor: pointer; transition: all 0.15s;
+}
+.ds-fmt-card:hover { border-color: var(--accent); color: var(--fg); }
+.ds-fmt-card i { color: var(--accent); }
+
+.ds-getlist { list-style: disc; padding-left: 18px; margin-top: 6px; }
+.ds-getlist li { font-size: 11.5px; color: var(--muted); line-height: 1.5; margin-bottom: 8px; }
+
+.mt-4 { margin-top: 16px; }
+
+/* Responsive: collapse side panels on narrow screens */
+@media (max-width: 1100px) {
+  .ds-right-panel-3d { width: 280px; }
+  .ds-3d-canvas-wrap { height: 220px; }
+}
+@media (max-width: 820px) {
+  .ds-left-panel { width: 240px; }
+  .ds-dims-readout { display: none; }
+  .ds-right-panel-3d { width: 240px; }
+  .ds-3d-canvas-wrap { height: 180px; }
+}
+
+/* ============ v5.0 real pacdora geometry ============ */
+.ds-real-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px;
+  background: rgba(76,175,80,0.15); color: #6fcf74; margin-left: 8px;
+}
+.ds-real-chip i { font-size: 10px; }
+.ds-approx-chip {
+  font-size: 11px; padding: 3px 10px; border-radius: 6px;
+  background: var(--card2); color: var(--muted); margin-left: 8px;
+}
+.ds-loading {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  z-index: 20; display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--fg2);
+  background: rgba(255,255,255,0.9); padding: 12px 20px; border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.ds-loading i { color: var(--accent); }
+
+
+/* ============ Seek bar (fold animation) ============ */
+.ds-seekbar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 4px 4px;
+}
+.ds-seekbar-wrap .ds-seek-label {
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+  min-width: 28px;
+}
+.ds-seekbar {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border2);
+  outline: none;
+  cursor: pointer;
+}
+.ds-seekbar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--card);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.ds-seekbar::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--card);
+}
+.ds-seek-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+.ds-seek-icon:hover {
+  background: var(--card2);
+  color: var(--accent);
+}
+
+
+/* Bleed margin stepper — reuses ds-stepper */
+.ds-stepper span {
+  min-width: 60px;
+  text-align: center;
+}
+
+/* Make bleed swatch in legend more visible */
+.ds-line-swatch.bleed {
+  background: #2eae3a;
+  height: 3px;
+  box-shadow: 0 0 0 1px rgba(46, 174, 58, 0.2);
+}
