@@ -137,7 +137,11 @@ function classifyRealPaths(shapes) {
 
 // ── component ────────────────────────────────────────────
 
-export default function DielineDetailPage({ dieline, onBack }) {
+export default function DielineDetailPage({ onBack }) {
+  const { id } = useParams();
+  const dieline = useMemo(() => {
+    return pacdoraDielines.find(d => d.id.toString() === id) || pacdoraDielines[0];
+  }, [id]);
   const preset = useMemo(() => {
     const d = deriveDefaults(dieline);
     if (dieline?.L) { d.L = dieline.L; d.W = dieline.W; d.H = dieline.H; }
