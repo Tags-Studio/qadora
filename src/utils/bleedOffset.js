@@ -807,29 +807,43 @@ export function computeBleedOffset(shapes, bleedMM) {
   return pathsToSVG(svgPaths);
 }
 
-// Also export a version that works with pre-classified SVG path 'd' strings
-// (for the parametric/fallback mode where paths come from dielineGenerators)
-export function computeBleedOffsetFromSVG(svgCutPaths, bleedMM) {
-  if (!svgCutPaths || !svgCutPaths.length || bleedMM <= 0) return '';
+// Compute bleed offset for parametric generators.
+// regionPaths: CLOSED svg path 'd' strings whose union = the piece silhouette
+//              (generator `regions` array — falls back to `cut` if absent).
+// holePaths:   CLOSED svg path 'd' strings for interior cutouts (window, slots).
+// Pipeline: parse → union at delta=0 (dissolves shared edges) → inflate (EndType.Polygon).
+// The result is a Minkowski sum of the silhouette — geometrically cannot enter the shape.
+export function computeBleedOffsetFromSVG(regionPaths, bleedMM, holePaths = []) {
+  if (!regionPaths || !regionPaths.length || bleedMM <= 0) return '';
 
   const tol = GEOMETRY.mmToUnits(FLATTEN_TOL_MM);
-  const contours = [];
+  const regions = [];
+  const holes = [];
 
-  for (const d of svgCutPaths) {
-    const subpaths = parseSVGPathToPoints(d, tol);
-    for (const pts of subpaths) {
-      if (pts.length >= 2) {
-        contours.push(dedup(pts));
+  for (const d of regionPaths) {
+    for (const pts of parseSVGPathToPoints(d, tol)) {
+      if (pts.length >= 3) {
+        regions.push(ensureWinding(dedup(pts), true)); // CW outer
+      }
+    }
+  }
+  for (const d of (holePaths || [])) {
+    for (const pts of parseSVGPathToPoints(d, tol)) {
+      if (pts.length >= 3) {
+        holes.push(ensureWinding(dedup(pts), false)); // CCW hole
       }
     }
   }
 
-  if (contours.length === 0) return '';
+  if (regions.length === 0) return '';
 
-  // Convert to Clipper
-  const clipperInput = contours.map(toClipperPath);
+  const clipperInput = [
+    ...regions.map(toClipperPath),
+    ...holes.map(toClipperPath),
+  ];
   const delta = Math.round(GEOMETRY.mmToUnits(bleedMM) * CLIPPER_SCALE);
 
+  // 1) Union at delta = 0: merge body + flaps, dissolve edges shared between them
   let silhouette;
   try {
     silhouette = union(clipperInput, FillRule.NonZero);
@@ -840,6 +854,7 @@ export function computeBleedOffsetFromSVG(svgCutPaths, bleedMM) {
 
   if (!silhouette || silhouette.length === 0) return '';
 
+  // 2) Inflate the unified silhouette (outer grows, holes shrink)
   let result;
   try {
     result = inflatePaths(

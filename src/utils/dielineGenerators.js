@@ -35,23 +35,33 @@ export function generateMailer(L, W, H, T) {
   const yPT = tfh, yPB = tfh + H, yBot = tfh + H + bfh;
   const yST = tfh - sfh, ySB = tfh + H + sfh;
   const cut = [], crease = [];
+  const regions = []; // closed paths whose union = piece silhouette (for bleed offset)
 
   cut.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
+  regions.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
+  regions.push(`M ${xF} ${yPT} L ${xE} ${yPT} L ${xE} ${yPB} L ${xF} ${yPB} Z`); // body
   cut.push(`M ${xF} ${yPT} L ${xF} ${tr} Q ${xF} 0 ${xF + tr} 0 L ${xF + W - tr} 0 Q ${xF + W} 0 ${xF + W} ${tr} L ${xF + W} ${yPT}`);
+  regions.push(`M ${xF} ${yPT} L ${xF} ${tr} Q ${xF} 0 ${xF + tr} 0 L ${xF + W - tr} 0 Q ${xF + W} 0 ${xF + W} ${tr} L ${xF + W} ${yPT} Z`);
   cut.push(`M ${xR} ${yPT} L ${xR + dt} ${yST} L ${xR + L - dt} ${yST} L ${xR + L} ${yPT}`);
+  regions.push(`M ${xR} ${yPT} L ${xR + dt} ${yST} L ${xR + L - dt} ${yST} L ${xR + L} ${yPT} Z`);
   cut.push(`M ${xB} ${yPT} L ${xB} ${tr} Q ${xB} 0 ${xB + tr} 0 L ${xB + W - tr} 0 Q ${xB + W} 0 ${xB + W} ${tr} L ${xB + W} ${yPT}`);
+  regions.push(`M ${xB} ${yPT} L ${xB} ${tr} Q ${xB} 0 ${xB + tr} 0 L ${xB + W - tr} 0 Q ${xB + W} 0 ${xB + W} ${tr} L ${xB + W} ${yPT} Z`);
   cut.push(`M ${xL} ${yPT} L ${xL + dt} ${yST} L ${xL + L - dt} ${yST} L ${xL + L} ${yPT}`);
-  cut.push(`M ${xE} ${yPT} L ${xE} ${yPB}`);
+  regions.push(`M ${xL} ${yPT} L ${xL + dt} ${yST} L ${xL + L - dt} ${yST} L ${xL + L} ${yPT} Z`);
 
   const t1a = xF + atOff, t1b = t1a + atw, t2a = xF + 2 * atOff + atw, t2b = t2a + atw;
   const bfy = yBot - ath;
   cut.push(`M ${xF} ${yPB} L ${xF} ${bfy} L ${t1a} ${bfy} L ${t1a + 3} ${yBot} L ${t1b - 3} ${yBot} L ${t1b} ${bfy} L ${t2a} ${bfy} L ${t2a + 3} ${yBot} L ${t2b - 3} ${yBot} L ${t2b} ${bfy} L ${xF + W} ${bfy} L ${xF + W} ${yPB}`);
+  regions.push(`M ${xF} ${yPB} L ${xF} ${bfy} L ${t1a} ${bfy} L ${t1a + 3} ${yBot} L ${t1b - 3} ${yBot} L ${t1b} ${bfy} L ${t2a} ${bfy} L ${t2a + 3} ${yBot} L ${t2b - 3} ${yBot} L ${t2b} ${bfy} L ${xF + W} ${bfy} L ${xF + W} ${yPB} Z`);
   cut.push(`M ${xR} ${yPB} L ${xR + dt} ${ySB} L ${xR + L - dt} ${ySB} L ${xR + L} ${yPB}`);
+  regions.push(`M ${xR} ${yPB} L ${xR + dt} ${ySB} L ${xR + L - dt} ${ySB} L ${xR + L} ${yPB} Z`);
 
   const s1a = xB + atOff + 1, s1b = s1a + atw + 2, s2a = xB + 2 * atOff + atw + 1, s2b = s2a + atw + 2;
   const slotD = ath + 4;
   cut.push(`M ${xB} ${yPB} L ${xB} ${yBot} L ${s1a} ${yBot} L ${s1a} ${yBot - slotD} L ${s1b} ${yBot - slotD} L ${s1b} ${yBot} L ${s2a} ${yBot} L ${s2a} ${yBot - slotD} L ${s2b} ${yBot - slotD} L ${s2b} ${yBot} L ${xB + W} ${yBot} L ${xB + W} ${yPB}`);
+  regions.push(`M ${xB} ${yPB} L ${xB} ${yBot} L ${s1a} ${yBot} L ${s1a} ${yBot - slotD} L ${s1b} ${yBot - slotD} L ${s1b} ${yBot} L ${s2a} ${yBot} L ${s2a} ${yBot - slotD} L ${s2b} ${yBot - slotD} L ${s2b} ${yBot} L ${xB + W} ${yBot} L ${xB + W} ${yPB} Z`);
   cut.push(`M ${xL} ${yPB} L ${xL + dt} ${ySB} L ${xL + L - dt} ${ySB} L ${xL + L} ${yPB}`);
+  regions.push(`M ${xL} ${yPB} L ${xL + dt} ${ySB} L ${xL + L - dt} ${ySB} L ${xL + L} ${yPB} Z`);
 
   crease.push(`M ${xF} ${yPT} L ${xF} ${yPB}`, `M ${xR} ${yPT} L ${xR} ${yPB}`, `M ${xB} ${yPT} L ${xB} ${yPB}`, `M ${xL} ${yPT} L ${xL} ${yPB}`);
   crease.push(`M ${xF} ${yPT} L ${xE} ${yPT}`, `M ${xF} ${yPB} L ${xE} ${yPB}`);
@@ -62,7 +72,7 @@ export function generateMailer(L, W, H, T) {
     { text: W + '', x: xF + W / 2, y: yPT + H + 12, dim: 'w' }, { text: L + '', x: xR + L / 2, y: yPT + H + 12, dim: 'l' },
     { text: H + '', x: xF - 12, y: yPT + H / 2, dim: 'h', rotate: true },
   ];
-  return { cut, crease, width: xE, height: yBot, annotations: ann };
+  return { cut, crease, regions, width: xE, height: yBot, annotations: ann };
 }
 
 // ---------------------------------------------------------------------------
@@ -74,18 +84,29 @@ export function generateStraightTuck(L, W, H, T) {
   const xF = G, xR = G + W, xB = G + W + L, xL = G + 2 * W + L, xE = G + 2 * W + 2 * L;
   const yPT = tfh, yPB = tfh + H, yBot = tfh + H + bfh, yST = tfh - sfh, ySB = tfh + H + sfh;
   const cut = [], crease = [];
+  const regions = []; // closed paths whose union = piece silhouette (for bleed offset)
 
   cut.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
+  regions.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
+  regions.push(`M ${xF} ${yPT} L ${xE} ${yPT} L ${xE} ${yPB} L ${xF} ${yPB} Z`); // body
   cut.push(tuckTop(xF, yPT, W, tfh, tr));
+  regions.push(tuckTop(xF, yPT, W, tfh, tr) + ' Z');
   cut.push(dustFlapUp(xR, yPT, L, sfh, dt));
+  regions.push(dustFlapUp(xR, yPT, L, sfh, dt) + ' Z');
   cut.push(tuckTop(xB, yPT, W, tfh, tr));
+  regions.push(tuckTop(xB, yPT, W, tfh, tr) + ' Z');
   cut.push(dustFlapUp(xL, yPT, L, sfh, dt));
+  regions.push(dustFlapUp(xL, yPT, L, sfh, dt) + ' Z');
   cut.push(`M ${xE} ${yPT} L ${xE} ${yPB}`);
 
   cut.push(tuckBottom(xF, yPB, W, bfh, tr));
+  regions.push(tuckBottom(xF, yPB, W, bfh, tr) + ' Z');
   cut.push(dustFlapDown(xR, yPB, L, sfh, dt));
+  regions.push(dustFlapDown(xR, yPB, L, sfh, dt) + ' Z');
   cut.push(tuckBottom(xB, yPB, W, bfh, tr));
+  regions.push(tuckBottom(xB, yPB, W, bfh, tr) + ' Z');
   cut.push(dustFlapDown(xL, yPB, L, sfh, dt));
+  regions.push(dustFlapDown(xL, yPB, L, sfh, dt) + ' Z');
 
   crease.push(`M ${xF} ${yPT} L ${xF} ${yPB}`, `M ${xR} ${yPT} L ${xR} ${yPB}`, `M ${xB} ${yPT} L ${xB} ${yPB}`, `M ${xL} ${yPT} L ${xL} ${yPB}`);
   crease.push(`M ${xF} ${yPT} L ${xE} ${yPT}`, `M ${xF} ${yPB} L ${xE} ${yPB}`);
@@ -96,7 +117,7 @@ export function generateStraightTuck(L, W, H, T) {
     { text: W + '', x: xF + W / 2, y: yPT + H + 12, dim: 'w' }, { text: L + '', x: xR + L / 2, y: yPT + H + 12, dim: 'l' },
     { text: H + '', x: xF - 12, y: yPT + H / 2, dim: 'h', rotate: true },
   ];
-  return { cut, crease, width: xE, height: yBot, annotations: ann };
+  return { cut, crease, regions, width: xE, height: yBot, annotations: ann };
 }
 
 // ---------------------------------------------------------------------------
@@ -108,18 +129,29 @@ export function generateReverseTuck(L, W, H, T) {
   const xF = G, xR = G + W, xB = G + W + L, xL = G + 2 * W + L, xE = G + 2 * W + 2 * L;
   const yPT = tfh, yPB = tfh + H, yBot = tfh + H + bfh, yST = tfh - sfh, ySB = tfh + H + sfh;
   const cut = [], crease = [];
+  const regions = []; // closed paths whose union = piece silhouette (for bleed offset)
 
   cut.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
+  regions.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
+  regions.push(`M ${xF} ${yPT} L ${xE} ${yPT} L ${xE} ${yPB} L ${xF} ${yPB} Z`); // body
   cut.push(dustFlapUp(xF, yPT, W, tfh, tr));       // reversed: tuck on back/left
+  regions.push(dustFlapUp(xF, yPT, W, tfh, tr) + ' Z');
   cut.push(tuckTop(xR, yPT, L, sfh, dt));
+  regions.push(tuckTop(xR, yPT, L, sfh, dt) + ' Z');
   cut.push(dustFlapUp(xB, yPT, W, tfh, tr));
+  regions.push(dustFlapUp(xB, yPT, W, tfh, tr) + ' Z');
   cut.push(tuckTop(xL, yPT, L, sfh, dt));
+  regions.push(tuckTop(xL, yPT, L, sfh, dt) + ' Z');
   cut.push(`M ${xE} ${yPT} L ${xE} ${yPB}`);
 
   cut.push(tuckBottom(xF, yPB, W, bfh, tr));
+  regions.push(tuckBottom(xF, yPB, W, bfh, tr) + ' Z');
   cut.push(dustFlapDown(xR, yPB, L, sfh, dt));
+  regions.push(dustFlapDown(xR, yPB, L, sfh, dt) + ' Z');
   cut.push(tuckBottom(xB, yPB, W, bfh, tr));
+  regions.push(tuckBottom(xB, yPB, W, bfh, tr) + ' Z');
   cut.push(dustFlapDown(xL, yPB, L, sfh, dt));
+  regions.push(dustFlapDown(xL, yPB, L, sfh, dt) + ' Z');
 
   crease.push(`M ${xF} ${yPT} L ${xF} ${yPB}`, `M ${xR} ${yPT} L ${xR} ${yPB}`, `M ${xB} ${yPT} L ${xB} ${yPB}`, `M ${xL} ${yPT} L ${xL} ${yPB}`);
   crease.push(`M ${xF} ${yPT} L ${xE} ${yPT}`, `M ${xF} ${yPB} L ${xE} ${yPB}`);
@@ -130,7 +162,7 @@ export function generateReverseTuck(L, W, H, T) {
     { text: W + '', x: xF + W / 2, y: yPT + H + 12, dim: 'w' }, { text: L + '', x: xR + L / 2, y: yPT + H + 12, dim: 'l' },
     { text: H + '', x: xF - 12, y: yPT + H / 2, dim: 'h', rotate: true },
   ];
-  return { cut, crease, width: xE, height: yBot, annotations: ann };
+  return { cut, crease, regions, width: xE, height: yBot, annotations: ann };
 }
 
 // ---------------------------------------------------------------------------
@@ -142,13 +174,20 @@ export function generateAutoLock(L, W, H, T) {
   const xF = G, xR = G + W, xB = G + W + L, xL = G + 2 * W + L, xE = G + 2 * W + 2 * L;
   const yPT = tfh, yPB = tfh + H;
   const cut = [], crease = [];
+  const regions = []; // closed paths whose union = piece silhouette (for bleed offset)
 
   // Top = straight tuck
   cut.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
+  regions.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
+  regions.push(`M ${xF} ${yPT} L ${xE} ${yPT} L ${xE} ${yPB} L ${xF} ${yPB} Z`); // body
   cut.push(tuckTop(xF, yPT, W, tfh, tr));
+  regions.push(tuckTop(xF, yPT, W, tfh, tr) + ' Z');
   cut.push(dustFlapUp(xR, yPT, L, sfh, dt));
+  regions.push(dustFlapUp(xR, yPT, L, sfh, dt) + ' Z');
   cut.push(tuckTop(xB, yPT, W, tfh, tr));
+  regions.push(tuckTop(xB, yPT, W, tfh, tr) + ' Z');
   cut.push(dustFlapUp(xL, yPT, L, sfh, dt));
+  regions.push(dustFlapUp(xL, yPT, L, sfh, dt) + ' Z');
   cut.push(`M ${xE} ${yPT} L ${xE} ${yPB}`);
 
   // Bottom = auto-lock: angled interlocking flaps (parallelogram lock tabs)
@@ -157,7 +196,9 @@ export function generateAutoLock(L, W, H, T) {
   const mkLock = (x, w, dir) => {
     // dir +1 for panels folding one way
     const yTip = yPB + lock;
-    cut.push(`M ${x} ${yPB} L ${x + dir * skew} ${yTip} L ${x + w - dir * skew} ${yTip} L ${x + w} ${yPB}`);
+    const d = `M ${x} ${yPB} L ${x + dir * skew} ${yTip} L ${x + w - dir * skew} ${yTip} L ${x + w} ${yPB}`;
+    cut.push(d);
+    regions.push(d + ' Z');
   };
   mkLock(xF, W, 1);
   mkLock(xR, L, -1);
@@ -176,7 +217,7 @@ export function generateAutoLock(L, W, H, T) {
     { text: W + '', x: xF + W / 2, y: yPT + H + 12, dim: 'w' }, { text: L + '', x: xR + L / 2, y: yPT + H + 12, dim: 'l' },
     { text: H + '', x: xF - 12, y: yPT + H / 2, dim: 'h', rotate: true },
   ];
-  return { cut, crease, width: xE, height: yPB + lock, annotations: ann };
+  return { cut, crease, regions, width: xE, height: yPB + lock, annotations: ann };
 }
 
 // ---------------------------------------------------------------------------
@@ -187,19 +228,29 @@ export function generateTray(L, W, H, T) {
   const xF = G, xR = G + W, xB = G + W + L, xL = G + 2 * W + L, xE = G + 2 * W + 2 * L;
   const yPT = fh, yBot = fh + H;
   const cut = [], crease = [];
+  const regions = []; // closed paths whose union = piece silhouette (for bleed offset)
 
   cut.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yBot} L 0 ${yBot + gt} Z`);
+  regions.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yBot} L 0 ${yBot + gt} Z`);
+  regions.push(`M ${xF} ${yPT} L ${xE} ${yPT} L ${xE} ${yBot} L ${xF} ${yBot} Z`); // body
   cut.push(`M ${xF} ${yPT} L ${xF} 0 L ${xF + W} 0 L ${xF + W} ${yPT}`);
+  regions.push(`M ${xF} ${yPT} L ${xF} 0 L ${xF + W} 0 L ${xF + W} ${yPT} Z`);
   cut.push(`M ${xR} ${yPT} L ${xR} ${T} L ${xR + L} ${T} L ${xR + L} ${yPT}`);
+  regions.push(`M ${xR} ${yPT} L ${xR} ${T} L ${xR + L} ${T} L ${xR + L} ${yPT} Z`);
   cut.push(`M ${xB} ${yPT} L ${xB} 0 L ${xB + W} 0 L ${xB + W} ${yPT}`);
+  regions.push(`M ${xB} ${yPT} L ${xB} 0 L ${xB + W} 0 L ${xB + W} ${yPT} Z`);
   cut.push(`M ${xL} ${yPT} L ${xL} ${T} L ${xL + L} ${T} L ${xL + L} ${yPT}`);
-  cut.push(`M ${xE} ${yPT} L ${xE} ${yBot}`);
+  regions.push(`M ${xL} ${yPT} L ${xL} ${T} L ${xL + L} ${T} L ${xL + L} ${yPT} Z`);
 
   const dfh = W / 2 + T;
   cut.push(`M ${xF} ${yBot} L ${xF + 8} ${yBot + dfh} L ${xF + W - 8} ${yBot + dfh} L ${xF + W} ${yBot}`);
+  regions.push(`M ${xF} ${yBot} L ${xF + 8} ${yBot + dfh} L ${xF + W - 8} ${yBot + dfh} L ${xF + W} ${yBot} Z`);
   cut.push(`M ${xR} ${yBot} L ${xR + 8} ${yBot + dfh} L ${xR + L - 8} ${yBot + dfh} L ${xR + L} ${yBot}`);
+  regions.push(`M ${xR} ${yBot} L ${xR + 8} ${yBot + dfh} L ${xR + L - 8} ${yBot + dfh} L ${xR + L} ${yBot} Z`);
   cut.push(`M ${xB} ${yBot} L ${xB + 8} ${yBot + dfh} L ${xB + W - 8} ${yBot + dfh} L ${xB + W} ${yBot}`);
+  regions.push(`M ${xB} ${yBot} L ${xB + 8} ${yBot + dfh} L ${xB + W - 8} ${yBot + dfh} L ${xB + W} ${yBot} Z`);
   cut.push(`M ${xL} ${yBot} L ${xL + 8} ${yBot + dfh} L ${xL + L - 8} ${yBot + dfh} L ${xL + L} ${yBot}`);
+  regions.push(`M ${xL} ${yBot} L ${xL + 8} ${yBot + dfh} L ${xL + L - 8} ${yBot + dfh} L ${xL + L} ${yBot} Z`);
 
   crease.push(`M ${xF} ${yPT} L ${xF} ${yBot}`, `M ${xR} ${yPT} L ${xR} ${yBot}`, `M ${xB} ${yPT} L ${xB} ${yBot}`, `M ${xL} ${yPT} L ${xL} ${yBot}`);
   crease.push(`M ${xF} ${yPT} L ${xE} ${yPT}`, `M ${xF} ${yBot} L ${xE} ${yBot}`);
@@ -209,7 +260,7 @@ export function generateTray(L, W, H, T) {
     { text: 'Back', x: xB + W / 2, y: yPT + H / 2 }, { text: 'Left', x: xL + L / 2, y: yPT + H / 2 },
     { text: W + '', x: xF + W / 2, y: yBot + 12, dim: 'w' }, { text: L + '', x: xR + L / 2, y: yBot + 12, dim: 'l' },
   ];
-  return { cut, crease, width: xE, height: yBot + dfh, annotations: ann };
+  return { cut, crease, regions, width: xE, height: yBot + dfh, annotations: ann };
 }
 
 // ---------------------------------------------------------------------------
@@ -218,21 +269,31 @@ export function generateTray(L, W, H, T) {
 export function generateTwoPiece(L, W, H, T) {
   const G = 20, gap = 30;
   const cut = [], crease = [], ann = [];
+  const regions = []; // closed paths whose union = piece silhouette (for bleed offset)
   const drawTray = (offY, boxH, label) => {
     const fh = boxH + T * 2;
     const xF = G, xR = G + W, xB = G + W + L, xL = G + 2 * W + L, xE = G + 2 * W + 2 * L;
     const yPT = offY + fh, yBot = offY + fh + boxH;
+    regions.push(`M ${xF} ${yPT} L ${xE} ${yPT} L ${xE} ${yBot} L ${xF} ${yBot} Z`); // body
     cut.push(`M ${xF} ${yPT} L ${xF} ${offY} L ${xF + W} ${offY} L ${xF + W} ${yPT}`);
+    regions.push(`M ${xF} ${yPT} L ${xF} ${offY} L ${xF + W} ${offY} L ${xF + W} ${yPT} Z`);
     cut.push(`M ${xR} ${yPT} L ${xR} ${offY + T} L ${xR + L} ${offY + T} L ${xR + L} ${yPT}`);
+    regions.push(`M ${xR} ${yPT} L ${xR} ${offY + T} L ${xR + L} ${offY + T} L ${xR + L} ${yPT} Z`);
     cut.push(`M ${xB} ${yPT} L ${xB} ${offY} L ${xB + W} ${offY} L ${xB + W} ${yPT}`);
+    regions.push(`M ${xB} ${yPT} L ${xB} ${offY} L ${xB + W} ${offY} L ${xB + W} ${yPT} Z`);
     cut.push(`M ${xL} ${yPT} L ${xL} ${offY + T} L ${xL + L} ${offY + T} L ${xL + L} ${yPT}`);
+    regions.push(`M ${xL} ${yPT} L ${xL} ${offY + T} L ${xL + L} ${offY + T} L ${xL + L} ${yPT} Z`);
     cut.push(`M ${xF} ${yPT} L ${xF} ${yBot} L ${xF - 0} ${yBot}`);
     cut.push(`M ${xE} ${yPT} L ${xE} ${yBot}`);
     const dfh = W / 2 + T;
     cut.push(`M ${xF} ${yBot} L ${xF + 8} ${yBot + dfh} L ${xF + W - 8} ${yBot + dfh} L ${xF + W} ${yBot}`);
+    regions.push(`M ${xF} ${yBot} L ${xF + 8} ${yBot + dfh} L ${xF + W - 8} ${yBot + dfh} L ${xF + W} ${yBot} Z`);
     cut.push(`M ${xR} ${yBot} L ${xR + 8} ${yBot + dfh} L ${xR + L - 8} ${yBot + dfh} L ${xR + L} ${yBot}`);
+    regions.push(`M ${xR} ${yBot} L ${xR + 8} ${yBot + dfh} L ${xR + L - 8} ${yBot + dfh} L ${xR + L} ${yBot} Z`);
     cut.push(`M ${xB} ${yBot} L ${xB + 8} ${yBot + dfh} L ${xB + W - 8} ${yBot + dfh} L ${xB + W} ${yBot}`);
+    regions.push(`M ${xB} ${yBot} L ${xB + 8} ${yBot + dfh} L ${xB + W - 8} ${yBot + dfh} L ${xB + W} ${yBot} Z`);
     cut.push(`M ${xL} ${yBot} L ${xL + 8} ${yBot + dfh} L ${xL + L - 8} ${yBot + dfh} L ${xL + L} ${yBot}`);
+    regions.push(`M ${xL} ${yBot} L ${xL + 8} ${yBot + dfh} L ${xL + L - 8} ${yBot + dfh} L ${xL + L} ${yBot} Z`);
     cut.push(`M ${xF} ${yPT} L ${xE} ${yPT}`);
     cut.push(`M ${xF} ${yBot} L ${xE} ${yBot}`);
     crease.push(`M ${xF} ${yPT} L ${xF} ${yBot}`, `M ${xR} ${yPT} L ${xR} ${yBot}`, `M ${xB} ${yPT} L ${xB} ${yBot}`, `M ${xL} ${yPT} L ${xL} ${yBot}`);
@@ -245,7 +306,7 @@ export function generateTwoPiece(L, W, H, T) {
   ann.push({ text: W + '', x: G + W / 2, y: baseBottom + 4, dim: 'w' });
   ann.push({ text: L + '', x: G + W + L / 2, y: baseBottom + 4, dim: 'l' });
   const xE = G + 2 * W + 2 * L;
-  return { cut, crease, width: xE, height: lidBottom, annotations: ann };
+  return { cut, crease, regions, width: xE, height: lidBottom, annotations: ann };
 }
 
 // ---------------------------------------------------------------------------
@@ -258,9 +319,9 @@ export function generateWindow(L, W, H, T) {
   // Window: rounded rectangle inside the front panel, with margins
   const mx = W * 0.16, my = H * 0.16;
   const wx = xF + mx, wy = yPT + my, ww = W - 2 * mx, wh = H - 2 * my, r = Math.min(ww, wh) * 0.12;
-  base.cut.push(
-    `M ${wx + r} ${wy} L ${wx + ww - r} ${wy} Q ${wx + ww} ${wy} ${wx + ww} ${wy + r} L ${wx + ww} ${wy + wh - r} Q ${wx + ww} ${wy + wh} ${wx + ww - r} ${wy + wh} L ${wx + r} ${wy + wh} Q ${wx} ${wy + wh} ${wx} ${wy + wh - r} L ${wx} ${wy + r} Q ${wx} ${wy} ${wx + r} ${wy} Z`
-  );
+  const winPath = `M ${wx + r} ${wy} L ${wx + ww - r} ${wy} Q ${wx + ww} ${wy} ${wx + ww} ${wy + r} L ${wx + ww} ${wy + wh - r} Q ${wx + ww} ${wy + wh} ${wx + ww - r} ${wy + wh} L ${wx + r} ${wy + wh} Q ${wx} ${wy + wh} ${wx} ${wy + wh - r} L ${wx} ${wy + r} Q ${wx} ${wy} ${wx + r} ${wy} Z`;
+  base.cut.push(winPath);
+  base.holes = [winPath]; // window is a cutout — bleed wraps around it
   base.annotations.push({ text: 'Window', x: xF + W / 2, y: yPT + H / 2 + 4, dim: false });
   return base;
 }
@@ -277,30 +338,44 @@ export function generateHexagonal(L, W, H, T) {
   const yTop = side * 0.9;                  // room for hex lid above
   const yBot = yTop + H;
   const cut = [], crease = [], ann = [];
+  const regions = []; // closed paths whose union = piece silhouette (for bleed offset)
 
   cut.push(`M 0 ${yTop - gt} L ${xStart} ${yTop} L ${xStart} ${yBot} L 0 ${yBot + gt} Z`);
+  regions.push(`M 0 ${yTop - gt} L ${xStart} ${yTop} L ${xStart} ${yBot} L 0 ${yBot + gt} Z`);
   // 6 side panels
   for (let i = 0; i < panels; i++) {
     const x = xStart + i * side;
     crease.push(`M ${x} ${yTop} L ${x} ${yBot}`);
     // top tuck flap (alternate)
     const fd = side * 0.5;
-    if (i % 2 === 0) cut.push(dustFlapUp(x, yTop, side, fd, side * 0.18));
-    else cut.push(`M ${x} ${yTop} L ${x} ${yTop - fd * 0.5} L ${x + side} ${yTop - fd * 0.5} L ${x + side} ${yTop}`);
+    if (i % 2 === 0) {
+      cut.push(dustFlapUp(x, yTop, side, fd, side * 0.18));
+      regions.push(dustFlapUp(x, yTop, side, fd, side * 0.18) + ' Z');
+    } else {
+      cut.push(`M ${x} ${yTop} L ${x} ${yTop - fd * 0.5} L ${x + side} ${yTop - fd * 0.5} L ${x + side} ${yTop}`);
+      regions.push(`M ${x} ${yTop} L ${x} ${yTop - fd * 0.5} L ${x + side} ${yTop - fd * 0.5} L ${x + side} ${yTop} Z`);
+    }
     // bottom closing flap
-    if (i % 2 === 0) cut.push(dustFlapDown(x, yBot, side, fd, side * 0.18));
-    else cut.push(`M ${x} ${yBot} L ${x} ${yBot + fd * 0.5} L ${x + side} ${yBot + fd * 0.5} L ${x + side} ${yBot}`);
+    if (i % 2 === 0) {
+      cut.push(dustFlapDown(x, yBot, side, fd, side * 0.18));
+      regions.push(dustFlapDown(x, yBot, side, fd, side * 0.18) + ' Z');
+    } else {
+      cut.push(`M ${x} ${yBot} L ${x} ${yBot + fd * 0.5} L ${x + side} ${yBot + fd * 0.5} L ${x + side} ${yBot}`);
+      regions.push(`M ${x} ${yBot} L ${x} ${yBot + fd * 0.5} L ${x + side} ${yBot + fd * 0.5} L ${x + side} ${yBot} Z`);
+    }
   }
+  regions.push(`M ${xStart} ${yTop} L ${xStart + panels * side} ${yTop} L ${xStart + panels * side} ${yBot} L ${xStart} ${yBot} Z`); // body
   const xEnd = xStart + panels * side;
   // glue tab
   cut.push(`M ${xEnd} ${yTop} L ${xEnd + glue} ${yTop + H * 0.12} L ${xEnd + glue} ${yBot - H * 0.12} L ${xEnd} ${yBot}`);
+  regions.push(`M ${xEnd} ${yTop} L ${xEnd + glue} ${yTop + H * 0.12} L ${xEnd + glue} ${yBot - H * 0.12} L ${xEnd} ${yBot} Z`);
   crease.push(`M ${xEnd} ${yTop} L ${xEnd} ${yBot}`);
   crease.push(`M ${xStart} ${yTop} L ${xEnd} ${yTop}`, `M ${xStart} ${yBot} L ${xEnd} ${yBot}`);
 
   ann.push({ text: 'Hexagonal · 6 panels', x: xStart + (panels * side) / 2, y: yTop + H / 2, dim: false });
   ann.push({ text: side.toFixed(0) + '', x: xStart + side / 2, y: yBot + 12, dim: 'w' });
   ann.push({ text: H + '', x: xStart - 12, y: yTop + H / 2, dim: 'h', rotate: true });
-  return { cut, crease, width: xEnd + glue, height: yBot + side * 0.5, annotations: ann };
+  return { cut, crease, regions, width: xEnd + glue, height: yBot + side * 0.5, annotations: ann };
 }
 
 // ---------------------------------------------------------------------------
@@ -314,6 +389,7 @@ export function generatePillow(L, W, H, T) {
   const yTop = 0, yBot = L;                  // L is the box length
   const curve = L * 0.28;
   const cut = [], crease = [], ann = [];
+  const regions = []; // closed paths whose union = piece silhouette (for bleed offset)
 
   cut.push(`M 0 ${yTop - gt} L ${xF} ${yTop}`);
   // top curved closure across the whole width
@@ -322,8 +398,10 @@ export function generatePillow(L, W, H, T) {
   cut.push(`M ${xF} ${yBot} Q ${(xF + xE) / 2} ${yBot + curve} ${xE} ${yBot}`);
   cut.push(`M ${xF} ${yTop} L ${xF} ${yBot}`);
   cut.push(`M ${xE} ${yTop} L ${xE} ${yBot}`);
+  regions.push(`M ${xF} ${yTop} Q ${(xF + xE) / 2} ${yTop - curve} ${xE} ${yTop} L ${xE} ${yBot} Q ${(xF + xE) / 2} ${yBot + curve} ${xF} ${yBot} Z`); // body
   // glue tab
   cut.push(`M ${xE} ${yTop} L ${xE + glue} ${yTop + curve * 0.6} L ${xE + glue} ${yBot - curve * 0.6} L ${xE} ${yBot}`);
+  regions.push(`M ${xE} ${yTop} L ${xE + glue} ${yTop + curve * 0.6} L ${xE + glue} ${yBot - curve * 0.6} L ${xE} ${yBot} Z`);
 
   crease.push(`M ${xR} ${yTop} L ${xR} ${yBot}`, `M ${xB} ${yTop} L ${xB} ${yBot}`, `M ${xL} ${yTop} L ${xL} ${yBot}`);
   // curved crease guides near ends
@@ -333,7 +411,7 @@ export function generatePillow(L, W, H, T) {
   ann.push({ text: 'Pillow', x: xB, y: L / 2, dim: false });
   ann.push({ text: W + '', x: xF + p1 / 2, y: yBot + 14, dim: 'w' });
   ann.push({ text: L + '', x: xF - 14, y: yBot / 2, dim: 'l', rotate: true });
-  return { cut, crease, width: xE + glue, height: yBot + curve, annotations: ann };
+  return { cut, crease, regions, width: xE + glue, height: yBot + curve, annotations: ann };
 }
 
 // ---------------------------------------------------------------------------
@@ -345,8 +423,11 @@ export function generateSleeve(L, W, H, T) {
   const xF = G, xR = G + p1, xB = G + p1 + p2, xL = G + p1 + p2 + p3, xE = G + p1 + p2 + p3 + p4;
   const yP = 0, yB = H;
   const cut = [], crease = [];
+  const regions = []; // closed paths whose union = piece silhouette (for bleed offset)
 
   cut.push(`M 0 ${yP - gt} L ${G} ${yP} L ${G} ${yB} L 0 ${yB + gt} Z`);
+  regions.push(`M 0 ${yP - gt} L ${G} ${yP} L ${G} ${yB} L 0 ${yB + gt} Z`);
+  regions.push(`M ${xF} ${yP} L ${xE} ${yP} L ${xE} ${yB} L ${xF} ${yB} Z`); // body
   cut.push(`M ${xE} ${yP} L ${xE} ${yB}`);
   cut.push(`M ${xF} ${yP} L ${xE} ${yP}`);
   cut.push(`M ${xF} ${yB} L ${xE} ${yB}`);
@@ -360,7 +441,7 @@ export function generateSleeve(L, W, H, T) {
     { text: p2.toFixed(0) + '', x: xR + p2 / 2, y: yB + 14, dim: 'l' },
     { text: H + '', x: xF - 14, y: yP + H / 2, dim: 'h', rotate: true },
   ];
-  return { cut, crease, width: xE, height: yB, annotations: ann };
+  return { cut, crease, regions, width: xE, height: yB, annotations: ann };
 }
 
 // ---------------------------------------------------------------------------
@@ -374,21 +455,34 @@ export function generateGable(L, W, H, T) {
   const yPT = roofH, yPB = roofH + H, yBot = roofH + H + L / 2;
   const ySR = roofH - sfh;
   const cut = [], crease = [];
+  const regions = []; // closed paths whose union = piece silhouette (for bleed offset)
+  const holes = [];   // interior cutouts (handle slot)
 
   cut.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
+  regions.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
+  regions.push(`M ${xF} ${yPT} L ${xE} ${yPT} L ${xE} ${yPB} L ${xF} ${yPB} Z`); // body
   cut.push(`M ${xF} ${yPT} L ${xF + W / 2} 0 L ${xF + W} ${yPT}`);
+  regions.push(`M ${xF} ${yPT} L ${xF + W / 2} 0 L ${xF + W} ${yPT} Z`);
   cut.push(`M ${xR} ${yPT} L ${xR + dt} ${ySR} L ${xR + L - dt} ${ySR} L ${xR + L} ${yPT}`);
+  regions.push(`M ${xR} ${yPT} L ${xR + dt} ${ySR} L ${xR + L - dt} ${ySR} L ${xR + L} ${yPT} Z`);
   cut.push(`M ${xB} ${yPT} L ${xB + W / 2} 0 L ${xB + W} ${yPT}`);
+  regions.push(`M ${xB} ${yPT} L ${xB + W / 2} 0 L ${xB + W} ${yPT} Z`);
   cut.push(`M ${xL} ${yPT} L ${xL + dt} ${ySR} L ${xL + L - dt} ${ySR} L ${xL + L} ${yPT}`);
+  regions.push(`M ${xL} ${yPT} L ${xL + dt} ${ySR} L ${xL + L - dt} ${ySR} L ${xL + L} ${yPT} Z`);
   cut.push(`M ${xE} ${yPT} L ${xE} ${yPB}`);
 
   const hx = xF + W / 2, hy = roofH * 0.35, hw = Math.min(20, W / 5), hh = Math.min(15, roofH / 5);
   cut.push(`M ${hx - hw} ${hy - hh} Q ${hx - hw} ${hy} ${hx} ${hy} Q ${hx + hw} ${hy} ${hx + hw} ${hy - hh}`);
+  holes.push(`M ${hx - hw} ${hy - hh} Q ${hx - hw} ${hy} ${hx} ${hy} Q ${hx + hw} ${hy} ${hx + hw} ${hy - hh} Z`);
 
   cut.push(`M ${xF} ${yPB} L ${xF + 8} ${yBot} L ${xF + W - 8} ${yBot} L ${xF + W} ${yPB}`);
+  regions.push(`M ${xF} ${yPB} L ${xF + 8} ${yBot} L ${xF + W - 8} ${yBot} L ${xF + W} ${yPB} Z`);
   cut.push(`M ${xR} ${yPB} L ${xR + 8} ${yBot} L ${xR + L - 8} ${yBot} L ${xR + L} ${yPB}`);
+  regions.push(`M ${xR} ${yPB} L ${xR + 8} ${yBot} L ${xR + L - 8} ${yBot} L ${xR + L} ${yPB} Z`);
   cut.push(`M ${xB} ${yPB} L ${xB + 8} ${yBot} L ${xB + W - 8} ${yBot} L ${xB + W} ${yPB}`);
+  regions.push(`M ${xB} ${yPB} L ${xB + 8} ${yBot} L ${xB + W - 8} ${yBot} L ${xB + W} ${yPB} Z`);
   cut.push(`M ${xL} ${yPB} L ${xL + 8} ${yBot} L ${xL + L - 8} ${yBot} L ${xL + L} ${yPB}`);
+  regions.push(`M ${xL} ${yPB} L ${xL + 8} ${yBot} L ${xL + L - 8} ${yBot} L ${xL + L} ${yPB} Z`);
 
   crease.push(`M ${xF} ${yPT} L ${xF} ${yPB}`, `M ${xR} ${yPT} L ${xR} ${yPB}`, `M ${xB} ${yPT} L ${xB} ${yPB}`, `M ${xL} ${yPT} L ${xL} ${yPB}`);
   crease.push(`M ${xF} ${yPT} L ${xE} ${yPT}`, `M ${xF} ${yPB} L ${xE} ${yPB}`);
@@ -398,7 +492,7 @@ export function generateGable(L, W, H, T) {
     { text: 'Back', x: xB + W / 2, y: yPT + H / 2 }, { text: 'Left', x: xL + L / 2, y: yPT + H / 2 },
     { text: W + '', x: xF + W / 2, y: yPB + 12, dim: 'w' }, { text: L + '', x: xR + L / 2, y: yPB + 12, dim: 'l' },
   ];
-  return { cut, crease, width: xE, height: yBot, annotations: ann };
+  return { cut, crease, regions, holes, width: xE, height: yBot, annotations: ann };
 }
 
 // ---------------------------------------------------------------------------
@@ -412,10 +506,14 @@ export function generateHanger(L, W, H, T) {
   const tabH = Math.min(28, H * 0.25);
   const tabY = yPT - tfh - tabH;
   const tx = xF + W * 0.2, tw = W * 0.6;
-  base.cut.push(`M ${tx} ${yPT - tfh} L ${tx} ${tabY} L ${tx + tw} ${tabY} L ${tx + tw} ${yPT - tfh}`);
+  const tabPath = `M ${tx} ${yPT - tfh} L ${tx} ${tabY} L ${tx + tw} ${tabY} L ${tx + tw} ${yPT - tfh}`;
+  base.cut.push(tabPath);
+  base.regions.push(tabPath + ' Z');
   // euro slot (keyhole)
   const kx = xF + W / 2, ky = tabY + tabH * 0.5, kr = tabH * 0.28;
-  base.cut.push(`M ${kx - kr} ${ky} A ${kr} ${kr} 0 1 0 ${kx + kr} ${ky} L ${kx + kr * 0.4} ${ky + kr * 1.6} L ${kx - kr * 0.4} ${ky + kr * 1.6} Z`);
+  const keyholePath = `M ${kx - kr} ${ky} A ${kr} ${kr} 0 1 0 ${kx + kr} ${ky} L ${kx + kr * 0.4} ${ky + kr * 1.6} L ${kx - kr * 0.4} ${ky + kr * 1.6} Z`;
+  base.cut.push(keyholePath);
+  base.holes = [keyholePath];
   base.crease.push(`M ${tx} ${yPT - tfh} L ${tx + tw} ${yPT - tfh}`);
   base.annotations.push({ text: 'Hanger', x: kx, y: tabY - 4, dim: false });
   return base;
