@@ -40,14 +40,12 @@ export function generateMailer(L, W, H, T) {
   cut.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
   regions.push(`M 0 ${yPT - gt} L ${G} ${yPT} L ${G} ${yPB} L 0 ${yPB + gt} Z`);
   regions.push(`M ${xF} ${yPT} L ${xE} ${yPT} L ${xE} ${yPB} L ${xF} ${yPB} Z`); // body
-  cut.push(`M ${xF} ${yPT} L ${xF} ${tr} Q ${xF} 0 ${xF + tr} 0 L ${xF + W - tr} 0 Q ${xF + W} 0 ${xF + W} ${tr} L ${xF + W} ${yPT}`);
-  regions.push(`M ${xF} ${yPT} L ${xF} ${tr} Q ${xF} 0 ${xF + tr} 0 L ${xF + W - tr} 0 Q ${xF + W} 0 ${xF + W} ${tr} L ${xF + W} ${yPT} Z`);
-  cut.push(`M ${xR} ${yPT} L ${xR + dt} ${yST} L ${xR + L - dt} ${yST} L ${xR + L} ${yPT}`);
-  regions.push(`M ${xR} ${yPT} L ${xR + dt} ${yST} L ${xR + L - dt} ${yST} L ${xR + L} ${yPT} Z`);
-  cut.push(`M ${xB} ${yPT} L ${xB} ${tr} Q ${xB} 0 ${xB + tr} 0 L ${xB + W - tr} 0 Q ${xB + W} 0 ${xB + W} ${tr} L ${xB + W} ${yPT}`);
-  regions.push(`M ${xB} ${yPT} L ${xB} ${tr} Q ${xB} 0 ${xB + tr} 0 L ${xB + W - tr} 0 Q ${xB + W} 0 ${xB + W} ${tr} L ${xB + W} ${yPT} Z`);
-  cut.push(`M ${xL} ${yPT} L ${xL + dt} ${yST} L ${xL + L - dt} ${yST} L ${xL + L} ${yPT}`);
-  regions.push(`M ${xL} ${yPT} L ${xL + dt} ${yST} L ${xL + L - dt} ${yST} L ${xL + L} ${yPT} Z`);
+  // One-piece hinged lid spanning the full width (FEFCO 0426 style):
+  // no cut lines at the wall junctions — those positions are body creases.
+  const lidPath = `M ${xF} ${yPT} L ${xF} ${tr} Q ${xF} 0 ${xF + tr} 0 L ${xE - tr} 0 Q ${xE} 0 ${xE} ${tr} L ${xE} ${yPT}`;
+  cut.push(lidPath);
+  regions.push(lidPath + ' Z');
+  cut.push(`M ${xE} ${yPT} L ${xE} ${yPB}`);
 
   const t1a = xF + atOff, t1b = t1a + atw, t2a = xF + 2 * atOff + atw, t2b = t2a + atw;
   const bfy = yBot - ath;
