@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import pacdoraDielines from '../data/pacdora_dielines.json';
+import { loadCatalog } from '../data/catalog';
 import animatedNums from '../data/animated_dielines.json';
 import './DielinePage.css';
 
@@ -8,6 +8,15 @@ const ANIMATED_SET = new Set(animatedNums);
 
 export default function DielinePage({ onBack, onSelectDieline }) {
   const navigate = useNavigate();
+  // Catalog is fetched as a separate lazy chunk (~1MB) — page shell renders instantly
+  const [catalog, setCatalog] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadCatalog().then((data) => { if (!cancelled) setCatalog(data); });
+    return () => { cancelled = true; };
+  }, []);
+
   // Filter States
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -56,19 +65,19 @@ export default function DielinePage({ onBack, onSelectDieline }) {
 
   // Dynamic Count calculations based on database
   const categoryCounts = useMemo(() => {
-    const counts = { all: pacdoraDielines.length };
+    const counts = { all: catalog?.length || 0 };
     CATEGORIES.forEach(cat => {
       if (cat.id !== 'all') counts[cat.id] = 0;
     });
     
-    pacdoraDielines.forEach(item => {
+    (catalog || []).forEach(item => {
       if (counts[item.category] !== undefined) {
         counts[item.category]++;
       }
     });
 
     return counts;
-  }, [CATEGORIES]);
+  }, [CATEGORIES, catalog]);
 
   // Handle Box Style Toggle
   const handleStyleToggle = (style) => {
@@ -86,7 +95,7 @@ export default function DielinePage({ onBack, onSelectDieline }) {
 
   // Filter templates based on all active criteria
   const filteredDielines = useMemo(() => {
-    let result = pacdoraDielines.filter(dieline => {
+    let result = (catalog || []).filter(dieline => {
       // 1. Category Filter (including special 'animated' filter)
       const matchCategory = selectedCategory === 'all' || 
         (selectedCategory === 'animated' ? ANIMATED_SET.has(dieline.num) : dieline.category === selectedCategory);
@@ -111,7 +120,7 @@ export default function DielinePage({ onBack, onSelectDieline }) {
     }
 
     return result;
-  }, [selectedCategory, searchTerm, selectedStyles, selectedClosures, sortBy]);
+  }, [selectedCategory, searchTerm, selectedStyles, selectedClosures, sortBy, catalog]);
 
   // Reset page count on filter change
   useEffect(() => {
@@ -121,6 +130,11 @@ export default function DielinePage({ onBack, onSelectDieline }) {
   const handleLoadMore = () => {
     setVisibleCount(prev => prev + 24);
   };
+
+  // Wait for the lazy catalog chunk before rendering the grid
+  if (!catalog) {
+    return <div className="route-loading">⬡ Loading templates…</div>;
+  }
 
   return (
     <div className="dieline-saas-layout">
@@ -371,7 +385,7 @@ export default function DielinePage({ onBack, onSelectDieline }) {
                       alt={dieline.name}
                       loading="lazy"
                       onError={(e) => {
-                        e.target.src = '/images/mockups/tuck-end-box.png';
+                        e.target.src = '/images/tuck-end-box.png';
                       }}
                     />
                   </div>

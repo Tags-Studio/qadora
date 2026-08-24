@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GENERATORS, TYPE_TO_SHAPE, deriveDefaults } from '../utils/dielineGenerators';
 import { deriveUnits, computeBleedOffset, computeBleedOffsetFromSVG, classifyContours } from '../utils/bleedOffset';
-import pacdoraDielines from '../data/pacdora_dielines.json';
+import { loadCatalog } from '../data/catalog';
 import './DielineDetailPage.css';
 
 const MATERIALS = [
@@ -139,9 +139,23 @@ function classifyRealPaths(shapes) {
 
 export default function DielineDetailPage({ onBack }) {
   const { id } = useParams();
-  const dieline = useMemo(() => {
-    return pacdoraDielines.find(d => d.id.toString() === id) || pacdoraDielines[0];
+  // Catalog is a lazy chunk — resolve the template asynchronously
+  const [dieline, setDieline] = useState(null);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setDieline(null);
+    setNotFound(false);
+    loadCatalog().then((cat) => {
+      if (cancelled) return;
+      const d = cat.find((x) => x.id.toString() === id);
+      if (d) setDieline(d);
+      else setNotFound(true);
+    });
+    return () => { cancelled = true; };
   }, [id]);
+
   const preset = useMemo(() => {
     const d = deriveDefaults(dieline);
     if (dieline?.L) { d.L = dieline.L; d.W = dieline.W; d.H = dieline.H; }
@@ -218,8 +232,13 @@ export default function DielineDetailPage({ onBack }) {
     setStatus('loading');
     // 8-digit nums: Pacdora stores demoProject under the 6-digit prefix.
     const fetchNum = dieline.num.length >= 8 ? dieline.num.slice(0, 6) : dieline.num;
-    const tryFetch = (url) => fetch(url)
-      .then((r) => { if (!r.ok) throw new Error('no demo'); return r.json(); });
+    const tryFetch = (url) => {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 8000); // never hang forever
+      return fetch(url, { signal: ctrl.signal })
+        .then((r) => { if (!r.ok) throw new Error('no demo'); return r.json(); })
+        .finally(() => clearTimeout(timer));
+    };
     tryFetch(`https://cloud.pacdora.com/demoProject/${dieline.num}.json`)
       .catch(() => tryFetch(`https://cloud.pacdora.com/demoProject/${fetchNum}.json`))
       .then((json) => {
@@ -281,8 +300,10 @@ export default function DielineDetailPage({ onBack }) {
     // Also observe the canvas container for panel size changes
     const ro = new ResizeObserver(onResize);
     ro.observe(canvasRef.current);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', onResize); ro.disconnect(); obj.renderer.dispose(); three.current = null; };
-  }, []);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', onResize); ro.disconnect(); obj.controls.dispose(); obj.renderer.dispose(); three.current = null; };
+    // Re-run once the template resolves: the canvas mounts only after the
+    // loading guard passes, so [] deps would leave the 3D scene dead.
+  }, [dieline === null]);
 
   const frameObject = (object) => {
     const obj = three.current; if (!obj) return;
@@ -434,7 +455,27 @@ export default function DielineDetailPage({ onBack }) {
 
   const isReal = status === 'real' && real2D;
 
+  // Catalog resolution states
+  if (notFound) {
+    return (
+      <div className="route-loading" style={{ flexDirection: 'column', gap: '14px' }}>
+        <span style={{ fontSize: '40px' }}>🔍</span>
+        <span>Template not found.</span>
+        <button
+          onClick={onBack}
+          style={{ background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: '10px', padding: '10px 22px', cursor: 'pointer', fontSize: '0.9rem' }}
+        >
+          ← Back to templates
+        </button>
+      </div>
+    );
+  }
+  if (!dieline) {
+    return <div className="route-loading">⬡ Loading template…</div>;
+  }
+
   return (
+
     <div className="dieline-studio-root">
       <header className="ds-header">
         <div className="flex items-center gap-2.5">
@@ -444,11 +485,11 @@ export default function DielineDetailPage({ onBack }) {
           {isReal && <span className="ds-real-chip"><i className="fas fa-check-circle"></i> Real pacdora structure</span>}
           {status === 'fallback' && <span className="ds-approx-chip">Parametric approx.</span>}
         </div>
-        <div className="flex-1 truncate px-4 text-xs text-muted hidden md:block">{dieline?.name}</div>
+        <div className="flex-1 truncate px-4 text-xs text-muted hidden md-block">{dieline?.name}</div>
         <button className="btn btn-primary"><i className="fas fa-download"></i> Download the dieline</button>
       </header>
 
-      <div className="flex h-[calc(100vh-56px)]">
+      <div className="flex h-screen-studio">
         {/* Left panel — controls */}
         <aside className="ds-left-panel">
           <div className="ds-ctrl-group">
@@ -475,7 +516,7 @@ export default function DielineDetailPage({ onBack }) {
 
           <div className="ds-ctrl-group">
             <div className="ds-ctrl-label">Custom thickness</div>
-            <div className="text-[10px] text-muted mb-1.5">(0.3 ~ 5 mm)</div>
+            <div className="text-10px text-muted mb-1.5">(0.3 ~ 5 mm)</div>
             <div className="ds-stepper">
               <button onClick={() => setT((v) => Math.max(0.3, +(v - 0.1).toFixed(1)))}><i className="fas fa-minus"></i></button>
               <span>{T.toFixed(1)}</span>
@@ -485,7 +526,7 @@ export default function DielineDetailPage({ onBack }) {
 
           <div className="ds-ctrl-group">
             <div className="ds-ctrl-label">Bleed margin</div>
-            <div className="text-[10px] text-muted mb-1.5">(1 ~ 10 mm)</div>
+            <div className="text-10px text-muted mb-1.5">(1 ~ 10 mm)</div>
             <div className="ds-stepper">
               <button onClick={() => setBleed((v) => Math.max(1, +(v - 0.5).toFixed(1)))}><i className="fas fa-minus"></i></button>
               <span>{bleed.toFixed(1)} mm</span>
@@ -599,7 +640,7 @@ export default function DielineDetailPage({ onBack }) {
           <div className="ds-3d-canvas-wrap">
             <canvas ref={canvasRef} className="w-full h-full block" />
             <div className="ds-info-bar ds-3d-info">
-              <span><i className="fas fa-mouse-pointer text-[10px]"></i> Drag to rotate · Scroll to zoom</span>
+              <span><i className="fas fa-mouse-pointer text-10px"></i> Drag to rotate · Scroll to zoom</span>
               <span>{isReal ? 'Real 3D model' : 'Parametric 3D'}</span>
             </div>
           </div>

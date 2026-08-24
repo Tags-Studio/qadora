@@ -23,20 +23,72 @@ const SHAPES = [
 ];
 
 export default function ControlPanel() {
-  const store = useEditorStore();
+  const shape = useEditorStore((s) => s.shape);
+  const color = useEditorStore((s) => s.color);
+  const roughness = useEditorStore((s) => s.roughness);
+  const metalness = useEditorStore((s) => s.metalness);
+  const textureUrl = useEditorStore((s) => s.textureUrl);
+  const decalScale = useEditorStore((s) => s.decalScale);
+  const decalPositionX = useEditorStore((s) => s.decalPositionX);
+  const decalPositionY = useEditorStore((s) => s.decalPositionY);
+  const showGrid = useEditorStore((s) => s.showGrid);
+  const sceneTheme = useEditorStore((s) => s.sceneTheme);
+  const isExporting = useEditorStore((s) => s.isExporting);
+  const setShape = useEditorStore((s) => s.setShape);
+  const setColor = useEditorStore((s) => s.setColor);
+  const setRoughness = useEditorStore((s) => s.setRoughness);
+  const setMetalness = useEditorStore((s) => s.setMetalness);
+  const setTextureUrl = useEditorStore((s) => s.setTextureUrl);
+  const setDecalScale = useEditorStore((s) => s.setDecalScale);
+  const setDecalPositionX = useEditorStore((s) => s.setDecalPositionX);
+  const setDecalPositionY = useEditorStore((s) => s.setDecalPositionY);
+  const toggleGrid = useEditorStore((s) => s.toggleGrid);
+  const toggleAutoRotate = useEditorStore((s) => s.toggleAutoRotate);
+  const setSceneTheme = useEditorStore((s) => s.setSceneTheme);
+  const triggerExport = useEditorStore((s) => s.triggerExport);
+  const resetProject = useEditorStore((s) => s.resetProject);
 
+  // Downscale the logo before persisting: localStorage quota is ~5MB and a
+  // raw data URL of a big photo blows through it instantly.
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => store.setTextureUrl(ev.target.result);
+    reader.onload = (ev) => {
+      const dataUrl = ev.target.result;
+      // SVG can't be rasterized losslessly — accept as-is (text-based, small)
+      if (file.type === 'image/svg+xml') {
+        setTextureUrl(dataUrl);
+        return;
+      }
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const MAX = 512;
+          const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(img.width * scale));
+          canvas.height = Math.max(1, Math.round(img.height * scale));
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          setTextureUrl(canvas.toDataURL('image/png'));
+        } catch {
+          setTextureUrl(dataUrl);
+        }
+      };
+      img.onerror = () => setTextureUrl(dataUrl);
+      img.src = dataUrl;
+    };
     reader.readAsDataURL(file);
   };
 
   const handleReset = () => {
     if (window.confirm('هل تريد إعادة ضبط المشروع بالكامل؟')) {
-      store.resetProject();
-      localStorage.removeItem('packwave-editor-storage');
+      resetProject();
+      try {
+        localStorage.removeItem('packwave-editor-storage');
+      } catch {
+        /* storage unavailable — ignore */
+      }
     }
   };
 
@@ -59,8 +111,8 @@ export default function ControlPanel() {
             {SHAPES.map((s) => (
               <button
                 key={s.id}
-                onClick={() => store.setShape(s.id)}
-                className={`shape-btn ${store.shape === s.id ? 'active' : ''}`}
+                onClick={() => setShape(s.id)}
+                className={`shape-btn ${shape === s.id ? 'active' : ''}`}
                 title={s.label}
               >
                 <span className="shape-emoji">{s.emoji}</span>
@@ -77,8 +129,8 @@ export default function ControlPanel() {
             {COLORS.map((c) => (
               <button
                 key={c.hex}
-                onClick={() => store.setColor(c.hex)}
-                className={`color-swatch ${store.color === c.hex ? 'active' : ''}`}
+                onClick={() => setColor(c.hex)}
+                className={`color-swatch ${color === c.hex ? 'active' : ''}`}
                 style={{ backgroundColor: c.hex }}
                 title={c.name}
               />
@@ -89,11 +141,11 @@ export default function ControlPanel() {
             <label className="custom-color-label">لون مخصص:</label>
             <input
               type="color"
-              value={store.color}
-              onChange={(e) => store.setColor(e.target.value)}
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
               className="color-picker-input"
             />
-            <span className="color-hex-value">{store.color}</span>
+            <span className="color-hex-value">{color}</span>
           </div>
         </section>
 
@@ -103,12 +155,12 @@ export default function ControlPanel() {
           <div className="slider-group">
             <div className="slider-row">
               <label>الخشونة</label>
-              <span className="slider-value">{store.roughness.toFixed(2)}</span>
+              <span className="slider-value">{roughness.toFixed(2)}</span>
             </div>
             <input
               type="range" min="0" max="1" step="0.01"
-              value={store.roughness}
-              onChange={(e) => store.setRoughness(parseFloat(e.target.value))}
+              value={roughness}
+              onChange={(e) => setRoughness(parseFloat(e.target.value))}
               className="styled-range"
             />
             <div className="slider-hints"><span>ناعم</span><span>خشن</span></div>
@@ -116,12 +168,12 @@ export default function ControlPanel() {
           <div className="slider-group">
             <div className="slider-row">
               <label>اللمعان (معدن)</label>
-              <span className="slider-value">{store.metalness.toFixed(2)}</span>
+              <span className="slider-value">{metalness.toFixed(2)}</span>
             </div>
             <input
               type="range" min="0" max="1" step="0.01"
-              value={store.metalness}
-              onChange={(e) => store.setMetalness(parseFloat(e.target.value))}
+              value={metalness}
+              onChange={(e) => setMetalness(parseFloat(e.target.value))}
               className="styled-range"
             />
             <div className="slider-hints"><span>مط</span><span>معدني</span></div>
@@ -139,7 +191,7 @@ export default function ControlPanel() {
             id="logo-upload"
           />
           <label htmlFor="logo-upload" className="upload-btn">
-            {store.textureUrl ? (
+            {textureUrl ? (
               <>
                 <span>🔄</span> تغيير الشعار
               </>
@@ -150,39 +202,39 @@ export default function ControlPanel() {
             )}
           </label>
 
-          {store.textureUrl && (
+          {textureUrl && (
             <div className="decal-controls">
               <div className="slider-group">
                 <div className="slider-row">
                   <label>الحجم</label>
-                  <span className="slider-value">{store.decalScale.toFixed(1)}×</span>
+                  <span className="slider-value">{decalScale.toFixed(1)}×</span>
                 </div>
                 <input type="range" min="0.2" max="3" step="0.05"
-                  value={store.decalScale}
-                  onChange={(e) => store.setDecalScale(parseFloat(e.target.value))}
+                  value={decalScale}
+                  onChange={(e) => setDecalScale(parseFloat(e.target.value))}
                   className="styled-range" />
               </div>
               <div className="slider-group">
                 <div className="slider-row">
                   <label>الموقع ← →</label>
-                  <span className="slider-value">{store.decalPositionX.toFixed(2)}</span>
+                  <span className="slider-value">{decalPositionX.toFixed(2)}</span>
                 </div>
                 <input type="range" min="-1" max="1" step="0.02"
-                  value={store.decalPositionX}
-                  onChange={(e) => store.setDecalPositionX(parseFloat(e.target.value))}
+                  value={decalPositionX}
+                  onChange={(e) => setDecalPositionX(parseFloat(e.target.value))}
                   className="styled-range" />
               </div>
               <div className="slider-group">
                 <div className="slider-row">
                   <label>الموقع ↑ ↓</label>
-                  <span className="slider-value">{store.decalPositionY.toFixed(2)}</span>
+                  <span className="slider-value">{decalPositionY.toFixed(2)}</span>
                 </div>
                 <input type="range" min="-1" max="1" step="0.02"
-                  value={store.decalPositionY}
-                  onChange={(e) => store.setDecalPositionY(parseFloat(e.target.value))}
+                  value={decalPositionY}
+                  onChange={(e) => setDecalPositionY(parseFloat(e.target.value))}
                   className="styled-range" />
               </div>
-              <button onClick={() => store.setTextureUrl(null)} className="remove-logo-btn">
+              <button onClick={() => setTextureUrl(null)} className="remove-logo-btn">
                 🗑️ حذف الشعار
               </button>
             </div>
@@ -194,20 +246,20 @@ export default function ControlPanel() {
           <h3 className="section-title">بيئة المشهد</h3>
           <div className="theme-row">
             <button
-              onClick={() => store.setSceneTheme('dark')}
-              className={`theme-btn ${store.sceneTheme === 'dark' ? 'active' : ''}`}
+              onClick={() => setSceneTheme('dark')}
+              className={`theme-btn ${sceneTheme === 'dark' ? 'active' : ''}`}
             >🌙 غامق</button>
             <button
-              onClick={() => store.setSceneTheme('studio')}
-              className={`theme-btn ${store.sceneTheme === 'studio' ? 'active' : ''}`}
+              onClick={() => setSceneTheme('studio')}
+              className={`theme-btn ${sceneTheme === 'studio' ? 'active' : ''}`}
             >☀️ استوديو</button>
           </div>
           <div className="toggle-row">
-            <button onClick={store.toggleGrid} className={`toggle-btn ${store.showGrid ? 'on' : ''}`}>
-              {store.showGrid ? '◈ إخفاء الشبكة' : '◈ إظهار الشبكة'}
+            <button onClick={toggleGrid} className={`toggle-btn ${showGrid ? 'on' : ''}`}>
+              {showGrid ? '◈ إخفاء الشبكة' : '◈ إظهار الشبكة'}
             </button>
-            <button onClick={store.toggleAutoRotate} className={`toggle-btn ${store.autoRotate ? 'on' : ''}`}>
-              {store.autoRotate ? '⏸ إيقاف الدوران' : '▶ تشغيل الدوران'}
+            <button onClick={toggleAutoRotate} className={`toggle-btn ${autoRotate ? 'on' : ''}`}>
+              {autoRotate ? '⏸ إيقاف الدوران' : '▶ تشغيل الدوران'}
             </button>
           </div>
         </section>
@@ -216,18 +268,18 @@ export default function ControlPanel() {
       {/* ───────── 6. التصدير (ثابت في الأسفل) ───────── */}
       <div className="export-section">
         <button
-          onClick={store.triggerExport}
-          disabled={store.isExporting}
+          onClick={triggerExport}
+          disabled={isExporting}
           className="export-primary-btn"
         >
-          {store.isExporting ? (
+          {isExporting ? (
             <><span className="spinner" /> جاري التصدير...</>
           ) : (
             <>📸 تصدير صورة 3D (PNG)</>
           )}
         </button>
         <button
-          onClick={() => downloadDieline(store.color)}
+          onClick={() => downloadDieline(color)}
           className="export-secondary-btn"
         >
           ✂️ تحميل خطوط القطع (SVG)

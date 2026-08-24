@@ -1,24 +1,35 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
   <head>
-    <!-- qadora-build: 2026-07-11-v2 -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Packwave — محرر تغليف ثلاثي الأبعاد احترافي. صمم عبواتك وصناديقك وحمّل ملفات الطباعة بضغطة زر." />
     <title>Packwave — 3D Packaging Editor</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    
-    <!-- Dieline Studio Dependencies -->
+
+    <!-- Social sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Packwave" />
+    <meta property="og:title" content="Packwave — 3D Packaging Editor" />
+    <meta property="og:description" content="صمم عبواتك وصناديقك وحمّل ملفات الطباعة بضغطة زر." />
+    <meta property="og:url" content="https://qadora.vercel.app/" />
+    <meta property="og:image" content="https://qadora.vercel.app/images/tuck-end-box.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Packwave — 3D Packaging Editor" />
+    <meta name="twitter:description" content="صمم عبواتك وصناديقك وحمّل ملفات الطباعة بضغطة زر." />
+    <meta name="twitter:image" content="https://qadora.vercel.app/images/tuck-end-box.png" />
+
+    <!-- Performance: preconnect to third-party origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="preconnect" href="https://cdn.pacdora.com" />
+    <link rel="preconnect" href="https://cloud.pacdora.com" />
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        corePlugins: {
-          preflight: false, // Prevent Tailwind from resetting global app styles
-        }
-      }
-    </script>
+    <!-- Font Awesome loaded non-render-blocking (icons pop in after first paint) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
   </head>
   <body>
     <div id="root"></div>

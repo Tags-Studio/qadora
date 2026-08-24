@@ -12,6 +12,7 @@ export default function HomePage({ onNavigate }) {
       color: 'purple',
       icon: '📦',
       images: ['📦', '👕', '🎒'],
+      soon: true,
     },
     {
       id: '3d-modeling',
@@ -20,16 +21,21 @@ export default function HomePage({ onNavigate }) {
       color: 'teal',
       icon: '🎨',
       images: ['🎨', '🖼️', '✨'],
+      soon: true,
     },
     {
       id: 'dieline',
       title: 'Dieline Template Maker',
-      description: 'Browse 3,000+ Free Dieline Templates',
+      description: 'Browse 1,900+ Free Dieline Templates',
       color: 'blue',
       icon: '📄',
       badges: ['AI', 'PDF', 'DXF'],
     },
   ];
+
+  const handleCardActivate = (section) => {
+    if (!section.soon) onNavigate(section.id);
+  };
 
   return (
     <div className="home-page">
@@ -51,18 +57,30 @@ export default function HomePage({ onNavigate }) {
         {sections.map((section) => (
           <div
             key={section.id}
-            className={`section-card card-${section.color}`}
+            className={`section-card card-${section.color} ${section.soon ? 'card-soon' : ''}`}
+            role="button"
+            tabIndex={0}
+            aria-label={section.soon ? `${section.title} (coming soon)` : section.title}
             onMouseEnter={() => setHoveredCard(section.id)}
             onMouseLeave={() => setHoveredCard(null)}
-            onClick={() => onNavigate(section.id)}
+            onClick={() => handleCardActivate(section)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleCardActivate(section);
+              }
+            }}
           >
             {/* Card Content */}
             <div className="card-header">
               <h2 className="card-title">{section.title}</h2>
-              <button className="card-arrow" aria-label="Go to section">
+              <button className="card-arrow" aria-label="Go to section" tabIndex={-1}>
                 <span>→</span>
               </button>
             </div>
+
+            {/* Coming Soon badge */}
+            {section.soon && <span className="card-soon-badge">Coming Soon</span>}
 
             {/* Card Images/Badges */}
             <div className="card-content">
