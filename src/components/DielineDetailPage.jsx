@@ -683,12 +683,13 @@ export default function DielineDetailPage({ onBack }) {
 }
 
 // ---- Parametric 3D with fold animation ----
-// Builds a flat unfolded net at foldProgress=0 and a closed box at foldProgress=1.
-// Each wall panel is parented to a hinge Group at its fold edge; rotating the
-// hinge folds the panel (and any children) into the final 3D shape.
+// foldProgress 0 = flat dieline net lying on the ground, 1 = fully closed box.
+// Every panel starts lying flat and is parented to a hinge Group at its real
+// fold line; the closed quaternion rotates it (cascading through parent
+// hinges) into its folded position, so the animation follows the dieline.
 function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, foldProgress) {
-  const hw = W / 2, hl = L / 2, hh = H / 2;
-  const shape = TYPE_TO_SHAPE[type] || 'closed';
+  const hw = W / 2, hl = L / 2;
+  const Q = Math.PI / 2;
   foldRef.current = [];
 
   const makePanel = (w, h) => {
@@ -698,125 +699,154 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
     return { mesh, line };
   };
 
-  // Create a hinge group at hingePos with a panel offset from it.
-  // foldAngle is the rotation around X to reach the closed position.
-  const addHingePanel = (w, h, hingePos, panelOffset, foldAngle) => {
-    const hinge = new THREE.Group();
-    hinge.position.copy(hingePos);
+  // A panel lying flat on the ground (normal +Y), extending `h` along dir
+  const flatPanel = (w, h, dir) => {
     const { mesh, line } = makePanel(w, h);
-    mesh.position.copy(panelOffset);
-    line.position.copy(panelOffset);
+    if (dir === '+z') { mesh.rotation.x = Q; mesh.position.set(0, 0, h / 2); }
+    else if (dir === '-z') { mesh.rotation.x = -Q; mesh.position.set(0, 0, -h / 2); }
+    else if (dir === '+x') { mesh.rotation.z = -Q; mesh.position.set(h / 2, 0, 0); }
+    else { mesh.rotation.z = Q; mesh.position.set(-h / 2, 0, 0); }
+    line.rotation.copy(mesh.rotation);
+    line.position.copy(mesh.position);
+    return { mesh, line };
+  };
+
+  // Hinge group at pos holding a flat panel; closedEuler = folded rotation
+  const addHinge = (parent, pos, w, h, dir, closedEuler) => {
+    const hinge = new THREE.Group();
+    hinge.position.copy(pos);
+    const { mesh, line } = flatPanel(w, h, dir);
     hinge.add(mesh);
     hinge.add(line);
-    group.add(hinge);
-    const closedQ = new THREE.Quaternion();
-    closedQ.setFromEuler(new THREE.Euler(foldAngle, 0, 0));
+    parent.add(hinge);
+    const closedQ = new THREE.Quaternion().setFromEuler(
+      new THREE.Euler(closedEuler[0], closedEuler[1], closedEuler[2])
+    );
     foldRef.current.push({ type: 'rotate', node: hinge, closedQuaternion: closedQ });
-    const identity = new THREE.Quaternion();
-    hinge.quaternion.copy(identity).slerp(closedQ, foldProgress);
+    hinge.quaternion.copy(new THREE.Quaternion()).slerp(closedQ, foldProgress);
     return hinge;
   };
 
-  if (shape === 'sleeve' || shape === 'tray' || shape === 'closed' || shape === 'window' || shape === 'hanger' || shape === 'auto-lock' || shape === 'two-piece') {
-    // Base panel (bottom) - lies flat
+  const addBase = () => {
     const base = makePanel(W, L);
-    base.mesh.rotation.set(-Math.PI / 2, 0, 0);
+    base.mesh.rotation.set(-Q, 0, 0);
     base.line.rotation.copy(base.mesh.rotation);
     group.add(base.mesh);
     group.add(base.line);
+  };
 
-    // Four walls hinged to base edges, folding up 90 degrees
-    addHingePanel(W, H, new THREE.Vector3(0, 0, hl), new THREE.Vector3(0, H / 2, 0), -Math.PI / 2);
-    addHingePanel(W, H, new THREE.Vector3(0, 0, -hl), new THREE.Vector3(0, H / 2, 0), Math.PI / 2);
-    addHingePanel(L, H, new THREE.Vector3(-hw, 0, 0), new THREE.Vector3(0, H / 2, 0), Math.PI / 2);
-    addHingePanel(L, H, new THREE.Vector3(hw, 0, 0), new THREE.Vector3(0, H / 2, 0), -Math.PI / 2);
+  // Four walls hinged to the base edges: lying flat at 0, standing at 1
+  const addWalls = () => {
+    const front = addHinge(group, new THREE.Vector3(0, 0, hl), W, H, '+z', [-Q, 0, 0]);
+    const back = addHinge(group, new THREE.Vector3(0, 0, -hl), W, H, '-z', [Q, 0, 0]);
+    const left = addHinge(group, new THREE.Vector3(-hw, 0, 0), L, H, '-x', [0, 0, -Q]);
+    const right = addHinge(group, new THREE.Vector3(hw, 0, 0), L, H, '+x', [0, 0, Q]);
+    return { front, back, left, right };
+  };
 
-    if (shape === 'closed' || shape === 'auto-lock') {
-      // Top lid hinged to front wall top edge, folds over
-      const lidHinge = new THREE.Group();
-      lidHinge.position.set(0, H, hl);
-      const { mesh: lidMesh, line: lidLine } = makePanel(W, L);
-      lidMesh.position.set(0, 0, -L / 2);
-      lidLine.position.copy(lidMesh.position);
-      lidHinge.add(lidMesh);
-      lidHinge.add(lidLine);
-      group.add(lidHinge);
-      const lidQ = new THREE.Quaternion();
-      lidQ.setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0));
-      foldRef.current.push({ type: 'rotate', node: lidHinge, closedQuaternion: lidQ });
-      lidHinge.quaternion.copy(new THREE.Quaternion()).slerp(lidQ, foldProgress);
+  // Wings on the side walls folding inward over the opening
+  const addDustFlaps = (walls) => {
+    const depth = Math.max(W / 2 - 1, 4);
+    addHinge(walls.right, new THREE.Vector3(H, 0, 0), depth, L, '+x', [0, 0, Q]);
+    addHinge(walls.left, new THREE.Vector3(-H, 0, 0), depth, L, '-x', [0, 0, -Q]);
+  };
+
+  const TUCK_OVER = Math.PI + 0.35;   // folds past vertical: tucked inside
+  const tuckCarton = (topSide, bottomTuck) => {
+    addBase();
+    const walls = addWalls();
+    addDustFlaps(walls);
+    if (topSide === 'front') {
+      addHinge(walls.front, new THREE.Vector3(0, 0, H), W, L / 2, '+z', [TUCK_OVER, 0, 0]);
+    } else if (topSide === 'back') {
+      addHinge(walls.back, new THREE.Vector3(0, 0, -H), W, L / 2, '-z', [-(Math.PI + 0.35), 0, 0]);
     }
-
-    if (shape === 'two-piece') {
-      // Separate telescope lid
-      const lidH = Math.max(H * 0.4, 20);
-      const lidGroup = new THREE.Group();
-      lidGroup.position.set(0, H + lidH / 2, 0);
-      const lidBase = makePanel(W, L);
-      lidBase.mesh.rotation.set(-Math.PI / 2, 0, 0);
-      lidBase.line.rotation.copy(lidBase.mesh.rotation);
-      lidGroup.add(lidBase.mesh);
-      lidGroup.add(lidBase.line);
-      const lidWalls = [
-        [W, lidH, 0, 0, hl, -Math.PI / 2, 0, 0],
-        [W, lidH, 0, 0, -hl, Math.PI / 2, 0, 0],
-        [L, lidH, -hw, 0, 0, 0, -Math.PI / 2, 0],
-        [L, lidH, hw, 0, 0, 0, Math.PI / 2, 0],
-      ];
-      for (const [w, h, px, py, pz, rx, ry, rz] of lidWalls) {
-        const { mesh: wm, line: wl } = makePanel(w, h);
-        wm.position.set(px, py, pz); wm.rotation.set(rx, ry, rz);
-        wl.position.copy(wm.position); wl.rotation.copy(wm.rotation);
-        lidGroup.add(wm);
-        lidGroup.add(wl);
-      }
-      group.add(lidGroup);
+    if (bottomTuck) {
+      addHinge(walls.front, new THREE.Vector3(0, 0, 0), W, L / 2, '+z', [-Q, 0, 0]);
     }
-  } else if (shape === 'gable') {
-    const base = makePanel(W, L);
-    base.mesh.rotation.set(-Math.PI / 2, 0, 0);
-    base.line.rotation.copy(base.mesh.rotation);
-    group.add(base.mesh);
-    group.add(base.line);
-    addHingePanel(W, H, new THREE.Vector3(0, 0, hl), new THREE.Vector3(0, H / 2, 0), -Math.PI / 2);
-    addHingePanel(W, H, new THREE.Vector3(0, 0, -hl), new THREE.Vector3(0, H / 2, 0), Math.PI / 2);
-    addHingePanel(L, H, new THREE.Vector3(-hw, 0, 0), new THREE.Vector3(0, H / 2, 0), Math.PI / 2);
-    addHingePanel(L, H, new THREE.Vector3(hw, 0, 0), new THREE.Vector3(0, H / 2, 0), -Math.PI / 2);
-    // Gable roof
+  };
+
+  if (type === 'straight-tuck' || type === 'window' || type === 'hanger') {
+    tuckCarton('front', true);
+  } else if (type === 'reverse-tuck') {
+    tuckCarton('back', true);
+  } else if (type === 'auto-lock') {
+    tuckCarton('front', false); // crash-lock base stays glued shut
+  } else if (type === 'mailer') {
+    // Hinged-lid mailer: lid folds forward from the back wall, lip down the front
+    addBase();
+    const walls = addWalls();
+    addDustFlaps(walls);
+    const lidHinge = addHinge(walls.back, new THREE.Vector3(0, 0, -H), W, L, '-z', [Q, 0, 0]);
+    addHinge(lidHinge, new THREE.Vector3(0, 0, -L), W, H, '-z', [Q, 0, 0]);
+  } else if (type === 'tray') {
+    // Open tray: base + four walls
+    addBase();
+    addWalls();
+  } else if (type === 'two-piece') {
+    // Base tray + separate lid tray floating above
+    addBase();
+    addWalls();
+    const lidH = Math.max(H * 0.4, 20);
+    const lid = new THREE.Group();
+    lid.position.set(0, H + lidH + 8, 0);
+    group.add(lid);
+    const lidBase = makePanel(W, L);
+    lidBase.mesh.rotation.set(-Q, 0, 0);
+    lidBase.line.rotation.copy(lidBase.mesh.rotation);
+    lid.add(lidBase.mesh);
+    lid.add(lidBase.line);
+    const lidWalls = [
+      [W, [0, hl], 0],
+      [W, [0, -hl], 0],
+      [L, [-hw, 0], Q],
+      [L, [hw, 0], -Q],
+    ];
+    for (const [w, [px, pz], rY] of lidWalls) {
+      const { mesh, line } = makePanel(w, lidH);
+      mesh.rotation.y = rY;
+      mesh.position.set(px, lidH / 2, pz);
+      line.rotation.copy(mesh.rotation);
+      line.position.copy(mesh.position);
+      lid.add(mesh);
+      lid.add(line);
+    }
+  } else if (type === 'gable') {
+    // Base + walls + roof panels meeting at a ridge along X
+    addBase();
+    const walls = addWalls();
     const rise = Math.max(H * 0.45, 18);
     const roofLen = Math.hypot(hl, rise);
-    const roofAngle = Math.atan2(rise, hl);
-    const leftRoof = new THREE.Group();
-    leftRoof.position.set(0, H, 0);
-    const { mesh: lrm, line: lrl } = makePanel(W, roofLen);
-    lrm.position.set(0, 0, -roofLen / 2);
-    lrl.position.copy(lrm.position);
-    leftRoof.add(lrm);
-    leftRoof.add(lrl);
-    group.add(leftRoof);
-    const lrq = new THREE.Quaternion();
-    lrq.setFromEuler(new THREE.Euler(-roofAngle, 0, 0));
-    foldRef.current.push({ type: 'rotate', node: leftRoof, closedQuaternion: lrq });
-    leftRoof.quaternion.copy(new THREE.Quaternion()).slerp(lrq, foldProgress);
-    const rightRoof = new THREE.Group();
-    rightRoof.position.set(0, H, 0);
-    const { mesh: rrm, line: rrl } = makePanel(W, roofLen);
-    rrm.position.set(0, 0, roofLen / 2);
-    rrl.position.copy(rrm.position);
-    rightRoof.add(rrm);
-    rightRoof.add(rrl);
-    group.add(rightRoof);
-    const rrq = new THREE.Quaternion();
-    rrq.setFromEuler(new THREE.Euler(roofAngle, 0, 0));
-    foldRef.current.push({ type: 'rotate', node: rightRoof, closedQuaternion: rrq });
-    rightRoof.quaternion.copy(new THREE.Quaternion()).slerp(rrq, foldProgress);
-  } else if (shape === 'hexagonal') {
+    addHinge(walls.front, new THREE.Vector3(0, 0, H), W, roofLen, '+z', [-Math.atan2(hl, rise), 0, 0]);
+    addHinge(walls.back, new THREE.Vector3(0, 0, -H), W, roofLen, '-z', [Math.atan2(hl, rise), 0, 0]);
+  } else if (type === 'sleeve') {
+    // Rectangular tube: 4 panels chained by vertical fold lines (no base/lid)
+    const p1 = flatPanel(W, H, '+z');
+    group.add(p1.mesh);
+    group.add(p1.line);
+    let parent = group;
+    let edgeX = W / 2;
+    for (const w of [L, W, L]) {
+      const hinge = new THREE.Group();
+      hinge.position.set(edgeX, 0, H / 2);
+      parent.add(hinge);
+      const { mesh, line } = flatPanel(w, H, '+x');
+      hinge.add(mesh);
+      hinge.add(line);
+      const closedQ = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, Q));
+      foldRef.current.push({ type: 'rotate', node: hinge, closedQuaternion: closedQ });
+      hinge.quaternion.copy(new THREE.Quaternion()).slerp(closedQ, foldProgress);
+      parent = hinge;
+      edgeX = H;
+    }
+  } else if (type === 'hexagonal') {
+    // Hexagonal base + 6 walls; alignment group keeps each wall's edge angle
+    const R = Math.max(W, L) / 2, n = 6;
     const base = makePanel(W, L);
-    base.mesh.rotation.set(-Math.PI / 2, 0, 0);
+    base.mesh.rotation.set(-Q, 0, 0);
     base.line.rotation.copy(base.mesh.rotation);
     group.add(base.mesh);
     group.add(base.line);
-    const R = Math.max(W, L) / 2, n = 6;
     for (let i = 0; i < n; i++) {
       const a0 = (i / n) * Math.PI * 2, a1 = ((i + 1) / n) * Math.PI * 2;
       const x0 = Math.cos(a0) * R, z0 = Math.sin(a0) * R;
@@ -824,25 +854,22 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
       const side = Math.hypot(x1 - x0, z1 - z0);
       const midX = (x0 + x1) / 2, midZ = (z0 + z1) / 2;
       const ang = Math.atan2(z1 - z0, x1 - x0);
-      const hinge = new THREE.Group();
-      hinge.position.set(midX, 0, midZ);
-      hinge.rotation.y = -ang + Math.PI / 2;
-      const { mesh, line } = makePanel(side, H);
-      mesh.position.set(0, H / 2, 0);
-      line.position.copy(mesh.position);
-      hinge.add(mesh);
-      hinge.add(line);
-      group.add(hinge);
-      const closedQ = new THREE.Quaternion();
-      closedQ.setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
-      foldRef.current.push({ type: 'rotate', node: hinge, closedQuaternion: closedQ });
-      hinge.quaternion.copy(new THREE.Quaternion()).slerp(closedQ, foldProgress);
+      const align = new THREE.Group();
+      align.position.set(midX, 0, midZ);
+      align.rotation.y = -ang + Q;
+      group.add(align);
+      addHinge(align, new THREE.Vector3(0, 0, 0), side, H, '+z', [-Q, 0, 0]);
     }
-  } else if (shape === 'pillow') {
+  } else if (type === 'pillow') {
     const geo = new THREE.CylinderGeometry(H / 2, H / 2, W, 24);
     const mesh = new THREE.Mesh(geo, mat);
     mesh.scale.set(1, 1, 0.55);
     mesh.rotation.z = Math.PI / 2;
     group.add(mesh);
+  } else {
+    // Generic lidded box fallback
+    addBase();
+    const walls = addWalls();
+    addHinge(walls.back, new THREE.Vector3(0, 0, -H), W, L, '-z', [Q, 0, 0]);
   }
 }
