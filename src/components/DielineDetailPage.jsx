@@ -305,14 +305,17 @@ export default function DielineDetailPage({ onBack }) {
     obj.controls.target.set(0, 0, 0); obj.controls.update();
   }, [preset.type, L, W, H, dieline?.id]);
 
-  // Fold animation: quaternion slerp per hinge (avoids Euler flips and
-  // preserves the parent-child cascade)
+  // Fold animation: each hinge folds within its own [start, end] slice of
+  // the slider (staggered: walls, then wings, then lids). Quaternion slerp
+  // avoids Euler flips and preserves the parent-child cascade.
   useEffect(() => {
     if (paramFoldRef.current.length) {
       for (const joint of paramFoldRef.current) {
         if (joint.type === 'rotate') {
+          const [s, e] = joint.range || [0, 1];
+          const t = Math.min(1, Math.max(0, (foldProgress - s) / (e - s)));
           const identity = new THREE.Quaternion();
-          joint.node.quaternion.copy(identity).slerp(joint.closedQuaternion, foldProgress);
+          joint.node.quaternion.copy(identity).slerp(joint.closedQuaternion, t);
           joint.node.updateMatrix();
         }
       }
@@ -614,8 +617,10 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
     return { mesh, line };
   };
 
-  // Hinge group at pos holding a flat panel; closedEuler = folded rotation
-  const addHinge = (parent, pos, w, h, dir, closedEuler) => {
+  // Hinge group at pos holding a flat panel; closedEuler = folded rotation.
+  // range = [start, end] slice of foldProgress over which this joint folds
+  // (staggered folding: walls first, then wings, then lids — like a real box).
+  const addHinge = (parent, pos, w, h, dir, closedEuler, range = [0, 1]) => {
     const hinge = new THREE.Group();
     hinge.position.copy(pos);
     const { mesh, line } = flatPanel(w, h, dir);
@@ -625,8 +630,9 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
     const closedQ = new THREE.Quaternion().setFromEuler(
       new THREE.Euler(closedEuler[0], closedEuler[1], closedEuler[2])
     );
-    foldRef.current.push({ type: 'rotate', node: hinge, closedQuaternion: closedQ });
-    hinge.quaternion.copy(new THREE.Quaternion()).slerp(closedQ, foldProgress);
+    foldRef.current.push({ type: 'rotate', node: hinge, closedQuaternion: closedQ, range });
+    const t = Math.min(1, Math.max(0, (foldProgress - range[0]) / (range[1] - range[0])));
+    hinge.quaternion.copy(new THREE.Quaternion()).slerp(closedQ, t);
     return hinge;
   };
 
@@ -639,19 +645,20 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
   };
 
   // Four walls hinged to the base edges: lying flat at 0, standing at 1
+  const WALL_RANGE = [0, 0.6];
   const addWalls = () => {
-    const front = addHinge(group, new THREE.Vector3(0, 0, hl), W, H, '+z', [-Q, 0, 0]);
-    const back = addHinge(group, new THREE.Vector3(0, 0, -hl), W, H, '-z', [Q, 0, 0]);
-    const left = addHinge(group, new THREE.Vector3(-hw, 0, 0), L, H, '-x', [0, 0, -Q]);
-    const right = addHinge(group, new THREE.Vector3(hw, 0, 0), L, H, '+x', [0, 0, Q]);
+    const front = addHinge(group, new THREE.Vector3(0, 0, hl), W, H, '+z', [-Q, 0, 0], WALL_RANGE);
+    const back = addHinge(group, new THREE.Vector3(0, 0, -hl), W, H, '-z', [Q, 0, 0], WALL_RANGE);
+    const left = addHinge(group, new THREE.Vector3(-hw, 0, 0), L, H, '-x', [0, 0, -Q], WALL_RANGE);
+    const right = addHinge(group, new THREE.Vector3(hw, 0, 0), L, H, '+x', [0, 0, Q], WALL_RANGE);
     return { front, back, left, right };
   };
 
   // Wings on the side walls folding inward over the opening
   const addDustFlaps = (walls) => {
     const depth = Math.max(W / 2 - 1, 4);
-    addHinge(walls.right, new THREE.Vector3(H, 0, 0), depth, L, '+x', [0, 0, Q]);
-    addHinge(walls.left, new THREE.Vector3(-H, 0, 0), depth, L, '-x', [0, 0, -Q]);
+    addHinge(walls.right, new THREE.Vector3(H, 0, 0), depth, L, '+x', [0, 0, Q], [0.55, 0.85]);
+    addHinge(walls.left, new THREE.Vector3(-H, 0, 0), depth, L, '-x', [0, 0, -Q], [0.55, 0.85]);
   };
 
   const TUCK_OVER = Math.PI + 0.35;   // folds past vertical: tucked inside
@@ -660,12 +667,12 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
     const walls = addWalls();
     addDustFlaps(walls);
     if (topSide === 'front') {
-      addHinge(walls.front, new THREE.Vector3(0, 0, H), W, L / 2, '+z', [TUCK_OVER, 0, 0]);
+      addHinge(walls.front, new THREE.Vector3(0, 0, H), W, L / 2, '+z', [TUCK_OVER, 0, 0], [0.7, 1]);
     } else if (topSide === 'back') {
-      addHinge(walls.back, new THREE.Vector3(0, 0, -H), W, L / 2, '-z', [-(Math.PI + 0.35), 0, 0]);
+      addHinge(walls.back, new THREE.Vector3(0, 0, -H), W, L / 2, '-z', [-(Math.PI + 0.35), 0, 0], [0.7, 1]);
     }
     if (bottomTuck) {
-      addHinge(walls.front, new THREE.Vector3(0, 0, 0), W, L / 2, '+z', [-Q, 0, 0]);
+      addHinge(walls.front, new THREE.Vector3(0, 0, 0), W, L / 2, '+z', [-Q, 0, 0], [0.6, 0.9]);
     }
   };
 
@@ -680,8 +687,8 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
     addBase();
     const walls = addWalls();
     addDustFlaps(walls);
-    const lidHinge = addHinge(walls.back, new THREE.Vector3(0, 0, -H), W, L, '-z', [Q, 0, 0]);
-    addHinge(lidHinge, new THREE.Vector3(0, 0, -L), W, H, '-z', [Q, 0, 0]);
+    const lidHinge = addHinge(walls.back, new THREE.Vector3(0, 0, -H), W, L, '-z', [Q, 0, 0], [0.7, 0.95]);
+    addHinge(lidHinge, new THREE.Vector3(0, 0, -L), W, H, '-z', [Q, 0, 0], [0.9, 1]);
   } else if (type === 'tray') {
     // Open tray: base + four walls
     addBase();
@@ -720,8 +727,8 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
     const walls = addWalls();
     const rise = Math.max(H * 0.45, 18);
     const roofLen = Math.hypot(hl, rise);
-    addHinge(walls.front, new THREE.Vector3(0, 0, H), W, roofLen, '+z', [-Math.atan2(hl, rise), 0, 0]);
-    addHinge(walls.back, new THREE.Vector3(0, 0, -H), W, roofLen, '-z', [Math.atan2(hl, rise), 0, 0]);
+    addHinge(walls.front, new THREE.Vector3(0, 0, H), W, roofLen, '+z', [-Math.atan2(hl, rise), 0, 0], [0.65, 1]);
+    addHinge(walls.back, new THREE.Vector3(0, 0, -H), W, roofLen, '-z', [Math.atan2(hl, rise), 0, 0], [0.65, 1]);
   } else if (type === 'sleeve') {
     // Rectangular tube: 4 panels chained by vertical fold lines (no base/lid)
     const p1 = flatPanel(W, H, '+z');
@@ -729,6 +736,8 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
     group.add(p1.line);
     let parent = group;
     let edgeX = W / 2;
+    const sleeveRanges = [[0, 0.5], [0.2, 0.7], [0.45, 1]];
+    let si = 0;
     for (const w of [L, W, L]) {
       const hinge = new THREE.Group();
       hinge.position.set(edgeX, 0, H / 2);
@@ -736,9 +745,11 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
       const { mesh, line } = flatPanel(w, H, '+x');
       hinge.add(mesh);
       hinge.add(line);
+      const range = sleeveRanges[si++];
       const closedQ = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, Q));
-      foldRef.current.push({ type: 'rotate', node: hinge, closedQuaternion: closedQ });
-      hinge.quaternion.copy(new THREE.Quaternion()).slerp(closedQ, foldProgress);
+      foldRef.current.push({ type: 'rotate', node: hinge, closedQuaternion: closedQ, range });
+      const t = Math.min(1, Math.max(0, (foldProgress - range[0]) / (range[1] - range[0])));
+      hinge.quaternion.copy(new THREE.Quaternion()).slerp(closedQ, t);
       parent = hinge;
       edgeX = H;
     }
@@ -761,7 +772,7 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
       align.position.set(midX, 0, midZ);
       align.rotation.y = -ang + Q;
       group.add(align);
-      addHinge(align, new THREE.Vector3(0, 0, 0), side, H, '+z', [-Q, 0, 0]);
+      addHinge(align, new THREE.Vector3(0, 0, 0), side, H, '+z', [-Q, 0, 0], WALL_RANGE);
     }
   } else if (type === 'pillow') {
     const geo = new THREE.CylinderGeometry(H / 2, H / 2, W, 24);
@@ -773,6 +784,6 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
     // Generic lidded box fallback
     addBase();
     const walls = addWalls();
-    addHinge(walls.back, new THREE.Vector3(0, 0, -H), W, L, '-z', [Q, 0, 0]);
+    addHinge(walls.back, new THREE.Vector3(0, 0, -H), W, L, '-z', [Q, 0, 0], [0.7, 1]);
   }
 }
