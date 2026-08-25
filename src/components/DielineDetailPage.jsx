@@ -610,8 +610,18 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
     const { mesh, line } = makePanel(w, h);
     if (dir === '+z') { mesh.rotation.x = Q; mesh.position.set(0, 0, h / 2); }
     else if (dir === '-z') { mesh.rotation.x = -Q; mesh.position.set(0, 0, -h / 2); }
-    else if (dir === '+x') { mesh.rotation.z = -Q; mesh.position.set(h / 2, 0, 0); }
-    else { mesh.rotation.z = Q; mesh.position.set(-h / 2, 0, 0); }
+    else if (dir === '+x') {
+      // basis: local X(width) -> world Z, local Y(height) -> world +X, normal -> +Y
+      mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(
+        new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0)
+      ));
+      mesh.position.set(h / 2, 0, 0);
+    } else {
+      mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(
+        new THREE.Vector3(0, 0, 1), new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, -1, 0)
+      ));
+      mesh.position.set(-h / 2, 0, 0);
+    }
     line.rotation.copy(mesh.rotation);
     line.position.copy(mesh.position);
     return { mesh, line };
@@ -657,8 +667,10 @@ function buildParametricFold3D(group, mat, edgeMat, type, L, W, H, foldRef, fold
   // Wings on the side walls folding inward over the opening
   const addDustFlaps = (walls) => {
     const depth = Math.max(W / 2 - 1, 4);
-    addHinge(walls.right, new THREE.Vector3(H, 0, 0), depth, L, '+x', [0, 0, Q], [0.55, 0.85]);
-    addHinge(walls.left, new THREE.Vector3(-H, 0, 0), depth, L, '-x', [0, 0, -Q], [0.55, 0.85]);
+    // flatPanel(w, h, dir): w runs along the hinge (Z), h extends along dir —
+    // so the flap extends `depth` inward with width L, NOT L inward.
+    addHinge(walls.right, new THREE.Vector3(H, 0, 0), L, depth, '+x', [0, 0, Q], [0.55, 0.85]);
+    addHinge(walls.left, new THREE.Vector3(-H, 0, 0), L, depth, '-x', [0, 0, -Q], [0.55, 0.85]);
   };
 
   const TUCK_OVER = Math.PI + 0.35;   // folds past vertical: tucked inside
