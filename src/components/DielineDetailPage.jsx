@@ -176,14 +176,12 @@ export default function DielineDetailPage({ onBack }) {
   // Real pacdora geometry state
   const [status, setStatus] = useState('idle'); // idle | loading | real | fallback
   const [real2D, setReal2D] = useState(null);    // { cutPaths:[], creasePaths:[], vb:{} }
-  const realSceneJSON = useRef(null);
-  const rawShapesRef = useRef(null);  // raw Pacdora shapes for bleed offset
+    const rawShapesRef = useRef(null);  // raw Pacdora shapes for bleed offset
   const classifiedRef = useRef(null); // { cutContours, creaseContours, allContours, holes, vb }
 
   // Original dimensions for scaling
   const origDims = useRef(null);   // { L, W, H } from pacdora when real geometry loads
-  const orig3DSize = useRef(null);  // bounding box of loaded 3D model
-
+  
   // SVG pan/zoom
   const [svgScale, setSvgScale] = useState(1);
   const [svgPan, setSvgPan] = useState({ x: 0, y: 0 });
@@ -194,23 +192,10 @@ export default function DielineDetailPage({ onBack }) {
   // 3D
   const canvasRef = useRef(null);
   const three = useRef(null);
-  const realObjRef = useRef(null);
-  const foldJointsRef = useRef([]); // template-specific hinge quaternions from pacdora hierarchy
-  const paramFoldRef = useRef([]);  // parametric fold joints for fallback mode
+  const paramFoldRef = useRef([]);  // parametric fold joints
 
   const gen = GENERATORS[preset.type] || GENERATORS['straight-tuck'];
   const paramData = useMemo(() => gen(L, W, H, T), [gen, L, W, H, T]);
-
-  // Dimension scale factors (real mode only)
-  const dimScale = useMemo(() => {
-    if (status !== 'real' || !origDims.current) return { x: 1, y: 1, z: 1 };
-    const o = origDims.current;
-    return {
-      x: o.L ? L / o.L : 1,
-      y: o.H ? H / o.H : 1,
-      z: o.W ? W / o.W : 1,
-    };
-  }, [L, W, H, status]);
 
   // 2D sheet scale (approximate: sheet X ~ W, sheet Y ~ L + 2H)
   const dim2D = useMemo(() => {
@@ -225,7 +210,7 @@ export default function DielineDetailPage({ onBack }) {
   // ---- Fetch real pacdora geometry when a card opens ----
   useEffect(() => {
     let cancelled = false;
-    setReal2D(null); realSceneJSON.current = null; rawShapesRef.current = null; classifiedRef.current = null; origDims.current = null; orig3DSize.current = null;
+    setReal2D(null); rawShapesRef.current = null; classifiedRef.current = null; origDims.current = null;
     setL(preset.L); setW(preset.W); setH(preset.H); setT(preset.T);
 
     if (!dieline?.num) { setStatus('fallback'); return; }
@@ -252,7 +237,6 @@ export default function DielineDetailPage({ onBack }) {
         const classified = classifyContours(shapes);
         classifiedRef.current = classified;
         setReal2D(classified);
-        realSceneJSON.current = scene;
         rawShapesRef.current = shapes;
 
         // Store original dimensions for scaling
@@ -305,95 +289,26 @@ export default function DielineDetailPage({ onBack }) {
     // loading guard passes, so [] deps would leave the 3D scene dead.
   }, [dieline === null]);
 
-  const frameObject = (object) => {
-    const obj = three.current; if (!obj) return;
-    const box = new THREE.Box3().setFromObject(object);
-    const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
-    object.position.sub(center);
-    const maxDim = Math.max(size.x, size.y, size.z) || 100;
-    obj.cam.position.set(maxDim * 1.3, maxDim * 1.0, maxDim * 1.7);
-    obj.cam.near = maxDim / 100; obj.cam.far = maxDim * 100; obj.cam.updateProjectionMatrix();
-    obj.controls.target.set(0, 0, 0); obj.controls.update();
-    return size;
-  };
-
-  // Build/replace 3D content whenever geometry source changes
+  // Build/replace 3D content. The 3D preview is always parametric: the
+  // pacdora scene JSON stores an arbitrary mid-animation pose (not a closed
+  // box), so it is only used for the 2D dieline view.
   useEffect(() => {
     const obj = three.current; if (!obj) return;
     while (obj.group.children.length) obj.group.remove(obj.group.children[0]);
-    realObjRef.current = null;
-    orig3DSize.current = null;
-
-    if (status === 'real' && realSceneJSON.current) {
-      try {
-        const loader = new THREE.ObjectLoader();
-        loader.parse(realSceneJSON.current, (loaded) => {
-          if (!three.current) return;
-          obj.group.add(loaded);
-          realObjRef.current = loaded;
-          // Pacdora encodes each template's folding mechanism in nested hinge
-          // meshes named like H_FB, FB_F, F_FT, etc. Panel meshes themselves
-          // stay identity-rotated; the hinge quaternions carry the real motion.
-          foldJointsRef.current = [];
-          const identity = new THREE.Quaternion();
-          loaded.traverse((child) => {
-            if (child.isMesh && child.name.includes('_')) {
-              const closedQuaternion = child.quaternion.clone();
-              foldJointsRef.current.push({ node: child, closedQuaternion });
-              child.quaternion.copy(identity).slerp(closedQuaternion, foldProgress);
-            }
-          });
-          const size = frameObject(loaded);
-          orig3DSize.current = size ? { x: size.x, y: size.y, z: size.z } : null;
-          // Apply current dim scale
-          if (orig3DSize.current) {
-            loaded.scale.set(dimScale.x, dimScale.y, dimScale.z);
-          }
-          if (!dieline?.L && size) {
-            setL(Math.round(size.x)); setH(Math.round(size.y)); setW(Math.round(size.z));
-          }
-        });
-      } catch (e) { /* fall through to parametric */ }
-    } else if (status === 'fallback') {
-      const mat = new THREE.MeshPhysicalMaterial({ color: 0xdcbf94, roughness: 0.8, metalness: 0, side: THREE.DoubleSide, transparent: true, opacity: 0.96 });
-      const edgeMat = new THREE.LineBasicMaterial({ color: 0x6b5636 });
-      paramFoldRef.current = [];
-      buildParametricFold3D(obj.group, mat, edgeMat, preset.type, L, W, H, paramFoldRef, foldProgress);
-      const maxDim = Math.max(L, W, H);
-      obj.cam.position.set(maxDim * 1.3, maxDim * 1.0, maxDim * 1.7);
-      obj.cam.near = 0.1; obj.cam.far = maxDim * 100; obj.cam.updateProjectionMatrix();
-      obj.controls.target.set(0, 0, 0); obj.controls.update();
-    }
-  }, [status, dieline?.id]);
-
-  // Scale 3D model when dims change (real mode only)
-  useEffect(() => {
-    if (status !== 'real' || !realObjRef.current) return;
-    realObjRef.current.scale.set(dimScale.x, dimScale.y, dimScale.z);
-    // Re-frame after scale change
-    const obj = three.current; if (!obj || !orig3DSize.current) return;
-    const maxDim = Math.max(
-      orig3DSize.current.x * dimScale.x,
-      orig3DSize.current.y * dimScale.y,
-      orig3DSize.current.z * dimScale.z
-    ) || 100;
+    const mat = new THREE.MeshPhysicalMaterial({ color: 0xdcbf94, roughness: 0.8, metalness: 0, side: THREE.DoubleSide, transparent: true, opacity: 0.96 });
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x6b5636 });
+    paramFoldRef.current = [];
+    buildParametricFold3D(obj.group, mat, edgeMat, preset.type, L, W, H, paramFoldRef, foldProgress);
+    const maxDim = Math.max(L, W, H);
     obj.cam.position.set(maxDim * 1.3, maxDim * 1.0, maxDim * 1.7);
-    obj.cam.near = maxDim / 100; obj.cam.far = maxDim * 100; obj.cam.updateProjectionMatrix();
+    obj.cam.near = 0.1; obj.cam.far = maxDim * 100; obj.cam.updateProjectionMatrix();
     obj.controls.target.set(0, 0, 0); obj.controls.update();
-  }, [dimScale, status]);
+  }, [preset.type, L, W, H, dieline?.id]);
 
-  // Fold animation: use every template's own nested hinge quaternions.
-  // Quaternion slerp avoids Euler flips and preserves the parent-child cascade.
-  // Also handles parametric fallback fold animation.
+  // Fold animation: quaternion slerp per hinge (avoids Euler flips and
+  // preserves the parent-child cascade)
   useEffect(() => {
-    if (status === 'real' && realObjRef.current) {
-      const identity = new THREE.Quaternion();
-      for (const { node, closedQuaternion } of foldJointsRef.current) {
-        node.quaternion.copy(identity).slerp(closedQuaternion, foldProgress);
-        node.updateMatrix();
-      }
-    } else if (status === 'fallback' && paramFoldRef.current.length) {
+    if (paramFoldRef.current.length) {
       for (const joint of paramFoldRef.current) {
         if (joint.type === 'rotate') {
           const identity = new THREE.Quaternion();
@@ -403,16 +318,6 @@ export default function DielineDetailPage({ onBack }) {
       }
     }
   }, [foldProgress, status]);
-
-  // Rebuild parametric 3D when dims change (fallback mode only)
-  useEffect(() => {
-    const obj = three.current; if (!obj || status !== 'fallback') return;
-    while (obj.group.children.length) obj.group.remove(obj.group.children[0]);
-    const mat = new THREE.MeshPhysicalMaterial({ color: 0xdcbf94, roughness: 0.8, metalness: 0, side: THREE.DoubleSide, transparent: true, opacity: 0.96 });
-    const edgeMat = new THREE.LineBasicMaterial({ color: 0x6b5636 });
-    paramFoldRef.current = [];
-    buildParametricFold3D(obj.group, mat, edgeMat, preset.type, L, W, H, paramFoldRef, foldProgress);
-  }, [L, W, H, status, preset.type]);
 
   // Auto-fit SVG
   useEffect(() => {
@@ -641,28 +546,26 @@ export default function DielineDetailPage({ onBack }) {
             <canvas ref={canvasRef} className="w-full h-full block" />
             <div className="ds-info-bar ds-3d-info">
               <span><i className="fas fa-mouse-pointer text-10px"></i> Drag to rotate · Scroll to zoom</span>
-              <span>{isReal ? 'Real 3D model' : 'Parametric 3D'}</span>
+              <span>Parametric 3D — folded from your dimensions</span>
             </div>
           </div>
-          {(isReal || status === 'fallback') && (
-            <div className="ds-seekbar-wrap">
-              <span className="ds-seek-icon" onClick={() => setFoldProgress(0)} title="Unfold (flat)">
-                <i className="fas fa-expand-arrows-alt"></i>
-              </span>
-              <input
-                type="range"
-                className="ds-seekbar"
-                min={0}
-                max={1}
-                step={0.01}
-                value={foldProgress}
-                onChange={(e) => setFoldProgress(+e.target.value)}
-              />
-              <span className="ds-seek-icon" onClick={() => setFoldProgress(1)} title="Fold (closed)">
-                <i className="fas fa-compress-arrows-alt"></i>
-              </span>
-            </div>
-          )}
+          <div className="ds-seekbar-wrap">
+            <span className="ds-seek-icon" onClick={() => setFoldProgress(0)} title="Unfold (flat)">
+              <i className="fas fa-expand-arrows-alt"></i>
+            </span>
+            <input
+              type="range"
+              className="ds-seekbar"
+              min={0}
+              max={1}
+              step={0.01}
+              value={foldProgress}
+              onChange={(e) => setFoldProgress(+e.target.value)}
+            />
+            <span className="ds-seek-icon" onClick={() => setFoldProgress(1)} title="Fold (closed)">
+              <i className="fas fa-compress-arrows-alt"></i>
+            </span>
+          </div>
 
           <div className="ds-ctrl-label mt-3">File formats</div>
           <div className="ds-format-grid2">
